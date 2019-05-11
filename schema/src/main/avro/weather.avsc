@@ -1,0 +1,8 @@
+{"type": "record", "name": "io.streamnative.examples.schema.avro.Weather",
+ "doc": "A weather reading.",
+ "fields": [
+     {"name": "station", "type": "string", "order": "ignore"},
+     {"name": "time", "type": "long"},
+     {"name": "temp", "type": "int"}
+ ]
+}

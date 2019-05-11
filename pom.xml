@@ -43,6 +43,7 @@
   </issueManagement>
   <modules>
     <module>buildtools</module>
+    <module>schema</module>
   </modules>
   <developers>
     <developer>
@@ -59,6 +60,7 @@
     <testRetryCount>2</testRetryCount>
 
     <!-- dependencies -->
+    <avro.version>1.8.2</avro.version>
     <bookkeeper.version>4.9.0</bookkeeper.version>
     <google.code.version>3.0.2</google.code.version>
     <google.errorprone.version>2.1.2</google.errorprone.version>
@@ -73,7 +75,11 @@
     <netty.version>4.1.32.Final</netty.version>
     <netty-boringssl.version>2.0.20.Final</netty-boringssl.version>
     <powermock.version>2.0.0-beta.5</powermock.version>
-    <pulsar.version>2.3.0</pulsar.version>
+    <protobuf3.version>3.5.1</protobuf3.version>
+    <protoc3.version>3.5.1-1</protoc3.version>
+    <protoc-gen-grpc-java.version>1.12.0</protoc-gen-grpc-java.version>
+    <!-- latest version from apache pulsar master -->
+    <pulsar.version>2.4.0-42c3bf949</pulsar.version>
     <slf4j.version>1.7.25</slf4j.version>
     <spotbugs-annotations.version>3.1.8</spotbugs-annotations.version>
     <javax-annotations-api.version>1.3.2</javax-annotations-api.version>
@@ -87,6 +93,7 @@
     <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
     <os-maven-plugin.version>1.4.1.Final</os-maven-plugin.version>
+    <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
     <puppycrawl.checkstyle.version>6.19</puppycrawl.checkstyle.version>
     <spotbugs-maven-plugin.version>3.1.8</spotbugs-maven-plugin.version>
   </properties>
@@ -452,4 +459,16 @@
   </build>
   <profiles>
   </profiles>
+  <repositories>
+    <repository>
+      <id>central</id>
+      <layout>default</layout>
+      <url>https://repo1.maven.org/maven2</url>
+    </repository>
+    <repository>
+      <id>bintray-streamnative-maven</id>
+      <name>bintray</name>
+      <url>https://dl.bintray.com/streamnative/maven</url>
+    </repository>
+  </repositories>
 </project>
