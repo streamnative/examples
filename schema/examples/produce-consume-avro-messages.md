@@ -43,15 +43,15 @@ in Pulsar documentation to start a Pulsar standalone locally.
    ```
    After running this consumer example, you will see the following output.
    ```bash
-key = id-0, value = {"id": "id-0", "amount": 0.0}
-key = id-1, value = {"id": "id-1", "amount": 1000.0}
-key = id-2, value = {"id": "id-2", "amount": 2000.0}
-key = id-3, value = {"id": "id-3", "amount": 3000.0}
-key = id-4, value = {"id": "id-4", "amount": 4000.0}
-key = id-5, value = {"id": "id-5", "amount": 5000.0}
-key = id-6, value = {"id": "id-6", "amount": 6000.0}
-key = id-7, value = {"id": "id-7", "amount": 7000.0}
-key = id-8, value = {"id": "id-8", "amount": 8000.0}
-key = id-9, value = {"id": "id-9", "amount": 9000.0}
+   key = id-0, value = {"id": "id-0", "amount": 0.0}
+   key = id-1, value = {"id": "id-1", "amount": 1000.0}
+   key = id-2, value = {"id": "id-2", "amount": 2000.0}
+   key = id-3, value = {"id": "id-3", "amount": 3000.0}
+   key = id-4, value = {"id": "id-4", "amount": 4000.0}
+   key = id-5, value = {"id": "id-5", "amount": 5000.0}
+   key = id-6, value = {"id": "id-6", "amount": 6000.0}
+   key = id-7, value = {"id": "id-7", "amount": 7000.0}
+   key = id-8, value = {"id": "id-8", "amount": 8000.0}
+   key = id-9, value = {"id": "id-9", "amount": 9000.0}
    ```
    Then you can press "Ctrl+C" to stop the consumer example.
