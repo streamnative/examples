@@ -9,6 +9,11 @@ using [Avro](http://avro.apache.org) schema.
 - Maven to compile the demo application
 - Pulsar 2.3.0 or higher
 
+## Examples
+
+- [Java Avro Producer](../src/main/java/io/streamnative/examples/schema/avro/AvroSchemaProducerExample.java)
+- [Java Avro Consumer](../src/main/java/io/streamnative/examples/schema/avro/AvroSchemaConsumerExample.java)
+
 ## Steps
 
 1. Start Pulsar standalone. You can follow the [detailed instructions](http://pulsar.apache.org/docs/en/next/standalone/)
