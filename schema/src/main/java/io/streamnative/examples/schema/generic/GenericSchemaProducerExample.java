@@ -11,23 +11,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.streamnative.examples.schema.avro;
+package io.streamnative.examples.schema.generic;
 
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
-import org.apache.pulsar.client.api.schema.SchemaDefinition;
+import org.apache.pulsar.client.api.schema.GenericRecord;
+import org.apache.pulsar.client.api.schema.GenericSchema;
+import org.apache.pulsar.client.api.schema.RecordSchemaBuilder;
+import org.apache.pulsar.client.api.schema.SchemaBuilder;
+import org.apache.pulsar.common.schema.SchemaInfo;
+import org.apache.pulsar.common.schema.SchemaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Example that demonstrates a producer producing messages using
- * {@link org.apache.pulsar.client.api.Schema#AVRO(Class)}.
+ * {@link org.apache.pulsar.client.api.schema.GenericSchema}.
  */
-public class AvroSchemaProducerExample {
+public class GenericSchemaProducerExample {
 
-    private static final Logger log = LoggerFactory.getLogger(AvroSchemaProducerExample.class);
+    private static final Logger log = LoggerFactory.getLogger(GenericSchemaProducerExample.class);
 
     private static final String TOPIC = "avro-payments";
 
@@ -39,14 +44,19 @@ public class AvroSchemaProducerExample {
              .serviceUrl(pulsarServiceUrl)
              .build()) {
 
-            Schema<Payment> paymentSchema = Schema.AVRO(
-                SchemaDefinition.<Payment>builder()
-                    .withPojo(Payment.class)
-                    .withAlwaysAllowNull(false)
-                    .build()
+            RecordSchemaBuilder schemaBuilder = SchemaBuilder.record(
+                "io.streamnative.examples.schema.avro"
             );
+            schemaBuilder.field("id")
+                .type(SchemaType.STRING)
+                .required();
+            schemaBuilder.field("amount")
+                .type(SchemaType.DOUBLE)
+                .required();
+            SchemaInfo schemaInfo = schemaBuilder.build(SchemaType.AVRO);
+            GenericSchema<GenericRecord> schema = Schema.generic(schemaInfo);
 
-            try (Producer<Payment> producer = client.newProducer(paymentSchema)
+            try (Producer<GenericRecord> producer = client.newProducer(schema)
                  .topic(TOPIC)
                  .create()) {
 
@@ -54,11 +64,17 @@ public class AvroSchemaProducerExample {
 
                 for (long i = 0; i < numMessages; i++) {
                     final String orderId = "id-" + i;
-                    final Payment payment = new Payment(orderId, 1000.00d * i);
+                    final double amount = 1000.00d * i;
+
+                    GenericRecord record = schema.newRecordBuilder()
+                        .set("id", orderId)
+                        .set("amount", amount)
+                        .build();
+
                     // send the payment in an async way
                     producer.newMessage()
                         .key(orderId)
-                        .value(payment)
+                        .value(record)
                         .sendAsync();
                 }
                 // flush out all outstanding messages
@@ -69,7 +85,8 @@ public class AvroSchemaProducerExample {
 
             }
         } catch (PulsarClientException e) {
-            log.error("Failed to produce avro messages to pulsar", e);
+            System.err.println("Failed to produce generic avro messages to pulsar:");
+            e.printStackTrace();
             Runtime.getRuntime().exit(-1);
         }
     }

@@ -11,22 +11,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.streamnative.examples.schema.avro;
+package io.streamnative.examples.schema.generic;
 
+import io.streamnative.examples.schema.avro.AvroSchemaProducerExample;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
 import org.apache.pulsar.client.api.SubscriptionInitialPosition;
-import org.apache.pulsar.client.api.schema.SchemaDefinition;
+import org.apache.pulsar.client.api.schema.GenericRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Example that demonstrates a consumer consuming messages using {@link Schema#AVRO(Class)}.
  */
-public class AvroSchemaConsumerExample {
+public class AutoConsumeSchemaConsumerExample {
 
     private static final Logger log = LoggerFactory.getLogger(AvroSchemaProducerExample.class);
 
@@ -41,32 +42,24 @@ public class AvroSchemaConsumerExample {
              .serviceUrl(pulsarServiceUrl)
              .build()) {
 
-            Schema<Payment> paymentSchema = Schema.AVRO(
-                SchemaDefinition.<Payment>builder()
-                    .withPojo(Payment.class)
-                    .withAlwaysAllowNull(false)
-                    .build()
-            );
-
-            try (Consumer<Payment> consumer = client.newConsumer(paymentSchema)
+            try (Consumer<GenericRecord> consumer = client.newConsumer(Schema.AUTO_CONSUME())
                  .topic(TOPIC)
                  .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                  .subscriptionName("test-payments")
                  .subscribe()) {
 
-                final int numMessages = 10;
-
                 while (true) {
-                    Message<Payment> msg = consumer.receive();
+                    Message<GenericRecord> msg = consumer.receive();
 
                     final String key = msg.getKey();
-                    final Payment payment = msg.getValue();
+                    final GenericRecord record = msg.getValue();
 
-                    System.out.printf("key = %s, value = %s%n", key, payment);
+                    System.out.printf("key = %s, value = {\"id\": \"%s\", \"amount\": %f}%n",
+                        key, record.getField("id"), record.getField("amount"));
                 }
             }
         } catch (PulsarClientException e) {
-            log.error("Failed to consume avro messages from pulsar", e);
+            log.error("Failed to consume generic records from pulsar", e);
             Runtime.getRuntime().exit(-1);
         }
     }
