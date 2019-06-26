@@ -40,32 +40,44 @@ in Pulsar documentation to start a Pulsar standalone locally.
    bin/pulsar-admin namespaces set-deduplication --enable public/idempotent
    ```
 
-
-4. Run the producer example to produce 10 avro messages to a pulsar topic `avro-payments`.
+4. Run the consumer example to wait for receiving the produced message from topic `public/idempotent/idempotent-messages`
    ```bash
-   mvn -pl schema exec:java -Dexec.mainClass="io.streamnative.examples.schema.avro.AvroSchemaProducerExample"
-   ```
-   After running this producer example, you will see the following successful message.
-   ```bash
-   Successfully produced 10 messages to a topic called avro-payments
+   mvn -pl pubsub exec:java \
+       -Dexec.mainClass="io.streamnative.examples.pubsub.SyncStringConsumerExample" \
+       -Dexec.args="-t public/idempotent/idempotent-messages -sn test-sub -st Exclusive -n 20"
    ```
 
-4. Run the auto consumer example to receive the produced avro messages as generic records from topic `avro-payments`.
+5. Open another terminal, run the producer example to produce 20 messages to the topic `public/idempotent/idempotent-messages`.
+   The producer example will produce the first 10 messages with sequence id from 0 to 9 and produce another 10 messages with
+   duplicated sequence id, then another 10 messages with sequence id from 10 to 19.
    ```bash
-   mvn -pl schema exec:java -Dexec.mainClass="io.streamnative.examples.schema.generic.AutoConsumeSchemaConsumerExample"
+   mvn -pl pubsub exec:java \
+       -Dexec.mainClass="io.streamnative.examples.pubsub.IdempotentProducerExample" \
+       -Dexec.args="-t public/idempotent/idempotent-messages -n 10"
    ```
-   After running this consumer example, you will see the following output.
+
+6. Go to the terminal running the consumer example, you will see the following output. The consumer example successfully received
+   20 messages. The 10 messages produced with duplicated sequence id are de-duplicated.
    ```bash
-   key = id-0, value = {"id": "id-0", "amount": 0.000000}
-   key = id-1, value = {"id": "id-1", "amount": 1000.000000}
-   key = id-2, value = {"id": "id-2", "amount": 2000.000000}
-   key = id-3, value = {"id": "id-3", "amount": 3000.000000}
-   key = id-4, value = {"id": "id-4", "amount": 4000.000000}
-   key = id-5, value = {"id": "id-5", "amount": 5000.000000}
-   key = id-6, value = {"id": "id-6", "amount": 6000.000000}
-   key = id-7, value = {"id": "id-7", "amount": 7000.000000}
-   key = id-8, value = {"id": "id-8", "amount": 8000.000000}
-   key = id-9, value = {"id": "id-9", "amount": 9000.000000}
-    
+Received message : value = 'value-0', sequence = 0
+Received message : value = 'value-1', sequence = 1
+Received message : value = 'value-2', sequence = 2
+Received message : value = 'value-3', sequence = 3
+Received message : value = 'value-4', sequence = 4
+Received message : value = 'value-5', sequence = 5
+Received message : value = 'value-6', sequence = 6
+Received message : value = 'value-7', sequence = 7
+Received message : value = 'value-8', sequence = 8
+Received message : value = 'value-9', sequence = 9
+Received message : value = 'value-10', sequence = 10
+Received message : value = 'value-11', sequence = 11
+Received message : value = 'value-12', sequence = 12
+Received message : value = 'value-13', sequence = 13
+Received message : value = 'value-14', sequence = 14
+Received message : value = 'value-15', sequence = 15
+Received message : value = 'value-16', sequence = 16
+Received message : value = 'value-17', sequence = 17
+Received message : value = 'value-18', sequence = 18
+Received message : value = 'value-19', sequence = 19
+Successfully received 20 messages
    ```
-   Then you can press "Ctrl+C" to stop the consumer example.
