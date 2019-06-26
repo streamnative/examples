@@ -4,6 +4,10 @@ This is a curated list of examples that showcase event streaming using Apache Pu
 
 ## Full example list
 
+### PubSub
+
+- [Idempotent Producer](pubsub/examples/idempotent-producer.md)
+
 ### Schema
 
 - [Produce and consume messages using Avro schema](schema/examples/produce-consume-avro-messages.md)
