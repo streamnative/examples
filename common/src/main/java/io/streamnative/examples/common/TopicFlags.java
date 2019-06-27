@@ -33,7 +33,7 @@ public class TopicFlags extends PulsarClientFlags {
         names = {
             "-n", "--num-messages"
         },
-        description = "Number of messages to produce or consumwe"
+        description = "Number of messages to produce or consume"
     )
     public int numMessages = 10;
 
