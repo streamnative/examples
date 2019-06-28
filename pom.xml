@@ -41,6 +41,8 @@
   </issueManagement>
   <modules>
     <module>buildtools</module>
+    <module>common</module>
+    <module>pubsub</module>
     <module>schema</module>
   </modules>
   <developers>
@@ -59,7 +61,7 @@
 
     <!-- dependencies -->
     <avro.version>1.8.2</avro.version>
-    <bookkeeper.version>4.9.0</bookkeeper.version>
+    <bookkeeper.version>4.9.2</bookkeeper.version>
     <google.code.version>3.0.2</google.code.version>
     <google.errorprone.version>2.1.2</google.errorprone.version>
     <grpc.version>1.18.0</grpc.version>
@@ -239,6 +241,12 @@
         <version>${joda.version}</version>
       </dependency>
 
+      <!-- tools dependencies -->
+      <dependency>
+        <groupId>org.apache.bookkeeper</groupId>
+        <artifactId>bookkeeper-tools-framework</artifactId>
+        <version>${bookkeeper.version}</version>
+      </dependency>
 
       <!-- test dependencies -->
       <dependency>
