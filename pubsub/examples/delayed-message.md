@@ -1,6 +1,6 @@
-# Idempotent Producer Example
+# Delayed message Example
 
-This example demonstrates how to produce messages exactly-once using idempotent producers.
+This example demonstrates how to use delayed message delivery feature.
 
 ## Prerequisites
 
