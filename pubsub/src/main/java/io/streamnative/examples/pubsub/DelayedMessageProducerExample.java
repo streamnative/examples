@@ -57,7 +57,6 @@ public class DelayedMessageProducerExample extends ExampleRunner<ProducerFlags> 
                 // immediate delivery
                 for (int i = 0; i < numMessages; i++) {
                     producer.newMessage()
-                            .value(new Date() + "Immediate delivery message " + i)
                             .value("Immediate delivery message " + i + "; produce-time = " + new Date())
                             .sendAsync();
                 }
