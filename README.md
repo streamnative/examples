@@ -7,6 +7,8 @@ This is a curated list of examples that showcase event streaming using Apache Pu
 ### PubSub
 
 - [Idempotent Producer](pubsub/examples/idempotent-producer.md)
+- [Delayed Message](pubsub/examples/delayed-message.md)
+- [Dead Letter Topic](pubsub/examples/dead-letter-topic.md)
 
 ### Schema
 
