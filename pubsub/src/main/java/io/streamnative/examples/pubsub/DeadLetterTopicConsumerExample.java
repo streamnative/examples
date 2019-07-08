@@ -53,29 +53,25 @@ public class DeadLetterTopicConsumerExample extends ExampleRunner<ConsumerFlags>
                     .ackTimeout(3, TimeUnit.SECONDS)
                     .deadLetterPolicy(DeadLetterPolicy.builder()
                             .maxRedeliverCount(3)
-                            .deadLetterTopic("persistent://public/deadLetterTopic/deadLetterTopicMessage-d")
+                            .deadLetterTopic("persistent://public/dlt-example/dlt-example-topic-dlt")
                             .build())
-                    .subscribe();
-                 Consumer<String> deadLetterTopicConsumer = client.newConsumer(Schema.STRING)
-                         .topic("persistent://public/deadLetterTopic/deadLetterTopicMessage-d")
-                         .subscriptionName(flags.subscriptionName)
-                         .subscribe()
+                    .subscribe()
             ) {
-                // consume message but not acknowledge
-                while (flags.numMessages <= 0 || numReceived < flags.numMessages * 4) {
-                    Message<String> msg = consumer.receive();
-                    System.out.println("Consumer Received message : " + msg.getValue()
-                            + " Topic : " + msg.getTopicName());
-                    ++numReceived;
-                }
-
-                // receive message from dead letter topic
-                numReceived = 0;
+                // consume numMessages messages,
+                // for even numbers, process the message and ack it
+                // for odd numbers, skip ack
+                // when the number of cycles reached redeliverCount times,
+                // DLT will be triggered.
                 while (flags.numMessages <= 0 || numReceived < flags.numMessages) {
-                    Message<String> msg = deadLetterTopicConsumer.receive();
-                    System.out.println("DeadLetterTopicConsumer Received message : " + msg.getValue()
-                            + " Topic : " + msg.getTopicName());
-                    consumer.acknowledge(msg);
+                    Message<String> msg = consumer.receive();
+                    if (Integer.valueOf(msg.getValue().split("-")[1]) % 2 == 0) {
+                        consumer.acknowledge(msg);
+                        System.out.println("Consumer Received message : " + msg.getValue()
+                                + "; Send ack");
+                    } else {
+                        System.out.println("Consumer Received message : " + msg.getValue()
+                                + "; Don't send ack");
+                    }
                     ++numReceived;
                 }
             } catch (PulsarClientException ie) {

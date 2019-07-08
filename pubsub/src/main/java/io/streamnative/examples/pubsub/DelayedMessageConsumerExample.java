@@ -52,11 +52,14 @@ public class DelayedMessageConsumerExample extends ExampleRunner<ConsumerFlags> 
                     .subscriptionType(flags.subscriptionType)
                     .subscriptionInitialPosition(flags.subscriptionInitialPosition)
                     .subscribe()) {
-                while ((flags.numMessages > 0 && numReceived < flags.numMessages) || flags.numMessages <= 0) {
+                while (flags.numMessages <= 0 || numReceived < flags.numMessages) {
                     Message<String> msg = consumer.receive();
                     System.out.println("Consumer Received message : " + msg.getValue()
-                            + "; receive-time = " + new Date());
+                            + "; Difference between publish time and receive time = "
+                            + (System.currentTimeMillis() - msg.getPublishTime()) / 1000
+                            + " seconds");
                     consumer.acknowledge(msg);
+                    consumer.redeliverUnacknowledgedMessages();
                     ++numReceived;
                 }
 

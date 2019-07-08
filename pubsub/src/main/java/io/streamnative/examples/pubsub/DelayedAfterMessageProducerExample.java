@@ -15,22 +15,26 @@ package io.streamnative.examples.pubsub;
 
 import io.streamnative.examples.common.ExampleRunner;
 import io.streamnative.examples.common.ProducerFlags;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.Schema;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 /**
- * Example that demonstrates how to use dead letter topic.
+ * Example that demonstrates how to use delayed message delivery feature.
  **/
-public class DeadLetterTopicProducerExample extends ExampleRunner<ProducerFlags> {
+public class DelayedAfterMessageProducerExample extends ExampleRunner<ProducerFlags> {
     @Override
     protected String name() {
-        return DeadLetterTopicProducerExample.class.getSimpleName();
+        return DelayedAfterMessageProducerExample.class.getSimpleName();
     }
 
     @Override
     protected String description() {
-        return "Example that demonstrates how to use dead letter topic.";
+        return "An example demonstrates how to use delayed message delivery feature";
     }
 
     @Override
@@ -50,20 +54,29 @@ public class DeadLetterTopicProducerExample extends ExampleRunner<ProducerFlags>
 
                 final int numMessages = Math.max(flags.numMessages, 1);
 
-                // publish messages
+                // immediate delivery
                 for (int i = 0; i < numMessages; i++) {
                     producer.newMessage()
-                            .value("value-" + i)
-                            .send();
+                            .value("Immediate delivery message " + i)
+                            .sendAsync();
                 }
+                producer.flush();
 
+                // delay 5 seconds using DeliverAfter
+                for (int i = 0; i < numMessages; i++) {
+                    producer.newMessage()
+                            .value("DeliverAfter message " + i)
+                            .deliverAfter(5, TimeUnit.SECONDS)
+                            .sendAsync();
+                }
                 producer.flush();
             }
+
         }
     }
 
     public static void main(String[] args) {
-        DeadLetterTopicProducerExample example = new DeadLetterTopicProducerExample();
+        DelayedAfterMessageProducerExample example = new DelayedAfterMessageProducerExample();
         example.run(args);
     }
 }
