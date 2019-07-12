@@ -60,7 +60,7 @@ in Pulsar documentation to start a Pulsar standalone locally.
    ```bash
    mvn -pl pubsub exec:java \
        -Dexec.mainClass="io.streamnative.examples.pubsub.SinglePartitionAtomicProducerExample" \
-       -Dexec.args="-t public/idempotent/atomic-producer-example -n 20"
+       -Dexec.args="-t public/idempotent/atomic-producer-example -n 10"
    ```
 
 6. Go to the terminal running the consumer example, you will see the following output. The consumer example successfully received
