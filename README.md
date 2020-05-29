@@ -1,4 +1,4 @@
-![image](images/streamnative-logo.png)
+![image](images/streamnative-logo.png =250x)
 
 * [Overview](#overview)
 
