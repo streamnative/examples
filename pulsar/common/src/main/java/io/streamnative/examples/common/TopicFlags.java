@@ -37,4 +37,12 @@ public class TopicFlags extends PulsarClientFlags {
     )
     public int numMessages = 10;
 
+    @Parameter(
+        names = {
+            "-nk", "--num-keys"
+        },
+        description = "Number of keys"
+    )
+    public int numKeys = 128;
+
 }

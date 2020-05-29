@@ -15,11 +15,13 @@ package io.streamnative.examples.pubsub;
 
 import io.streamnative.examples.common.ConsumerFlags;
 import io.streamnative.examples.common.ExampleRunner;
+import java.util.concurrent.TimeUnit;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.common.api.proto.PulsarApi.CommandAck.AckType;
 
 /**
  * Example that demonstrates an consumer that consume messages using
@@ -47,6 +49,7 @@ public class SyncStringConsumerExample extends ExampleRunner<ConsumerFlags> {
 
         try (PulsarClient client = PulsarClient.builder()
              .serviceUrl(flags.binaryServiceUrl)
+             .operationTimeout(10, TimeUnit.SECONDS)
              .build()) {
 
             int numReceived = 0;
@@ -60,13 +63,24 @@ public class SyncStringConsumerExample extends ExampleRunner<ConsumerFlags> {
 
                 while ((flags.numMessages > 0 && numReceived < flags.numMessages) || flags.numMessages <= 0) {
                     Message<String> msg = consumer.receive();
-                    System.out.println("Received message : value = '" + msg.getValue()
+                    System.out.println("Received message : key = "
+                        + (msg.hasKey() ? msg.getKey() : "null")
+                        + ", value = '" + msg.getValue()
                         + "', sequence = " + msg.getSequenceId());
+
+                    if (msg.getSequenceId() % flags.ackEveryNMessages == 0) {
+                        if (AckType.Individual == flags.ackType) {
+                            consumer.acknowledge(msg);
+                        } else if (AckType.Cumulative == flags.ackType) {
+                            consumer.acknowledgeCumulative(msg);
+                        }
+                    }
 
                     ++numReceived;
                 }
                 System.out.println("Successfully received " + numReceived + " messages");
             } catch (PulsarClientException ie) {
+                ie.printStackTrace();
                 if (ie.getCause() instanceof InterruptedException) {
                     System.out.println("Successfully received " + numReceived + " messages");
                     Thread.currentThread().interrupt();

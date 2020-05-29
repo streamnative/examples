@@ -13,8 +13,19 @@
  */
 package io.streamnative.examples.common;
 
+import com.beust.jcommander.Parameter;
+
 /**
  * Common flags for running a producer example.
  */
 public class ProducerFlags extends TopicFlags {
+
+    @Parameter(
+        names = {
+            "-r", "--messages-rate"
+        },
+        description = "Messages rate to produce"
+    )
+    public double rate = -1;
+
 }
