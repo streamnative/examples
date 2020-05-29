@@ -1,4 +1,4 @@
-![image](images/streamnative-logo.png)
+<img src="images/streamnative-logo.png" width="250">
 
 * [Overview](#overview)
 
