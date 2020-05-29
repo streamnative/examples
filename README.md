@@ -9,3 +9,7 @@ This is a curated list of demos that showcase Apache Pulsar® messaging and even
 # Clients
 
 - [PubSub Client Examples](clients/README.md)
+
+# Flink
+
+- [Pulsar Flink Connector](pulsar-flink/README.md)
