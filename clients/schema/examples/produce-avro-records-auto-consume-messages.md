@@ -35,7 +35,7 @@ in Pulsar documentation to start a Pulsar standalone locally.
 
 3. Run the avro schema producer example to produce 10 avro messages to a pulsar topic `avro-payments`.
    ```bash
-   java -cp schema/target/pulsar-pubsub-examples.jar io.streamnative.examples.schema.avro.AvroSchemaProducerExample
+   java -cp schema/target/pulsar-schema-examples.jar io.streamnative.examples.schema.avro.AvroSchemaProducerExample
    ```
    After running this producer example, you will see the following successful message.
    ```bash
@@ -44,7 +44,7 @@ in Pulsar documentation to start a Pulsar standalone locally.
 
 4. Run the auto consumer example to receive the produced avro messages as generic records from topic `avro-payments`.
    ```bash
-   java -cp schema/target/pulsar-pubsub-examples.jar io.streamnative.examples.schema.generic.AutoConsumeSchemaConsumerExample
+   java -cp schema/target/pulsar-schema-examples.jar io.streamnative.examples.schema.generic.AutoConsumeSchemaConsumerExample
    ```
    After running this consumer example, you will see the following output.
    ```bash

@@ -54,7 +54,7 @@
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
-          <finalName>pulsar-schema-examples</finalName>
+          <finalName>pulsar-pubsub-examples</finalName>
           <appendAssemblyId>false</appendAssemblyId>
         </configuration>
         <executions>
