@@ -13,8 +13,10 @@
  */
 package io.streamnative.examples.pubsub;
 
+import com.google.common.util.concurrent.RateLimiter;
 import io.streamnative.examples.common.ExampleRunner;
 import io.streamnative.examples.common.ProducerFlags;
+import java.util.Random;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.Schema;
@@ -24,6 +26,9 @@ import org.apache.pulsar.client.api.Schema;
  * synchronous {@link Producer#send(Object)} method.
  **/
 public class SyncStringProducerExample extends ExampleRunner<ProducerFlags> {
+
+    static final Random RANDOM = new Random(System.currentTimeMillis());
+
     @Override
     protected String name() {
         return SyncStringProducerExample.class.getSimpleName();
@@ -41,22 +46,42 @@ public class SyncStringProducerExample extends ExampleRunner<ProducerFlags> {
 
     @Override
     protected void run(ProducerFlags flags) throws Exception {
-        try (PulsarClient client = PulsarClient.builder()
-                .serviceUrl(flags.binaryServiceUrl)
-                .build()) {
+        RateLimiter limiter = null;
+        if (flags.rate > 0) {
+            limiter = RateLimiter.create(flags.rate);
+        }
 
+        try (PulsarClient client = PulsarClient.builder()
+            .serviceUrl(flags.binaryServiceUrl)
+            .build()) {
             try (Producer<String> producer = client.newProducer(Schema.STRING)
                     .enableBatching(false)
                     .topic(flags.topic)
                     .create()) {
 
-                final int numMessages = Math.max(flags.numMessages, 1);
+                int num = flags.numMessages;
+                if (num < 0) {
+                    num = Integer.MAX_VALUE;
+                }
+
+                final int numMessages = Math.max(num, 1);
 
                 // publish messages
                 for (int i = 0; i < numMessages; i++) {
+                    if (limiter != null) {
+                        limiter.acquire();
+                    }
+
+                    String key = "key-" + RANDOM.nextInt(flags.numKeys);
+
                     producer.newMessage()
+                            .key(key)
                             .value("value-" + i)
                             .sendAsync();
+
+                    if ((i + 1) % 100  == 0) {
+                        System.out.println("Sent " + (i + 1) + " messages ...");
+                    }
                 }
                 producer.flush();
             }

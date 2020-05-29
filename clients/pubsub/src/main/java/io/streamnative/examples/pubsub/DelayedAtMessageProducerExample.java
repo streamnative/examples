@@ -15,12 +15,11 @@ package io.streamnative.examples.pubsub;
 
 import io.streamnative.examples.common.ExampleRunner;
 import io.streamnative.examples.common.ProducerFlags;
+import java.util.Date;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.Schema;
-
-import java.util.Date;
 
 /**
  * Example that demonstrates how to use delayed message delivery feature.

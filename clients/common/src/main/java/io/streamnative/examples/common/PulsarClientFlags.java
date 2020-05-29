@@ -17,7 +17,7 @@ import com.beust.jcommander.Parameter;
 import org.apache.bookkeeper.tools.framework.CliFlags;
 
 /**
- * Default example flags
+ * Default example flags.
  */
 public class PulsarClientFlags extends CliFlags {
 

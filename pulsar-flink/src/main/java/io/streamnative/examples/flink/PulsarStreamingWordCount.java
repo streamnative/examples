@@ -52,6 +52,8 @@ public class PulsarStreamingWordCount {
             properties
         ).setStartFromEarliest();
 
+        env.fromCollection()
+
         DataStream<String> stream = env.addSource(source);
         DataStream<WordCount> wc = stream
             .flatMap((FlatMapFunction<String, WordCount>) (line, collector) -> {
