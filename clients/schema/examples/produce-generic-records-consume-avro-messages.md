@@ -27,7 +27,7 @@ in Pulsar documentation to start a Pulsar standalone locally.
    git clone https://github.com/streamnative/pulsar-examples.git
    ```
    ```bash
-   cd pulsar-examples
+   cd pulsar-examples/clients
    ```
    ```bash
    mvn -am -pl schema clean package
@@ -35,7 +35,7 @@ in Pulsar documentation to start a Pulsar standalone locally.
 
 3. Run the Generic schema producer example to produce 10 generic records to a pulsar topic `avro-payments`.
    ```bash
-   mvn -pl schema exec:java -Dexec.mainClass="io.streamnative.examples.schema.generic.GenericSchemaProducerExample"
+   java -cp schema/target/pulsar-pubsub-examples.jar io.streamnative.examples.schema.generic.GenericSchemaProducerExample
    ```
    After running this producer example, you will see the following successful message.
    ```bash
@@ -44,7 +44,7 @@ in Pulsar documentation to start a Pulsar standalone locally.
 
 4. Run the Avro consumer example to receive the produced generic records from topic `avro-payments`.
    ```bash
-   mvn -pl schema exec:java -Dexec.mainClass="io.streamnative.examples.schema.avro.AvroSchemaConsumerExample"
+   java -cp schema/target/pulsar-pubsub-examples.jar io.streamnative.examples.schema.avro.AvroSchemaConsumerExample
    ```
    After running this consumer example, you will see the following output.
    ```bash

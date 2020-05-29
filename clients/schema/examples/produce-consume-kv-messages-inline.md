@@ -30,7 +30,7 @@ in Pulsar documentation to start a Pulsar standalone locally.
    git clone https://github.com/streamnative/pulsar-examples.git
    ```
    ```bash
-   cd pulsar-examples
+   cd pulsar-examples/clients
    ```
    ```bash
    mvn -am -pl schema clean package
@@ -38,12 +38,12 @@ in Pulsar documentation to start a Pulsar standalone locally.
 
 3. Run the consumer example to wait for receiving the produced key/value messages from topic `keyvalue-inline-topic`.
    ```bash
-   mvn -pl schema exec:java -Dexec.mainClass="io.streamnative.examples.schema.kv.KeyValueInlineSchemaConsumerExample"
+   java -cp schema/target/pulsar-pubsub-examples.jar io.streamnative.examples.schema.kv.KeyValueInlineSchemaConsumerExample
    ```
    
 4. Open another terminal, run the producer example to produce 10 key/value messages to a pulsar topic `keyvalue-inline-topic`.
    ```bash
-   mvn -pl schema exec:java -Dexec.mainClass="io.streamnative.examples.schema.kv.KeyValueInlineSchemaProducerExample"
+   java -cp schema/target/pulsar-pubsub-examples.jar io.streamnative.examples.schema.kv.KeyValueInlineSchemaProducerExample
    ```
    After running this producer example, you will see the following successful message.
    ```bash
