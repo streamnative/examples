@@ -52,6 +52,8 @@ public class ClientEventAvroConsumer {
                     System.out.println("Receive event " + msg.getMessageId() + " : " + event);
 
                     consumer.acknowledgeAsync(msg);
+
+                    msg = consumer.receive(500, TimeUnit.MILLISECONDS);
                 }
 
             } finally {
