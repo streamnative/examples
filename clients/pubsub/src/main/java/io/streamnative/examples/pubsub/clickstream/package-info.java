@@ -11,22 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.streamnative.examples.pubsub.clickstream;
-
-import lombok.Data;
-
 /**
- * Client Event.
+ * Click stream examples.
  */
-@Data
-public class ClientEvent {
-
-    public long timestamp;
-    public String ip;
-    public String request;
-    public int status;
-    public int userid;
-    public int bytes;
-    public String agent;
-
-}
+package io.streamnative.examples.pubsub.clickstream;
