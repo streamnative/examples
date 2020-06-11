@@ -18,6 +18,7 @@ import io.streamnative.examples.common.ExampleRunner;
 import java.util.concurrent.TimeUnit;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
+import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
@@ -79,6 +80,28 @@ public class SeekConsumerExample extends ExampleRunner<ConsumerFlags> {
                     ++numReceived;
                 }
                 System.out.println("Successfully received " + numReceived + " messages");
+
+                consumer.seek(MessageId.earliest);
+
+                numReceived = 0;
+                while ((flags.numMessages > 0 && numReceived < flags.numMessages) || flags.numMessages <= 0) {
+                    Message<String> msg = consumer.receive();
+                    System.out.println("Received message : key = "
+                        + (msg.hasKey() ? msg.getKey() : "null")
+                        + ", value = '" + msg.getValue()
+                        + "', sequence = " + msg.getSequenceId());
+
+                    if (msg.getSequenceId() % flags.ackEveryNMessages == 0) {
+                        if (AckType.Individual == flags.ackType) {
+                            consumer.acknowledge(msg);
+                        } else if (AckType.Cumulative == flags.ackType) {
+                            consumer.acknowledgeCumulative(msg);
+                        }
+                    }
+
+                    ++numReceived;
+                }
+                System.out.println("Successfully received " + numReceived + " messages again");
             } catch (PulsarClientException ie) {
                 ie.printStackTrace();
                 if (ie.getCause() instanceof InterruptedException) {
