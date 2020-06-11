@@ -39,10 +39,10 @@ in Pulsar documentation to start a Pulsar standalone locally.
    git clone https://github.com/streamnative/pulsar-examples.git
    ```
    ```bash
-   cd pulsar-examples
+   cd pulsar-examples/clients
    ```
    ```bash
-   mvn -am -pl pubsub clean package
+   mvn clean install -DskipTests
    ```
 
 3. Create a namespace.
@@ -52,53 +52,57 @@ in Pulsar documentation to start a Pulsar standalone locally.
 
 4. Run the consumer example to wait for receiving the produced message from topic `public/delayed-delivery-example/delayed-delivery-example-topic`
    ```bash
-   mvn -pl pubsub exec:java \
-       -Dexec.mainClass="io.streamnative.examples.pubsub.DelayedMessageConsumerExample" \
-       -Dexec.args="-t public/delayed-delivery-example/delayed-delivery-example-topic -sn test-sub -st Shared -n 0"
+   java -cp pubsub/target/pulsar-pubsub-examples.jar \
+     io.streamnative.examples.pubsub.DelayedMessageConsumerExample \
+     -t public/delayed-delivery-example/delayed-delivery-example-topic \
+     -sn test-sub \
+     -st Shared \
+     -n 0
    ```
 
 5. Open another terminal, run the DelayedAfterMessageProducer example to produce 10 messages to the topic `public/delayed-delivery-example/delayed-delivery-example-topic`.
    The producer example will produce the first 5 messages immediately and produce 5 messages delayed 5 seconds using `deliverAfter`.
    ```bash
-   mvn -pl pubsub exec:java \
-       -Dexec.mainClass="io.streamnative.examples.pubsub.DelayedAfterMessageProducerExample" \
-       -Dexec.args="-t public/delayed-delivery-example/delayed-delivery-example-topic -n 5"
+   java -cp pubsub/target/pulsar-pubsub-examples.jar \
+     io.streamnative.examples.pubsub.DelayedAfterMessageProducerExample \
+     -t public/delayed-delivery-example/delayed-delivery-example-topic \
+     -n 5
    ```
 
 6. Go to the terminal running the consumer example, you will see the following output. The consumer example successfully received
    10 messages. For not using `deliverAfter`, the difference between publish time and receive time is 0 seconds. For using `deliverAfter`, is 5 seconds.
-```bash
-Consumer Received message : Immediate delivery message 0; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 1; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 2; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 3; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 4; Difference between publish time and receive time = 0 seconds
-Consumer Received message : DeliverAfter message 0; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAfter message 1; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAfter message 2; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAfter message 3; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAfter message 4; Difference between publish time and receive time = 5 seconds
-```
+    ```bash
+    Consumer Received message : Immediate delivery message 0; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 1; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 2; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 3; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 4; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : DeliverAfter message 0; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAfter message 1; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAfter message 2; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAfter message 3; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAfter message 4; Difference between publish time and receive time = 5 seconds
+    ```
 
 7. Open another terminal, run the DelayedAtMessageProducer example to produce 10 messages to the topic `public/delayed-delivery-example/delayed-delivery-example-topic`.
    The producer example will produce the first 5 messages immediately and produce 5 messages delayed 10 seconds using `deliverAt`.
    ```bash
-   mvn -pl pubsub exec:java \
-       -Dexec.mainClass="io.streamnative.examples.pubsub.DelayedAtMessageProducerExample" \
-       -Dexec.args="-t public/delayed-delivery-example/delayed-delivery-example-topic -n 5"
+   java -cp pubsub/target/pulsar-pubsub-examples.jar \
+     io.streamnative.examples.pubsub.DelayedAtMessageProducerExample \
+     -t public/delayed-delivery-example/delayed-delivery-example-topic -n 5
    ```
 
 8. Go to the terminal running the consumer example, you will see the following output. The consumer example successfully received
    10 messages. For not using `deliverAt`, the difference between publish time and receive time is 0 seconds. For using `deliverAt`, is 5 seconds.
-```bash
-Consumer Received message : Immediate delivery message 0; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 1; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 2; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 3; Difference between publish time and receive time = 0 seconds
-Consumer Received message : Immediate delivery message 4; Difference between publish time and receive time = 0 seconds
-Consumer Received message : DeliverAt message 0; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAt message 1; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAt message 2; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAt message 3; Difference between publish time and receive time = 5 seconds
-Consumer Received message : DeliverAt message 4; Difference between publish time and receive time = 5 seconds
-```
+    ```bash
+    Consumer Received message : Immediate delivery message 0; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 1; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 2; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 3; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : Immediate delivery message 4; Difference between publish time and receive time = 0 seconds
+    Consumer Received message : DeliverAt message 0; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAt message 1; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAt message 2; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAt message 3; Difference between publish time and receive time = 5 seconds
+    Consumer Received message : DeliverAt message 4; Difference between publish time and receive time = 5 seconds
+    ```

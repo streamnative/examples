@@ -71,7 +71,6 @@ public class DeadLetterTopicConsumerExample extends ExampleRunner<ConsumerFlags>
                     .ackTimeout(3, TimeUnit.SECONDS)
                     .deadLetterPolicy(DeadLetterPolicy.builder()
                             .maxRedeliverCount(3)
-                            .deadLetterTopic("persistent://public/dlt-example/dlt-example-topic-dlt")
                             .build())
                     .subscribe()
             ) {

@@ -33,10 +33,10 @@ in Pulsar documentation to start a Pulsar standalone locally.
    git clone https://github.com/streamnative/pulsar-examples.git
    ```
    ```bash
-   cd pulsar-examples
+   cd pulsar-examples/clients
    ```
    ```bash
-   mvn -am -pl pubsub clean package
+   mvn clean install -DskipTests 
    ```
 
 3. Create a namespace.
@@ -46,58 +46,66 @@ in Pulsar documentation to start a Pulsar standalone locally.
 
 4. Run the dead letter topic consumer example to wait for receiving the produced message from topic `public/dlt-example/dlt-example-topic`.
    ```bash
-   mvn -pl pubsub exec:java \
-       -Dexec.mainClass="io.streamnative.examples.pubsub.DeadLetterTopicConsumerExample" \
-       -Dexec.args="-t public/dlt-example/dlt-example-topic -sn test-sub -st Shared -n 0"
+   java -cp pubsub/target/pulsar-pubsub-examples.jar \
+     io.streamnative.examples.pubsub.DeadLetterTopicConsumerExample \
+     -t public/dlt-example/dlt-example-topic \
+     -sn test-sub \
+     -st Shared \
+     -n 0
    ```
-5. Open another terminal, run the consumer example to wait for receiving the  dead letter topic message from topic `public/dlt-example/dlt-example-topic-dlt`.
-```bash
-   mvn -pl pubsub exec:java \  
-   -Dexec.mainClass="io.streamnative.examples.pubsub.SyncStringConsumerExample" \
-   -Dexec.args="-t persistent://public/dlt-example/dlt-example-topic-dlt -sn test-sub -st Shared -n 5"
-   ```
-
-6. Open another terminal, run the producer example to produce 10 messages to the topic `public/dlt-example/dlt-example-topic`.
+   
+5. Open another terminal, run the producer example to produce 10 messages to the topic `public/dlt-example/dlt-example-topic`.
    ```bash
-   mvn -pl pubsub exec:java \
-       -Dexec.mainClass="io.streamnative.examples.pubsub.SyncStringProducerExample" \
-       -Dexec.args="-t public/dlt-example/dlt-example-topic -n 10"
+   java -cp pubsub/target/pulsar-pubsub-examples.jar \
+     io.streamnative.examples.pubsub.SyncStringProducerExample \
+     -t public/dlt-example/dlt-example-topic -n 10
+   ```
+   
+6. Open another terminal, run the consumer example to wait for receiving the  dead letter topic message from topic `public/dlt-example/dlt-example-topic-dlt`.
+   ```bash
+   java -cp pubsub/target/pulsar-pubsub-examples.jar \
+     io.streamnative.examples.pubsub.SyncStringConsumerExample \
+     -t persistent://public/dlt-example/dlt-example-topic-test-sub-DLQ \
+     -sn test-sub \
+     -st Shared \
+     -n 5
    ```
 
 7. Go to the terminal running the dead letter topic consumer example, you will see the following output. Messages not ack were redelivered 3 times and others were not redelivered.
-```bash
-Consumer Received message : value-0; Send ack
-Consumer Received message : value-1; Don't send ack
-Consumer Received message : value-2; Send ack
-Consumer Received message : value-3; Don't send ack
-Consumer Received message : value-4; Send ack
-Consumer Received message : value-5; Don't send ack
-Consumer Received message : value-6; Send ack
-Consumer Received message : value-7; Don't send ack
-Consumer Received message : value-8; Send ack
-Consumer Received message : value-9; Don't send ack
-Consumer Received message : value-1; Don't send ack
-Consumer Received message : value-3; Don't send ack
-Consumer Received message : value-5; Don't send ack
-Consumer Received message : value-7; Don't send ack
-Consumer Received message : value-9; Don't send ack
-Consumer Received message : value-1; Don't send ack
-Consumer Received message : value-3; Don't send ack
-Consumer Received message : value-5; Don't send ack
-Consumer Received message : value-7; Don't send ack
-Consumer Received message : value-9; Don't send ack
-Consumer Received message : value-1; Don't send ack
-Consumer Received message : value-3; Don't send ack
-Consumer Received message : value-5; Don't send ack
-Consumer Received message : value-7; Don't send ack
-Consumer Received message : value-9; Don't send ack
-```
-8. Go to the terminal running the consumer example reciving messages from dead letter topic, you will see the following output. Messages not ack were delivered to dead letter topic.
-```bash
-Received message : value = 'value-1', sequence = 0
-Received message : value = 'value-3', sequence = 1
-Received message : value = 'value-5', sequence = 2
-Received message : value = 'value-7', sequence = 3
-Received message : value = 'value-9', sequence = 4
-Successfully received 5 messages
-```
+    ```bash
+    Consumer Received message : value-0; Send ack
+    Consumer Received message : value-1; Don't send ack
+    Consumer Received message : value-2; Send ack
+    Consumer Received message : value-3; Don't send ack
+    Consumer Received message : value-4; Send ack
+    Consumer Received message : value-5; Don't send ack
+    Consumer Received message : value-6; Send ack
+    Consumer Received message : value-7; Don't send ack
+    Consumer Received message : value-8; Send ack
+    Consumer Received message : value-9; Don't send ack
+    Consumer Received message : value-1; Don't send ack
+    Consumer Received message : value-3; Don't send ack
+    Consumer Received message : value-5; Don't send ack
+    Consumer Received message : value-7; Don't send ack
+    Consumer Received message : value-9; Don't send ack
+    Consumer Received message : value-1; Don't send ack
+    Consumer Received message : value-3; Don't send ack
+    Consumer Received message : value-5; Don't send ack
+    Consumer Received message : value-7; Don't send ack
+    Consumer Received message : value-9; Don't send ack
+    Consumer Received message : value-1; Don't send ack
+    Consumer Received message : value-3; Don't send ack
+    Consumer Received message : value-5; Don't send ack
+    Consumer Received message : value-7; Don't send ack
+    Consumer Received message : value-9; Don't send ack
+    ```
+    
+8. Go to the terminal running the consumer example receiving messages from dead letter topic, you will see the following output. Messages not ack were delivered to dead letter topic.
+    ```bash
+    Received message : value = 'value-1', sequence = 0
+    Received message : value = 'value-3', sequence = 1
+    Received message : value = 'value-5', sequence = 2
+    Received message : value = 'value-7', sequence = 3
+    Received message : value = 'value-9', sequence = 4
+    Successfully received 5 messages
+    ```
