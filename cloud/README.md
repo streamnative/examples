@@ -2,15 +2,15 @@
 
 When configuring and using OAuth2, we need to specify the following parameters:
 
-- type
-- issuerUrl
-- audience
-- privateKey
-- clientId
+- `type`
+- `issuerUrl`
+- `audience`
+- `privateKey`
+- `clientId`
 
-For OAuth2 type, currently we only support `client_credentials`. So the value of the current type field is `client_credentials`
+For the OAuth2 `type` field, currently we only support `client_credentials`. So the value of the current type field is `client_credentials`
 
-For privateKey, what we need to receive is the path of a private key data file. We can get this file in the following way:
+For the `privateKey` field, what we need to get the path of a private key data file. The following example shows how to get this file:
 
 ```shell script
 $ snctl auth export-service-account [NAME] [flags]
@@ -27,7 +27,7 @@ Output:
 Wrote private key file <Path of your private key file>
 ```
 
-For `clientId` and `issuerUrl`, we can get the corresponding value from the privateKey file. For example:
+For the `clientId` and `issuerUrl` fields, we can get the corresponding value from the `privateKey` file. The following example shows how to get the `clientId` and `issueUrl` fields.
 
 ```text
 {
@@ -39,4 +39,4 @@ For `clientId` and `issuerUrl`, we can get the corresponding value from the priv
 }
 ```
 
-For `audience`, is the address of the accessed service.
+For the `audience` field, is the address of the accessed service.
