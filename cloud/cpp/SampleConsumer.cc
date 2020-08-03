@@ -18,12 +18,7 @@
  * under the License.
  */
 #include <iostream>
-
 #include <pulsar/Client.h>
-
-#include <lib/LogUtils.h>
-
-DECLARE_LOG_OBJECT()
 
 using namespace pulsar;
 
@@ -39,17 +34,16 @@ int main() {
     Client client("pulsar+ssl://mhlcluster.mhltest.us-east4.streamnative.test.g.sn2.dev:6651", config);
 
     Consumer consumer;
-    Result result = client.subscribe("persistent://public/default/topic-1", "consumer-1", consumer);
+    Result result = client.subscribe("persistent://public/default/my-topic", "consumer-1", consumer);
     if (result != ResultOk) {
-        LOG_ERROR("Failed to subscribe: " << result);
+        std::cout << "Failed to subscribe: " << result << "\n";
         return -1;
     }
 
     Message msg;
-
     while (true) {
         consumer.receive(msg);
-        LOG_INFO("Received: " << msg << "  with payload '" << msg.getDataAsString() << "'");
+        std::cout << "Received: " << msg << "  with payload '" << msg.getDataAsString() << "'" << "\n";
 
         consumer.acknowledge(msg);
     }

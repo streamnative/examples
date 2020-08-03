@@ -17,12 +17,7 @@
  * under the License.
  */
 #include <iostream>
-
 #include <pulsar/Client.h>
-
-#include <lib/LogUtils.h>
-
-DECLARE_LOG_OBJECT()
 
 using namespace pulsar;
 
@@ -38,16 +33,16 @@ int main() {
     Client client("pulsar+ssl://mhlcluster.mhltest.us-east4.streamnative.test.g.sn2.dev:6651", config);
 
     Producer producer;
-    Result result = client.createProducer("persistent://public/default/topic-1", producer);
+    Result result = client.createProducer("persistent://public/default/my-topic", producer);
     if (result != ResultOk) {
-        LOG_ERROR("Error creating producer: " << result);
+        std::cout << "Error creating producer: " << result << "\n";
         return -1;
     }
 
     // Send synchronously
     Message msg = MessageBuilder().setContent("content").build();
     Result res = producer.send(msg);
-    LOG_INFO("Message sent: " << res);
+    std::cout << "Message sent: " << res << "\n";
 
     client.close();
 }

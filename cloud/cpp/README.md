@@ -4,7 +4,11 @@ Produce message to and consume message from a Pulsar cluster using [Apache pulsa
 
 # Prerequisites
 
+Pulsar releases are available in the Homebrew core repository. You can install the C++ client library with the following command. The package is installed with the library and headers.
 
+```shell script
+$ brew install libpulsar
+```
 
 # Example
 
@@ -15,20 +19,20 @@ The consumer will receive the message from the `topic-1` and `ack` the receipt o
 1. Run the consumer, and start to receiving the message from `topic-1`:
 
 ```bash
-$ cmake . && make && make install
+$ g++ --std=c++11 SampleConsumer.cc -o SampleConsumer -I/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/include -lpulsar -L/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/lib
 $ ./SampleConsumer
 ```
 
 Output:
 
 ```text
-Received message with payload 'content'
+Received: Message(prod=standalone-1-2, seq=0, publish_time=1596467242114, payload_size=7, msg_id=(71,0,-1,0), props={})  with payload 'content'
 ```
 
 2. Run the producer and publish messages to the `topic-1`:
 
 ```bash
-$ cmake . && make && make install
+$ g++ --std=c++11 SampleProducer.cc -o SampleProducer -I/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/include -lpulsar -L/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/lib
 $ ./SampleProducer
 ```
 
