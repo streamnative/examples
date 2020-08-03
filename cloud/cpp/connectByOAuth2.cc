@@ -25,4 +25,4 @@ std::string params = R"({
 
 config.setAuth(pulsar::AuthOauth2::create(params));
 
-pulsar::Client client("puslar+ssl://mhlcluster.mhltest.us-east4.streamnative.test.g.sn2.dev:6651", config);
+pulsar::Client client("pulsar+ssl://mhlcluster.mhltest.us-east4.streamnative.test.g.sn2.dev:6651", config);

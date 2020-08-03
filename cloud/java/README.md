@@ -12,7 +12,7 @@ Produce messages to and consume messages from a Apache Pulsar cluster using the 
 # Example
 
 In this example, the producer will publish data to the `topic-1` in your Pulsar cluster.
-The content of each message payload is a combination of `message-` and the 10 numbers 0-9 (e.g: `my-message-0`).
+The content of each message payload is a combination of `my-message-` and the 10 numbers 0-9 (e.g: `my-message-0`).
 The consumer will receive the message from the `topic-1` and `ack` the receipt of each message received.
 
 1. Run the consumer

@@ -31,7 +31,7 @@ public class Receive {
 
 
         PulsarClient client = PulsarClient.builder()
-                .serviceUrl("puslar+ssl://xxx.us-east4.yyy.test.g.sn2.dev:6651")
+                .serviceUrl("pulsar+ssl://xxx.us-east4.yyy.test.g.sn2.dev:6651")
                 .authentication(
                         AuthenticationFactoryOAuth2.clientCredentials(new URL(issuerUrl), new URL(credentialsUrl), audience))
                 .build();
