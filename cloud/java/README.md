@@ -1,6 +1,6 @@
 # Overview
 
-Produce messages to and consume messages from a Apache Pulsar cluster using the Java Producer and Consumer API.
+This document describes how to produce messages to and consume messages from a Apache Pulsar cluster using the Java Producer and Consumer API.
 
 # Prerequisites
 
@@ -11,18 +11,18 @@ Produce messages to and consume messages from a Apache Pulsar cluster using the 
 
 # Example
 
-In this example, the producer will publish data to the `topic-1` in your Pulsar cluster.
-The content of each message payload is a combination of `my-message-` and the 10 numbers 0-9 (e.g: `my-message-0`).
-The consumer will receive the message from the `topic-1` and `ack` the receipt of each message received.
+In this example, the producer publishes messages to the `topic-1` in your Pulsar cluster.
+The content of each message payload is a combination of `my-message-` and a digital (0-9) (e.g: `my-message-0`).
+The consumer receives the message from the `topic-1` and `acknowledges` each received message.
 
-1. Run the consumer
+1. Run the consumer.
 
 ```shell script
 # Compile the Java code
 $ mvn clean package
 
 # Run the consumer
-$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.Receive"
+$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer"
 ```
 
 Output:
@@ -40,14 +40,14 @@ Receive message my-message-8 and message ID 1121:8:-1:0
 Receive message my-message-9 and message ID 1121:9:-1:0
 ```
 
-2. Run the producer
+2. Run the producer.
 
 ```shell script
 # Compile the Java code
 $ mvn clean package
 
 # Run the producer
-$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.Publish"
+$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleProducer"
 ```
 
 Output:

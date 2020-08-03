@@ -1,6 +1,6 @@
 # Overview
 
-Produce message to and consume message from a Pulsar cluster using [Apache pulsar-client-go](https://github.com/apache/pulsar-client-go).
+This document describes how to produce message to and consume message from a Pulsar cluster using [Apache pulsar-client-go](https://github.com/apache/pulsar-client-go).
 
 # Prerequisites
 
@@ -13,14 +13,14 @@ Since the `go mod` package management tool is used in this project, **Go 1.11 or
 
 # Example
 
-In this example, the producer will publish data to the `topic-1` in your Pulsar cluster.
-The content of each message payload is a combination of `hello-` and the 10 numbers 0-9 (e.g: `hello-0`).
-The consumer will receive the message from the `topic-1` and `ack` the receipt of each message received.
+In this example, the producer publishes data to the `topic-1` in your Pulsar cluster.
+The content of each message payload is a combination of `hello-` and a digital (0-9) (e.g: `hello-0`).
+The consumer receives the message from the `topic-1` and `acknowledges` each received message.
 
 1. Run the consumer, and start to receiving the message from `topic-1`:
 
 ```bash
-$ go build -o consumer consumer.go
+$ go build -o consumer sampleConsumer.go
 $ ./consumer
 ```
 
@@ -44,7 +44,7 @@ time="2020-08-03T09:11:24+08:00" level=info msg="The consumer[1] successfully un
 2. Run the producer and publish messages to the `topic-1`:
 
 ```bash
-$ go build -o producer prodcer.go
+$ go build -o producer sampleProdcer.go
 $ ./producer
 ```
 
@@ -62,5 +62,5 @@ Output:
 2020/08/03 09:11:24 Published message:  {27 8 0 0 <nil> <nil> {0 0 <nil>}}
 2020/08/03 09:11:24 Published message:  {27 9 0 0 <nil> <nil> {0 0 <nil>}}
 time="2020-08-03T09:11:24+08:00" level=info msg="Closing producer" producer_name=standalone-1-1 topic="persistent://public/default/topic-1"
-time="2020-08-03T09:11:24+08:00" level=info msg="Closed producer" producer_name=standalone-1-1 topic="persistent://public/default/topic-1"```
+time="2020-08-03T09:11:24+08:00" level=info msg="Closed producer" producer_name=standalone-1-1 topic="persistent://public/default/topic-1"
 ```

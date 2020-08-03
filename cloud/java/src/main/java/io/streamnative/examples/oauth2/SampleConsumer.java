@@ -22,7 +22,7 @@ import org.apache.pulsar.client.api.*;
 
 import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
 
-public class Receive {
+public class SampleConsumer {
     public static void main(String[] args) throws Exception {
         String issuerUrl = "https://dev-kt-aa9ne.us.auth0.com/oauth/token";
         String credentialsUrl = "file:///path/to/KeyFile.json";
