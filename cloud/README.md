@@ -1,6 +1,6 @@
 ## How to get OAuth2 options
 
-When configuring and using OAuth2, we need to specify the following parameters:
+When configuring and using OAuth2, you need to specify the following parameters:
 
 - `type`
 - `issuerUrl`
@@ -8,9 +8,9 @@ When configuring and using OAuth2, we need to specify the following parameters:
 - `privateKey`
 - `clientId`
 
-For the OAuth2 `type` field, currently we only support `client_credentials`. So the value of the current type field is `client_credentials`
+For the OAuth2 `type` field, currently you only support `client_credentials`. So the value of the current type field is `client_credentials`
 
-For the `privateKey` field, what we need to get the path of a private key data file. The following example shows how to get this file:
+For the `privateKey` field, you need to get the path of a private key data file. The following example shows how to get this file:
 
 ```shell script
 $ snctl auth export-service-account [NAME] [flags]
@@ -27,7 +27,7 @@ Output:
 Wrote private key file <Path of your private key file>
 ```
 
-For the `clientId` and `issuerUrl` fields, we can get the corresponding value from the `privateKey` file. The following example shows how to get the `clientId` and `issueUrl` fields.
+For the `clientId` and `issuerUrl` fields, you can get the corresponding value from the `privateKey` file. The following example shows how to get the `clientId` and `issueUrl` fields.
 
 ```text
 {
