@@ -15,7 +15,7 @@ Since the `go mod` package management tool is used in this project, **Go 1.11 or
 
 In this example, the producer will publish data to the `topic-1` in your Pulsar cluster.
 The content of each message payload is a combination of `hello-` and the 10 numbers 0-9 (e.g: `hello-0`).
-The consumer will receive the message form the `topic-1` and `ack` the receipt of each message received.
+The consumer will receive the message from the `topic-1` and `ack` the receipt of each message received.
 
 1. Run the consumer, and start to receiving the message from `topic-1`:
 

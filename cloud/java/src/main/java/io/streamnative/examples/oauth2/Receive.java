@@ -18,10 +18,7 @@
 package io.streamnative.examples.oauth2;
 
 import java.net.URL;
-import org.apache.pulsar.client.api.Consumer;
-import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.Schema;
-import org.apache.pulsar.client.api.Message;
+import org.apache.pulsar.client.api.*;
 
 import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
 
@@ -42,6 +39,7 @@ public class Receive {
         Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
                 .topic(topic)
                 .subscriptionName("sub-1")
+                .subscriptionInitialPosition(SubscriptionInitialPosition.Earliest)
                 .subscribe();
 
         for (int i = 0; i < 10; i++) {

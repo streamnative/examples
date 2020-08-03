@@ -45,7 +45,7 @@ public class Publish {
         for (int i = 0; i < 10; i++) {
             String message = "my-message-" + i;
             MessageId msgID = producer.send(message.getBytes());
-            System.out.println("Publish " + (i + 1) + " message and message ID " + msgID);
+            System.out.println("Publish " + "my-message-" + i + " and message ID " + msgID);
         }
 
         producer.close();
