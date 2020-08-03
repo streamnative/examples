@@ -9,7 +9,7 @@ If you have not installed Go, install it according to the [installation instruct
 Since the `go mod` package management tool is used in this project, **Go 1.11 or higher** version is required.
 
 - Go 1.11+
-- pulsar-client-go 0.1.1+
+- pulsar-client-go 0.1.1+(not include 0.1.1)
 
 # Example
 

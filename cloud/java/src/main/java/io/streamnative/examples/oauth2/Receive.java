@@ -15,20 +15,42 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package main.java.oauth2.streamnative;
+package io.streamnative.examples.oauth2;
 
-public class ConnectByOAuth2 {
-    public static void main(String[] args) {
+import java.net.URL;
+import org.apache.pulsar.client.api.Consumer;
+import org.apache.pulsar.client.api.PulsarClient;
+import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.client.api.Message;
+
+import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
+
+public class Receive {
+    public static void main(String[] args) throws Exception {
         String issuerUrl = "https://dev-kt-aa9ne.us.auth0.com/oauth/token";
         String credentialsUrl = "file:///path/to/KeyFile.json";
         String audience = "https://dev-kt-aa9ne.us.auth0.com/api/v2/";
+        String topic = "persistent://public/default/topic-1";
+
 
         PulsarClient client = PulsarClient.builder()
                 .serviceUrl("puslar+ssl://xxx.us-east4.yyy.test.g.sn2.dev:6651")
                 .authentication(
-                        AuthenticationFactoryOAuth2.clientCredentials(issuerUrl, credentialsUrl, audience))
+                        AuthenticationFactoryOAuth2.clientCredentials(new URL(issuerUrl), new URL(credentialsUrl), audience))
                 .build();
 
-        client.Close();
+        Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)
+                .topic(topic)
+                .subscriptionName("sub-1")
+                .subscribe();
+
+        for (int i = 0; i < 10; i++) {
+            Message<byte[]> msg = consumer.receive();
+            consumer.acknowledge(msg);
+            System.out.println("Receive message " + new String(msg.getData()));
+        }
+
+        consumer.close();
+        client.close();
     }
 }
