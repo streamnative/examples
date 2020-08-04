@@ -6,8 +6,6 @@ The `pulsar-admin` is a CLI tool written by Java language for the Apache Pulsar 
 
 - Pulsar broker 2.7.0-742fc5c9b+
 
-More information reference to [here](https://github.com/streamnative/pulsarctl/blob/master/README.md).
-
 > You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When the 2.6.1 release is complete, you can also use the official 2.6.1 version.
 
 # Usage
