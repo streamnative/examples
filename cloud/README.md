@@ -22,6 +22,8 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 - NodeJS
 - pulsarctl
 - pulsar-admin
+- pulsar-client
+- pulsar-perf
 
 ## How to get Token options
 
