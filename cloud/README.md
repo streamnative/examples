@@ -6,11 +6,12 @@ This directory includes examples of Apache Pulsar client applications, showcasin
  
 For the OAuth2, it needs to obtain the specified options from the Pulsar cluster and OAuth2 services. [How to get OAuth2 options](#How to get OAuth2 options) explains how you get these options.
 
-Currently, we support the following three languages to connect through OAuth2:
+Currently, we support the following clients and `pulsarctl` to connect through OAuth2:
 
 - Java
 - Go
 - CPP
+- pulsarctl
 
 The following clients and Pulsar CLI tools are supported to connect to cluster through the Token. And [How to get Token options](#How to get Token options) explains how you get these options.
 
