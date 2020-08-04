@@ -32,8 +32,8 @@ The consumer receives the message from the `my-topic` and `acknowledges` each re
 1. Run the consumer, and start to receiving the message from `my-topic`:
 
 ```bash
-$ cd cloud/python
-$ python SampleConsumer.py
+$ cd cloud/node
+$ node sample_consumer.js
 ```
 
 Output:
@@ -54,8 +54,8 @@ my-message-9
 2. Run the producer and publish messages to the `my-topic`:
 
 ```bash
-$ cd cloud/python
-$ python SampleProducer.py
+$ cd cloud/node
+$ node sample_producer.js
 ```
 
 Output:
