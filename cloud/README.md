@@ -19,6 +19,7 @@ For the Token, we support the following languages, and [How to get Token options
 - CPP
 - Python
 - CSharp(TODO)
+- NodeJS
 - pulsarctl
 - pulsar-admin
 

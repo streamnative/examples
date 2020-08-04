@@ -28,7 +28,7 @@ $ sudo python setup.py install
 
 In this example, the producer publishes data to the `my-topic` in your Pulsar cluster.
 The content of each message payload is a combination of `hello-` and a digital (0-9) (e.g: `hello-0`).
-The consumer receives the message from the `my-topic-` and `acknowledges` each received message.
+The consumer receives the message from the `my-topic` and `acknowledges` each received message.
 
 1. Run the consumer, and start to receiving the message from `my-topic`:
 
