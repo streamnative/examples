@@ -7,7 +7,7 @@ This document describes how to produce messages to and consume messages from a A
 - Java: 1.8+
 - Pulsar broker: 2.7.0-742fc5c9b+
 
-> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When the 2.6.1 release is complete, you can also use the official 2.6.1 version.
+> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When Pulsar 2.6.1 is released, you can also use the official 2.6.1 version.
 
 # Example
 

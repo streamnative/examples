@@ -25,7 +25,7 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 - pulsar-client
 - pulsar-perf
 
-## How to get Token options
+## How to get token options
 
 When you use Token to connect to Pulsar cluster, you need to provide the following options:
 

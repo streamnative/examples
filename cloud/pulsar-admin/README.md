@@ -1,16 +1,16 @@
 # Overview
 
-The `pulsar-admin` is a CLI tool written by Java language for the Apache Pulsar project.
+The `pulsar-admin` is a CLI tool written in Java language for the Apache Pulsar project.
 
 # Prerequisites
 
 - Pulsar broker 2.7.0-742fc5c9b+
 
-> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When the 2.6.1 release is complete, you can also use the official 2.6.1 version.
+> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When Pulsar 2.6.1 is released, you can also use the official 2.6.1 version.
 
 # Usage
 
-The `pulsar-admin` supports to connect to Pulsar cluster through Token, the example as follows:
+The `pulsar-admin` supports to connect to Pulsar cluster through Token, as shown below:
 
 ```shell script
 ./bin/pulsar-admin \
