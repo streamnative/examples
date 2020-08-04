@@ -10,7 +10,7 @@ More information reference to [here](https://github.com/streamnative/pulsarctl/b
 
 # Usage
 
-The `pulsarctl` supports users to connect to Pulsar cluster through Token, the example as follows:
+The `pulsarctl` supports to connect to Pulsar cluster through Token, the example as follows:
 
 ```shell script
 pulsarctl \

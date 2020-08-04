@@ -8,7 +8,7 @@ Produce message to and consume message from a Pulsar cluster using [Apache pulsa
 
 Since 2.1.0 release, Pulsar ships pre-built RPM and Debian packages. You can download and install those packages directly.
 
-More information please reference to [here](https://pulsar.apache.org/docs/en/client-libraries-cpp/#supported-platforms).
+For more information, refer to [here](https://pulsar.apache.org/docs/en/client-libraries-cpp/#supported-platforms).
 
 ## MacOS
 

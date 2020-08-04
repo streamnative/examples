@@ -12,7 +12,7 @@ More information reference to [here](https://github.com/streamnative/pulsarctl/b
 
 # Usage
 
-The `pulsar-admin` supports users to connect to Pulsar cluster through Token, the example as follows:
+The `pulsar-admin` supports to connect to Pulsar cluster through Token, the example as follows:
 
 ```shell script
 ./bin/pulsar-admin \

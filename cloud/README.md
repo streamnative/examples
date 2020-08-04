@@ -12,7 +12,7 @@ Currently, we support the following three languages to connect through OAuth2:
 - Go
 - CPP
 
-For the Token, we support the following languages, and [How to get Token options](#How to get Token options) explains how you get these options.
+The following clients and Pulsar CLI tools are supported to connect to cluster through the Token. And [How to get Token options](#How to get Token options) explains how you get these options.
 
 - Java
 - Go
@@ -27,9 +27,9 @@ For the Token, we support the following languages, and [How to get Token options
 
 When you use Token to connect to Pulsar cluster, you need to provide the following options:
 
-- SERVICE_URL
-- WEB_SERVICE_URL
-- AUTH_PARAMS
+- `SERVICE_URL`
+- `WEB_SERVICE_URL`
+- `AUTH_PARAMS`
 
 For the `SERVICE_URL` field, you can get the **hostname** through the following command:
 
