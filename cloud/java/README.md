@@ -15,6 +15,8 @@ In this example, the producer publishes messages to the `topic-1` in your Pulsar
 The content of each message payload is a combination of `my-message-` and a digital (0-9) (e.g: `my-message-0`).
 The consumer receives the message from the `topic-1` and `acknowledges` each received message.
 
+> Tips: The following code example uses the OAuth2 connection method. If you want to connect to the Pulsar cluster using Token, please refer to the implementation of **connectByToken.java**.
+
 1. Run the consumer.
 
 ```shell script
