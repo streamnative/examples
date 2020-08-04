@@ -17,20 +17,17 @@
 
 package io.streamnative.examples.oauth2;
 
-import java.net.URL;
+import org.apache.pulsar.client.api.AuthenticationFactory;
 import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
 
-public class ConnectByOauth2 {
+public class ConnectByToken {
     public static void main(String[] args) throws Exception {
-        String issuerUrl = "https://dev-kt-aa9ne.us.auth0.com/oauth/token";
-        String credentialsUrl = "file:///path/to/KeyFile.json";
-        String audience = "https://dev-kt-aa9ne.us.auth0.com/api/v2/";
+        String SERVICE_URL = "";
+        String AUTH_PARAMS = "";
 
         PulsarClient client = PulsarClient.builder()
-                .serviceUrl("pulsar+ssl://xxx.us-east4.yyy.test.g.sn2.dev:6651")
-                .authentication(
-                        AuthenticationFactoryOAuth2.clientCredentials(new URL(issuerUrl), new URL(credentialsUrl), audience))
+                .serviceUrl(SERVICE_URL)
+                .authentication(AuthenticationFactory.token(AUTH_PARAMS))
                 .build();
 
         client.close();

@@ -4,6 +4,14 @@ Produce message to and consume message from a Pulsar cluster using [Apache pulsa
 
 # Prerequisites
 
+## Linux
+
+Since 2.1.0 release, Pulsar ships pre-built RPM and Debian packages. You can download and install those packages directly.
+
+For more information, refer to [here](https://pulsar.apache.org/docs/en/client-libraries-cpp/#supported-platforms).
+
+## MacOS
+
 Pulsar releases are available in the Homebrew core repository. You can install the C++ client library with the following command. The package is installed with the library and headers.
 
 ```shell script
@@ -15,6 +23,8 @@ $ brew install libpulsar
 In this example, the producer will publish data to the `topic-1` in your Pulsar cluster.
 The content of each message payload is  `content`.
 The consumer will receive the message from the `topic-1` and `ack` the receipt of each message received.
+
+> Tips: The following code example uses the OAuth2 connection method. If you want to connect to the Pulsar cluster using Token, please refer to the implementation of **connectByToken.cc**.
 
 1. Run the consumer, and start to receiving the message from `topic-1`:
 

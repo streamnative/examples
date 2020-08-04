@@ -7,13 +7,15 @@ This document describes how to produce messages to and consume messages from a A
 - Java: 1.8+
 - Pulsar broker: 2.7.0-742fc5c9b+
 
-> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When the 2.6.1 release is complete, you can also use the official 2.6.1 version.
+> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When Pulsar 2.6.1 is released, you can also use the official 2.6.1 version.
 
 # Example
 
 In this example, the producer publishes messages to the `topic-1` in your Pulsar cluster.
 The content of each message payload is a combination of `my-message-` and a digital (0-9) (e.g: `my-message-0`).
 The consumer receives the message from the `topic-1` and `acknowledges` each received message.
+
+> Tips: The following code example uses the OAuth2 connection method. If you want to connect to the Pulsar cluster using Token, please refer to the implementation of **connectByToken.java**.
 
 1. Run the consumer.
 

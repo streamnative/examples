@@ -17,6 +17,8 @@ In this example, the producer publishes data to the `topic-1` in your Pulsar clu
 The content of each message payload is a combination of `hello-` and a digital (0-9) (e.g: `hello-0`).
 The consumer receives the message from the `topic-1` and `acknowledges` each received message.
 
+> Tips: The following code example uses the OAuth2 connection method. If you want to connect to the Pulsar cluster using Token, please refer to the implementation of **connectByToken.go**.
+
 1. Run the consumer, and start to receiving the message from `topic-1`:
 
 ```bash
