@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/apache/pulsar-client-go/oauth2"
-	"github.com/apache/pulsar-client-go/oauth2/store"
 	"github.com/streamnative/pulsarctl/pkg/auth"
 	"github.com/streamnative/pulsarctl/pkg/pulsar"
 	"github.com/streamnative/pulsarctl/pkg/pulsar/common"
@@ -11,51 +10,25 @@ import (
 )
 
 func main() {
-	keyFile := "private key file path"
+	keyFile := "/path/to/keyfile"
 
-	pulsarCtlConfig := &common.Config{
-		WebServiceURL: "https://pulsar.service:8443",
+	pulsarCtlconfig := &common.Config{
+		WebServiceURL:              "https://pulsar.service",
+		TLSAllowInsecureConnection: true,
 	}
-
 	issuer := oauth2.Issuer{
-		IssuerEndpoint: "",
-		ClientID:       "",
-		Audience:       "",
+		IssuerEndpoint: "https://oauth2.service",
+		ClientID:       "0Xx..Yyxeny",
+		Audience:       "audience",
 	}
-
-	memoryStore := store.NewMemoryStore()
-	err := saveGrant(memoryStore, keyFile, issuer.Audience)
+	oauth, err := auth.NewAuthenticationOAuth2WithDefaultFlow(issuer, keyFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	oauth, err := auth.NewAuthenticationOAuth2(issuer, memoryStore)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	admin := pulsar.NewWithAuthProvider(pulsarCtlConfig, oauth)
-
+	admin := pulsar.NewWithAuthProvider(pulsarCtlconfig, oauth)
 	ns, err := admin.Namespaces().GetNamespaces("public")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(ns)
-}
-
-func saveGrant(store store.Store, keyFile, audience string) error {
-	flow, err := oauth2.NewDefaultClientCredentialsFlow(oauth2.ClientCredentialsFlowOptions{
-		KeyFile:          keyFile,
-		AdditionalScopes: nil,
-	})
-	if err != nil {
-		return err
-	}
-
-	grant, err := flow.Authorize(audience)
-	if err != nil {
-		return err
-	}
-
-	return store.SaveGrant(audience, *grant)
+	fmt.Printf("the namespace is: %s\n", ns)
 }
