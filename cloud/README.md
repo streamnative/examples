@@ -26,13 +26,11 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 - pulsar-client
 - pulsar-perf
 
-## How to get token options
-
-When you use Token to connect to Pulsar cluster, you need to provide the following options:
+## How to get service urls
 
 - `SERVICE_URL`
 - `WEB_SERVICE_URL`
-- `AUTH_PARAMS`
+
 
 For the `SERVICE_URL` field, you can get the **hostname** through the following command:
 
@@ -76,6 +74,13 @@ http://api.test.cloud.xxx.streamnative.dev:8080
 # For tls
 https://api.test.cloud.xxx.streamnative.dev:8443
 ```
+
+
+## How to get token options
+
+When you use Token to connect to Pulsar cluster, you need to provide the following options:
+
+- `AUTH_PARAMS`
 
 For the `AUTH_PARAMS` field, you can get it through the following command:
 
