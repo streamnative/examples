@@ -4,10 +4,13 @@ This document describes how to produce messages to and consume messages from a A
 
 # Prerequisites
 
-- Java: 1.8+
-- Pulsar broker: 2.7.0-742fc5c9b+
+> Pulsar client is required to be newer than 2.6.1 which will include the OAuth2 authentication plugin.
 
-> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When Pulsar 2.6.1 is released, you can also use the official 2.6.1 version.
+- Java: 1.8+
+- Pulsar client: 2.7.0-742fc5c9b+
+- Get the OAuth2 key file of a service account to access your StreamNative Cloud Pulsar cluster: [/path/to/instructions]
+- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [/path/to/instructions]
+- Get the service urls of your StreamNative Cloud Pulsar cluster: [/path/to/instructions]
 
 # Example
 
@@ -24,7 +27,7 @@ The consumer receives the message from the `topic-1` and `acknowledges` each rec
 $ mvn clean package
 
 # Run the consumer
-$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer"
+$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer" -Dexec.args="--audenice ... --key-file ..."
 ```
 
 Output:
@@ -49,7 +52,7 @@ Receive message my-message-9 and message ID 1121:9:-1:0
 $ mvn clean package
 
 # Run the producer
-$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleProducer"
+$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleProducer" -Dexec.args="--audenice ... --key-file ..."
 ```
 
 Output:
