@@ -25,6 +25,22 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 - pulsar-client
 - pulsar-perf
 
+Before starting, we assume that the `service account`, `pulsar instance` and `pulsar cluster` have been created in the current environment, and their `names` and `namespace` as follows:
+
+```text
+# service account
+name: test-sa-name
+namespace: test-sa-ns
+
+# pulsar instance
+name: test-pi-name
+namespace: test-pi-ns
+
+# pulsar cluster
+name: test-pc-name
+namespace: test-pc-ns
+```
+
 ## How to get service URL
 
 - `SERVICE_URL`
@@ -33,7 +49,7 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 For the `SERVICE_URL` field, you can get the **hostname** through the following command:
 
 ```shell script
-$ snctl pulsarclusters get [CLUSTER_NAME] -n [NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl pulsarclusters get test-pc-name -n test-pc-ns -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 Output:
@@ -55,7 +71,7 @@ pulsar+ssl://cloud.streamnative.dev:6651
 For the `WEB_SERVICE_URL` field, you can get the **hostname** through the following command:
 
 ```shell script
-$ snctl get pulsarclusters [CLUSTER_NAME] -n [NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl get pulsarclusters test-pc-name -n test-pc-ns -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 Output:
@@ -85,7 +101,22 @@ For the `AUTH_PARAMS` field, you can get it through the following command:
 $ snctl auth get-token [INSTANCE] [flags]
 
 # e.g:
-$ snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE]
+$ snctl auth get-token test-pi-name -n test-pi-ns --login
+```
+
+Output:
+
+```text
+We've launched your web browser to complete the login process.
+Verification code: ABCD-EFGH
+
+Waiting for login to complete...
+Logged in as cloud@streamnative.io.
+Welcome to Apache Pulsar!
+
+Use the following access token to access Pulsar instance '[PULSAR_INSTANCE_NAMESPACE]/[PULSAR_INSTANCE_NAME]':
+
+abcdefghijklmnopqrstuiwxyz0123456789
 ```
 
 > Tips: In code implementation, for safety and convenience, you can consider setting `AUTH_PARAMS` as an environment variable.
@@ -113,7 +144,7 @@ Flags:
       --no-wait           Skip waiting for service account readiness.
 
 #e.g:
-$ snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [SERVICE_ACCOUNT_NAMESPACE] -f [/path/to/key/file.txt]
+$ snctl auth export-service-account test-sa-name -n test-sa-ns -f [/path/to/key/file.txt]
 ```
 
 Output:
@@ -134,10 +165,10 @@ For the `clientId` and `issuerUrl` fields, you can get the corresponding value f
 }
 ```
 
-For the `audience` field, it is the combination of the name and namespace of  pulsar instance and `urn:sn:pulsar`, the example as follows:
+For the `audience` field, it is the combination of the name and namespace of pulsar instance and `urn:sn:pulsar`, the example as follows:
 
 ```text
-urn:sn:pulsar:[PULSAR_INSTANCE_NAMESPACE]:[PULSAR_INSTANCE_NAME]
+urn:sn:pulsar:test-pi-ns:test-pi-name
 ```
 
 You can get all the pulsar instances in the current environment through the following command:
