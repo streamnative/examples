@@ -20,27 +20,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/apache/pulsar-client-go/pulsar"
 	"log"
+
+	"github.com/apache/pulsar-client-go/pulsar"
+	"github.com/streamnative/pulsar-examples/cloud/go/ccloud"
 )
 
 func main() {
-	oauth := pulsar.NewAuthenticationOAuth2(map[string]string{
-		"type":       "client_credentials",
-		"issuerUrl":  "",
-		"audience":   "",
-		"privateKey": "",
-		"clientId":   "",
-	})
-
-	client, err := pulsar.NewClient(pulsar.ClientOptions{
-		URL:            "pulsar+ssl://broker.example.com:6651/",
-		Authentication: oauth,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Close()
+	client := ccloud.CreateClient()
 
 	producer, err := client.CreateProducer(pulsar.ProducerOptions{
 		Topic: "topic-1",
@@ -50,15 +37,13 @@ func main() {
 	}
 	defer producer.Close()
 
-	ctx := context.Background()
-
 	for i := 0; i < 10; i++ {
-		if msgId, err := producer.Send(ctx, &pulsar.ProducerMessage{
+		if msgId, err := producer.Send(context.Background(), &pulsar.ProducerMessage{
 			Payload: []byte(fmt.Sprintf("hello-%d", i)),
 		}); err != nil {
 			log.Fatal(err)
 		} else {
-			log.Println("Published message: ", msgId)
+			fmt.Printf("Published message: %v \n", msgId)
 		}
 	}
 }
