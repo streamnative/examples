@@ -33,6 +33,8 @@ service account | test-service-account-name | test-service-account-namespace
 pulsar instance | test-pulsar-instance-name | test-pulsar-instance-namespace
 pulsar cluster  | test-pulsar-cluster-name | test-pulsar-cluster-namespace
 
+After the above resources are created, you can get the expected output through the following command.
+
 ## How to get service URL
 
 - `SERVICE_URL`
