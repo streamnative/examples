@@ -40,10 +40,17 @@ The `pulsarctl` supports to connect to Pulsar cluster through OAuth2, as shown b
 
 ```shell script
 $ pulsarctl oauth2 activate \
-    --issuer-endpoint https://oauth.service \
-    --client-id 0Xx...hyYyxeny \
-    --audience audience-path \
-    --key-file /path/to/private/key
+    --issuer-endpoint https://cloud.streamnative.dev \
+    --client-id abcdefghigk0123456789 \
+    --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
+    --key-file /path/to/private/key/file.txt
+```
+
+Output:
+
+```text
+Logged in as cloud@streamnative.dev.
+Welcome to Pulsar!
 ```
 
 2. Using pulsarctl to get pulsar resources.
