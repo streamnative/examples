@@ -26,34 +26,31 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 - pulsar-client
 - pulsar-perf
 
-## How to get token options
-
-When you use Token to connect to Pulsar cluster, you need to provide the following options:
+## How to get service URL
 
 - `SERVICE_URL`
 - `WEB_SERVICE_URL`
-- `AUTH_PARAMS`
 
 For the `SERVICE_URL` field, you can get the **hostname** through the following command:
 
 ```shell script
-$ snctl get pulsarclusters [CLUSTER_NAME] -n [NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl pulsarclusters get [CLUSTER_NAME] -n [NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 Output:
 
 ```text
-api.test.cloud.xxx.streamnative.dev
+cloud.streamnative.dev
 ```
 
 A `SERVICE_URL` is a combination of protocol, hostname and port, so an example of a complete `SERVICE_URL` is as follows:
 
 
 ```text
-pulsar://api.test.cloud.xxx.streamnative.dev:6650
+pulsar://cloud.streamnative.dev:6650
 
 # For tls
-pulsar+ssl://api.test.cloud.xxx.streamnative.dev:6651
+pulsar+ssl://cloud.streamnative.dev:6651
 ```
 
 For the `WEB_SERVICE_URL` field, you can get the **hostname** through the following command:
@@ -65,17 +62,23 @@ $ snctl get pulsarclusters [CLUSTER_NAME] -n [NAMESPACE] -o json | jq '.spec.ser
 Output:
 
 ```text
-api.test.cloud.xxx.streamnative.dev
+cloud.streamnative.dev
 ```
 
 A `WEB_SERVICE_URL` is a combination of protocol, hostname and port, so an example of a complete `WEB_SERVICE_URL` is as follows:
 
 ```text
-http://api.test.cloud.xxx.streamnative.dev:8080
+http://cloud.streamnative.dev:8080
 
 # For tls
-https://api.test.cloud.xxx.streamnative.dev:8443
+https://cloud.streamnative.dev:8443
 ```
+
+## How to get token options
+
+When you use Token to connect to Pulsar cluster, you need to provide the following options:
+
+- `AUTH_PARAMS`
 
 For the `AUTH_PARAMS` field, you can get it through the following command:
 
@@ -126,4 +129,15 @@ For the `clientId` and `issuerUrl` fields, you can get the corresponding value f
 }
 ```
 
-For the `audience` field, is the address of the accessed service.
+For the `audience` field, it is the combination of the name and namespace of  pulsar instance and `urn:sn:pulsar`, the example as follows:
+
+```text
+urn:sn:pulsar:[PULSAR_INSTANCE_NAMESPACE]:[PULSAR_INSTANCE_NAME]
+```
+
+You can get all the pulsar instances in the current environment through the following command:
+
+```shell script
+$ snctl pulsarinstances get -A
+```
+
