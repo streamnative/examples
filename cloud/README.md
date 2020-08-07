@@ -79,7 +79,22 @@ https://api.test.cloud.xxx.streamnative.dev:8443
 For the `AUTH_PARAMS` field, you can get it through the following command:
 
 ```shell script
-$ snctl auth get-token [INSTANCE] [flags]
+$ snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE] --login
+```
+
+Output:
+
+```text
+We've launched your web browser to complete the login process.
+Verification code: ABCD-EFGH
+
+Waiting for login to complete...
+Logged in as cloud@streamnative.io.
+Welcome to Apache Pulsar!
+
+Use the following access token to access Pulsar instance '[PULSAR_INSTANCE_NAMESPACE]/[PULSAR_INSTANCE_NAME]':
+
+abcdefghijklmnopqrstuiwxyz0123456789
 ```
 
 > Tips: In code implementation, for safety and convenience, you can consider setting `AUTH_PARAMS` as an environment variable.

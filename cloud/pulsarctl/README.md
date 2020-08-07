@@ -50,11 +50,21 @@ $ pulsarctl oauth2 activate \
 
 ```shell script
 $ pulsarctl namespaces list public \
-    --admin-service-url http://pulsar.service \
-    --issuer-endpoint https://oatuh.service/ \
-    --client-id 0Xx...hyYyxeny \
-    --audience audience-path \
-    --key-file /path/to/private/key
+    --admin-service-url https://cloud.streamnative.dev:443 \
+    --issuer-endpoint https://cloud.streamnative.dev \
+    --client-id abcdefghigk0123456789 \
+    --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
+    --key-file /path/to/private/key/file.txt
+```
+
+Output:
+
+```text
++----------------+
+| NAMESPACE NAME |
++----------------+
+| public/default |
++----------------+
 ```
 
 ### Use Go Admin API
