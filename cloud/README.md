@@ -27,19 +27,11 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 
 Before starting, we assume that the `service account`, `pulsar instance` and `pulsar cluster` have been created in the current environment, and their `names` and `namespace` as follows:
 
-```text
-# service account
-name: test-sa-name
-namespace: test-sa-ns
-
-# pulsar instance
-name: test-pi-name
-namespace: test-pi-ns
-
-# pulsar cluster
-name: test-pc-name
-namespace: test-pc-ns
-```
+/ | name | namespace
+---|---|---
+service account | test-sa-name | test-sa-ns
+pulsar instance | test-pi-name | test-pi-ns
+pulsar cluster  | test-pc-name | test-pc-ns
 
 ## How to get service URL
 
