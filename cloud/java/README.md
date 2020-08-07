@@ -6,6 +6,10 @@ This document describes how to produce messages to and consume messages from a A
 
 - Java: 1.8+
 - Pulsar broker: 2.7.0-742fc5c9b+
+- Get the `serviceURL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](#How to get service URL)
+- Get the OAuth2 `privateKey` of a service account to access your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
+- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
+- Get the `issuerUrl` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
 
 > You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When Pulsar 2.6.1 is released, you can also use the official 2.6.1 version.
 
@@ -24,7 +28,8 @@ The consumer receives the message from the `topic-1` and `acknowledges` each rec
 $ mvn clean package
 
 # Run the consumer
-$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer"
+$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer" \
+      -Dexec.args="--serviceUrl pulsar+ssl://cloud.streamnative.dev:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://cloud.streamnative.dev --privateKey file:///path/to/private/key/file.txt"
 ```
 
 Output:
@@ -49,7 +54,8 @@ Receive message my-message-9 and message ID 1121:9:-1:0
 $ mvn clean package
 
 # Run the producer
-$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleProducer"
+$ mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer" \
+      -Dexec.args="--serviceUrl pulsar+ssl://cloud.streamnative.dev:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://cloud.streamnative.dev --privateKey file:///path/to/private/key/file.txt"
 ```
 
 Output:

@@ -23,19 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JCommanderPulsar {
-    @Parameter
-    List<String> parameters = new ArrayList<>();
-
-    @Parameter(names = {"issuerUrl"}, description = "")
+    @Parameter(names = {"--issuerUrl"}, description = "issuerUrl is a named external system that provides identity and API access by issuing OAuth access tokens")
     String issuerUrl = "";
 
-    @Parameter(names = {"privateKey"}, description = "")
+    @Parameter(names = {"--privateKey"}, description = "the credentials URL")
     String credentialsUrl = "";
 
-    @Parameter(names = {"serviceUrl"}, description = "")
+    @Parameter(names = {"--serviceUrl"}, description = "serviceURL is the address of the accessed broker")
     String serviceUrl = "";
 
-    @Parameter(names = {"audience"}, description = "")
+    @Parameter(names = {"--audience"}, description = "audience is the address of the accessed service")
     String audience = "";
 
     @Parameter(names = "--help", help = true)
