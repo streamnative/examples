@@ -5,6 +5,11 @@ The `pulsarctl` is a CLI tool written by Golang language for the Apache Pulsar p
 # Prerequisites
 
 - pulsarctl 0.5.0+
+- Get the `webServiceURL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](#How to get service URL)
+- Get the OAuth2 `privateKeyFile` of a service account to access your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
+- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
+- Get the `issuerUrl` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
+- Get the `clientId` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
 
 More information reference to [here](https://github.com/streamnative/pulsarctl/blob/master/README.md).
 
@@ -35,25 +40,55 @@ The `pulsarctl` supports to connect to Pulsar cluster through OAuth2, as shown b
 
 ```shell script
 $ pulsarctl oauth2 activate \
-    --issuer-endpoint https://oauth.service \
-    --client-id 0Xx...hyYyxeny \
-    --audience audience-path \
-    --key-file /path/to/private/key
+    --issuer-endpoint https://cloud.streamnative.dev \
+    --client-id abcdefghigk0123456789 \
+    --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
+    --key-file /path/to/private/key/file.txt
+```
+
+Output:
+
+```text
+Logged in as cloud@streamnative.dev.
+Welcome to Pulsar!
 ```
 
 2. Using pulsarctl to get pulsar resources.
 
 ```shell script
 $ pulsarctl namespaces list public \
-    --admin-service-url http://pulsar.service \
-    --issuer-endpoint https://oatuh.service/ \
-    --client-id 0Xx...hyYyxeny \
-    --audience audience-path \
-    --key-file /path/to/private/key
+    --admin-service-url https://cloud.streamnative.dev:443 \
+    --issuer-endpoint https://cloud.streamnative.dev \
+    --client-id abcdefghigk0123456789 \
+    --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
+    --key-file /path/to/private/key/file.txt
+```
+
+Output:
+
+```text
++----------------+
+| NAMESPACE NAME |
++----------------+
+| public/default |
++----------------+
 ```
 
 ### Use Go Admin API
 
 The `pulsarctl` itself provides the function of the Go Admin API. You can use the interface of the Admin API to use the function of OAuth2 to establish a connection with the Pulsar cluster. 
 
-For details about how to get the `keyFile`, `IssuerEndpoint`, `Audience` and `ClientID` fields, refer to **how to get OAuth2 options**.
+```shell script
+$ go build pulsarctl pulsarctl.go
+$ ./pulsarctl -webServiceURL https://cloud.streamnative.dev:443 \
+         -privateKeyFile /path/to/private/key/file.txt\
+         -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
+         -issuerUrl https://cloud.streamnative.dev\
+         -clientId abcdefghigk0123456789
+```
+
+Output:
+
+```text
+the namespace is: [public/default]
+```
