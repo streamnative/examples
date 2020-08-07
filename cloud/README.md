@@ -29,9 +29,9 @@ Before starting, we assume that the `service account`, `pulsar instance` and `pu
 
 / | name | namespace
 ---|---|---
-service account | test-sa-name | test-sa-ns
-pulsar instance | test-pi-name | test-pi-ns
-pulsar cluster  | test-pc-name | test-pc-ns
+service account | test-service-account-name | test-service-account-namespace
+pulsar instance | test-pulsar-instance-name | test-pulsar-instance-namespace
+pulsar cluster  | test-pulsar-cluster-name | test-pulsar-cluster-namespace
 
 ## How to get service URL
 
@@ -41,7 +41,10 @@ pulsar cluster  | test-pc-name | test-pc-ns
 For the `SERVICE_URL` field, you can get the **hostname** through the following command:
 
 ```shell script
-$ snctl pulsarclusters get test-pc-name -n test-pc-ns -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+
+# e.g:
+$ snctl pulsarclusters get test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 Output:
@@ -63,7 +66,16 @@ pulsar+ssl://cloud.streamnative.dev:6651
 For the `WEB_SERVICE_URL` field, you can get the **hostname** through the following command:
 
 ```shell script
-$ snctl get pulsarclusters test-pc-name -n test-pc-ns -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+
+Flags:
+  -h, --help              help for get-token
+  -f, --key-file string   Path to the private key file
+      --login             Use an interactive login
+      --skip-open         if the web browser should not be opened automatically
+
+# e.g:
+$ snctl get pulsarclusters test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 Output:
@@ -90,10 +102,16 @@ When you use Token to connect to Pulsar cluster, you need to provide the followi
 For the `AUTH_PARAMS` field, you can get it through the following command:
 
 ```shell script
-$ snctl auth get-token [INSTANCE] [flags]
+$ snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE] [flags]
+
+Flags:
+  -h, --help              help for get-token
+  -f, --key-file string   Path to the private key file
+      --login             Use an interactive login
+      --skip-open         if the web browser should not be opened automatically
 
 # e.g:
-$ snctl auth get-token test-pi-name -n test-pi-ns --login
+$ snctl auth get-token test-pulsar-instance-name -n test-pulsar-instance-namespace --login
 ```
 
 Output:
@@ -128,7 +146,7 @@ For the OAuth2 `type` field, currently you only support `client_credentials`. So
 For the `privateKey` field, you need to get the path of a private key data file. The following example shows how to get this file:
 
 ```shell script
-$ snctl auth export-service-account [NAME] [flags]
+$ snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [SERVICE_ACCOUNT_NAMESPACE] [flags]
 
 Flags:
   -h, --help              help for export-service-account
@@ -136,7 +154,7 @@ Flags:
       --no-wait           Skip waiting for service account readiness.
 
 #e.g:
-$ snctl auth export-service-account test-sa-name -n test-sa-ns -f [/path/to/key/file.txt]
+$ snctl auth export-service-account test-service-account-name -n test-service-account-namespace -f [/path/to/key/file.txt]
 ```
 
 Output:
@@ -160,7 +178,7 @@ For the `clientId` and `issuerUrl` fields, you can get the corresponding value f
 For the `audience` field, it is the combination of the name and namespace of pulsar instance and `urn:sn:pulsar`, the example as follows:
 
 ```text
-urn:sn:pulsar:test-pi-ns:test-pi-name
+urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance-name
 ```
 
 You can get all the pulsar instances in the current environment through the following command:
