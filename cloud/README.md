@@ -19,7 +19,6 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 - Go
 - CPP
 - Python
-- CSharp(TODO)
 - NodeJS
 - pulsarctl
 - pulsar-admin
