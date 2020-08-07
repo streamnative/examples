@@ -84,7 +84,7 @@ For the `audience` field, it is a combination of the `urn:sn:pulsar`, as well as
 urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance-name
 ```
 
-## Get service URLs
+# Get service URLs
 
 - `SERVICE_URL`: the Pulsar service URL for your cluster. A `SERVICE_URL` is a combination of the protocol, hostname and port ID.
 - `WEB_SERVICE_URL`: Pulsar Web service URL for your cluster. A `WEB_SERVICE_URL` is a combination of the protocol, hostname and port ID.
@@ -135,7 +135,7 @@ Here are examples of the Web service URL.
   https://cloud.streamnative.dev:443
   ```
 
-## Get token
+# Get token
 
 To connect to a Pulsar cluster through a token, you need to specify the `AUTH_PARAMS` option with the token you obtained through the following command.
 
