@@ -84,6 +84,9 @@ For the `AUTH_PARAMS` field, you can get it through the following command:
 
 ```shell script
 $ snctl auth get-token [INSTANCE] [flags]
+
+# e.g:
+$ snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE]
 ```
 
 > Tips: In code implementation, for safety and convenience, you can consider setting `AUTH_PARAMS` as an environment variable.
@@ -109,6 +112,9 @@ Flags:
   -h, --help              help for export-service-account
   -f, --key-file string   Path to the private key file.
       --no-wait           Skip waiting for service account readiness.
+
+#e.g:
+$ snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [SERVICE_ACCOUNT_NAMESPACE] -f [/path/to/key/file.txt]
 ```
 
 Output:
