@@ -70,7 +70,7 @@ A `WEB_SERVICE_URL` is a combination of protocol, hostname and port, so an examp
 http://cloud.streamnative.dev:8080
 
 # For tls
-https://cloud.streamnative.dev:8443
+https://cloud.streamnative.dev:443
 ```
 
 ## How to get token options
