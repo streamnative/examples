@@ -20,27 +20,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/apache/pulsar-client-go/pulsar"
 	"log"
+
+	"github.com/apache/pulsar-client-go/pulsar"
+	"github.com/streamnative/pulsar-examples/cloud/go/ccloud"
 )
 
 func main() {
-	oauth := pulsar.NewAuthenticationOAuth2(map[string]string{
-		"type":       "client_credentials",
-		"issuerUrl":  "",
-		"audience":   "",
-		"privateKey": "",
-		"clientId":   "",
-	})
-
-	client, err := pulsar.NewClient(pulsar.ClientOptions{
-		URL:            "pulsar+ssl://broker.example.com:6651/",
-		Authentication: oauth,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Close()
+	client := ccloud.CreateClient()
 
 	consumer, err := client.Subscribe(pulsar.ConsumerOptions{
 		Topic:            "topic-1",
@@ -58,7 +45,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Received message msgId: %#v -- content: '%s'\n",
+		fmt.Printf("Received message msgId: %v -- content: '%s'\n",
 			msg.ID(), string(msg.Payload()))
 
 		consumer.Ack(msg)

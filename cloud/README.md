@@ -25,61 +25,110 @@ The following clients and Pulsar CLI tools are supported to connect to cluster t
 - pulsar-client
 - pulsar-perf
 
-## How to get token options
+Before starting, we assume that the `service account`, `pulsar instance` and `pulsar cluster` have been created in the current environment, and their `names` and `namespace` as follows:
 
-When you use Token to connect to Pulsar cluster, you need to provide the following options:
+/ | name | namespace
+---|---|---
+service account | test-service-account-name | test-service-account-namespace
+pulsar instance | test-pulsar-instance-name | test-pulsar-instance-namespace
+pulsar cluster  | test-pulsar-cluster-name | test-pulsar-cluster-namespace
+
+After the above resources are created, you can get the expected output through the following command.
+
+## How to get service URL
 
 - `SERVICE_URL`
 - `WEB_SERVICE_URL`
-- `AUTH_PARAMS`
 
 For the `SERVICE_URL` field, you can get the **hostname** through the following command:
 
 ```shell script
-$ snctl get pulsarclusters [CLUSTER_NAME] -n [NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+
+# e.g:
+$ snctl pulsarclusters get test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 Output:
 
 ```text
-api.test.cloud.xxx.streamnative.dev
+cloud.streamnative.dev
 ```
 
 A `SERVICE_URL` is a combination of protocol, hostname and port, so an example of a complete `SERVICE_URL` is as follows:
 
 
 ```text
-pulsar://api.test.cloud.xxx.streamnative.dev:6650
+pulsar://cloud.streamnative.dev:6650
 
 # For tls
-pulsar+ssl://api.test.cloud.xxx.streamnative.dev:6651
+pulsar+ssl://cloud.streamnative.dev:6651
 ```
 
 For the `WEB_SERVICE_URL` field, you can get the **hostname** through the following command:
 
 ```shell script
-$ snctl get pulsarclusters [CLUSTER_NAME] -n [NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+
+Flags:
+  -h, --help              help for get-token
+  -f, --key-file string   Path to the private key file
+      --login             Use an interactive login
+      --skip-open         if the web browser should not be opened automatically
+
+# e.g:
+$ snctl get pulsarclusters test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 Output:
 
 ```text
-api.test.cloud.xxx.streamnative.dev
+cloud.streamnative.dev
 ```
 
 A `WEB_SERVICE_URL` is a combination of protocol, hostname and port, so an example of a complete `WEB_SERVICE_URL` is as follows:
 
 ```text
-http://api.test.cloud.xxx.streamnative.dev:8080
+http://cloud.streamnative.dev:8080
 
 # For tls
-https://api.test.cloud.xxx.streamnative.dev:8443
+https://cloud.streamnative.dev:443
 ```
+
+## How to get token options
+
+When you use Token to connect to Pulsar cluster, you need to provide the following options:
+
+- `AUTH_PARAMS`
 
 For the `AUTH_PARAMS` field, you can get it through the following command:
 
 ```shell script
-$ snctl auth get-token [INSTANCE] [flags]
+$ snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE] [flags]
+
+Flags:
+  -h, --help              help for get-token
+  -f, --key-file string   Path to the private key file
+      --login             Use an interactive login
+      --skip-open         if the web browser should not be opened automatically
+
+# e.g:
+$ snctl auth get-token test-pulsar-instance-name -n test-pulsar-instance-namespace --login
+```
+
+Output:
+
+```text
+We've launched your web browser to complete the login process.
+Verification code: ABCD-EFGH
+
+Waiting for login to complete...
+Logged in as cloud@streamnative.io.
+Welcome to Apache Pulsar!
+
+Use the following access token to access Pulsar instance '[PULSAR_INSTANCE_NAMESPACE]/[PULSAR_INSTANCE_NAME]':
+
+abcdefghijklmnopqrstuiwxyz0123456789
 ```
 
 > Tips: In code implementation, for safety and convenience, you can consider setting `AUTH_PARAMS` as an environment variable.
@@ -99,12 +148,15 @@ For the OAuth2 `type` field, currently you only support `client_credentials`. So
 For the `privateKey` field, you need to get the path of a private key data file. The following example shows how to get this file:
 
 ```shell script
-$ snctl auth export-service-account [NAME] [flags]
+$ snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [SERVICE_ACCOUNT_NAMESPACE] [flags]
 
 Flags:
   -h, --help              help for export-service-account
   -f, --key-file string   Path to the private key file.
       --no-wait           Skip waiting for service account readiness.
+
+#e.g:
+$ snctl auth export-service-account test-service-account-name -n test-service-account-namespace -f [/path/to/key/file.txt]
 ```
 
 Output:
@@ -125,4 +177,15 @@ For the `clientId` and `issuerUrl` fields, you can get the corresponding value f
 }
 ```
 
-For the `audience` field, is the address of the accessed service.
+For the `audience` field, it is the combination of the name and namespace of pulsar instance and `urn:sn:pulsar`, the example as follows:
+
+```text
+urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance-name
+```
+
+You can get all the pulsar instances in the current environment through the following command:
+
+```shell script
+$ snctl pulsarinstances get -A
+```
+
