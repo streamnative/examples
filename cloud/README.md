@@ -2,6 +2,10 @@
 
 This directory includes examples of how Pulsar CLI tools and Pulsar clients connect to a Pulsar cluster through OAuth2 or the token.
 
+**Note**
+
+> Currently, the Python and Node.js clients only support to connect to a cluster through the token. Other Pulsar CLI tools and Pulsar clients support to connect to a cluster either through Oauth2 or through the token. 
+
 - Supported Pulsar CLI tools
   - [pulsarctl](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsarctl)
   - [pulsar-admin](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsar-admin)
@@ -14,10 +18,6 @@ This directory includes examples of how Pulsar CLI tools and Pulsar clients conn
   - [Go client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/go)
   - [Python client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/python)
   - [Node.js client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/node)
-
-  **Note**
-
-  > Currently, Java client, C++ client, and Go client support to connect to a cluster either through Oauth2 or through the token. Other Pulsar clients only support to connect to a cluster through the token.
 
 Before starting, you should create the service account, Pulsar instance, and Pulsar cluster. We take the following resources as examples.
 
