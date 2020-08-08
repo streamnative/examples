@@ -4,6 +4,9 @@ This document describes how to produce message to and consume message from a Pul
 
 # Prerequisites
 
+- Get the `SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-service-urls)
+- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get token options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-token)
+
 Pulsar Node.js client library is based on the C++ client library. Follow the instructions for
 [C++ library](https://pulsar.apache.org/docs/en/client-libraries-cpp/) for installing the binaries through
 [RPM](https://pulsar.apache.org/docs/en/client-libraries-cpp/#rpm),
@@ -34,6 +37,8 @@ The consumer receives the message from the `my-topic` and `acknowledges` each re
 
 ```bash
 $ cd cloud/node
+$ export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+$ export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
 $ node sample_consumer.js
 ```
 
@@ -56,6 +61,8 @@ my-message-9
 
 ```bash
 $ cd cloud/node
+$ export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+$ export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
 $ node sample_producer.js
 ```
 
