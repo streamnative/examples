@@ -4,6 +4,9 @@ This document describes how to produce message to and consume message from a Pul
 
 # Prerequisites
 
+- Get the `SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](#How to get service URL)
+- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get token options](#How to get token options)
+
 ## Install using pip
 
 To install the pulsar-client library as a pre-built package using the [pip](https://pip.pypa.io/en/stable/) package manager:
@@ -34,6 +37,8 @@ The consumer receives the message from the `my-topic` and `acknowledges` each re
 
 ```bash
 $ cd cloud/python
+$ export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+$ export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
 $ python SampleConsumer.py
 ```
 
@@ -56,6 +61,8 @@ Received message 'Hello-9' id='(250,9,-1,-1)'
 
 ```bash
 $ cd cloud/python
+$ export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+$ export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
 $ python SampleProducer.py
 ```
 
