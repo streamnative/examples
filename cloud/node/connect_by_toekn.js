@@ -17,14 +17,17 @@
 
 const Pulsar = require('pulsar-client');
 
+const auth_params = process.env.AUTH_PARAMS;
+const service_url = process.env.SERVICE_URL;
+
 (async () => {
     const auth = new Pulsar.AuthenticationToken({
-        token: 'AUTH_PARAMS',
+        token: auth_params,
     });
 
     // Create a client
     const client = new Pulsar.Client({
-        serviceUrl: 'SERVICE_URL',
+        serviceUrl: service_url,
         authentication: auth,
         operationTimeoutSeconds: 30,
     });
