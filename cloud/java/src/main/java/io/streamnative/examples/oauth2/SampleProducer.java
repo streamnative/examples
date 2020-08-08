@@ -17,6 +17,8 @@
 
 package io.streamnative.examples.oauth2;
 
+import com.beust.jcommander.JCommander;
+
 import java.net.URL;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.ProducerBuilder;
@@ -27,15 +29,19 @@ import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
 
 public class SampleProducer {
     public static void main(String[] args) throws Exception {
-        String issuerUrl = "https://dev-kt-aa9ne.us.auth0.com/oauth/token";
-        String credentialsUrl = "file:///path/to/KeyFile.json";
-        String audience = "https://dev-kt-aa9ne.us.auth0.com/api/v2/";
+        JCommanderPulsar jct = new JCommanderPulsar();
+        JCommander jCommander = new JCommander(jct, args);
+        if (jct.help) {
+            jCommander.usage();
+            return;
+        }
+
         String topic = "persistent://public/default/topic-1";
 
         PulsarClient client = PulsarClient.builder()
-                .serviceUrl("pulsar+ssl://xxx.us-east4.yyy.test.g.sn2.dev:6651")
+                .serviceUrl(jct.serviceUrl)
                 .authentication(
-                        AuthenticationFactoryOAuth2.clientCredentials(new URL(issuerUrl), new URL(credentialsUrl), audience))
+                        AuthenticationFactoryOAuth2.clientCredentials(new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience))
                 .build();
 
         ProducerBuilder<byte[]> producerBuilder = client.newProducer().topic(topic)

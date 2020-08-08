@@ -15,9 +15,10 @@
 #  specific language governing permissions and limitations
 #  under the License.
 
+import os
 from pulsar import Client, AuthenticationToken
 
-client = Client("SERVICE_URL", authentication=AuthenticationToken("AUTH_PARAMS"))
+client = Client(os.environ.get('SERVICE_URL'), authentication=AuthenticationToken(os.environ.get('AUTH_PARAMS')))
 
 producer = client.create_producer('my-topic')
 

@@ -7,8 +7,8 @@ The `pulsar-admin` is a CLI tool written in Java language for the Apache Pulsar 
 > Pulsar client is required to be newer than 2.6.1 which will include the OAuth2 authentication plugin.
 
 - Pulsar broker 2.7.0-742fc5c9b+
-- Get the `WEB_SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](../README.md#How to get service URL)
-- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get token options](../README.md#How to get token options)
+- Get the `WEB_SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-service-urls)
+- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get token options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-token)
 
 # Usage
 
