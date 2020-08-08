@@ -12,6 +12,8 @@ The `pulsar-admin` is a CLI tool written in Java language for the Apache Pulsar 
 
 # Usage
 
+## Token
+
 The `pulsar-admin` supports to connect to Pulsar cluster through Token, as shown below:
 
 ```shell script
@@ -22,3 +24,29 @@ The `pulsar-admin` supports to connect to Pulsar cluster through Token, as shown
     tenants list
 ```
 
+Output:
+
+```text
+"public"
+"pulsar"
+```
+
+## OAuth2
+
+The `pulsar-admin` supports to connect to Pulsar cluster through OAuth2, as shown below:
+
+```shell script
+bin/pulsar-admin --admin-url https://cloud.streamnative.dev:443 \
+  --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
+  --auth-params '{"privateKey":"file:///path/to/key/file.txt",
+    "issuerUrl":"https://test.auth0.com",
+    "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
+  tenants list
+```
+
+Output:
+
+```text
+"public"
+"pulsar"
+```
