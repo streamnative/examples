@@ -6,10 +6,10 @@ This document describes how to produce messages to and consume messages from a A
 
 - Java: 1.8+
 - Pulsar broker: 2.7.0-742fc5c9b+
-- Get the `serviceURL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls)
-- Get the OAuth2 `privateKey` of a service account to access your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
-- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
-- Get the `issuerUrl` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
+- Get the `serviceURL` of your StreamNative Cloud Pulsar cluster: [How to get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls)
+- Get the OAuth2 `privateKey` of a service account to access your StreamNative Cloud Pulsar cluster: [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
+- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
+- Get the `issuerUrl` of the your StreamNative Cloud Pulsar cluster: [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
 
 > You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When Pulsar 2.6.1 is released, you can also use the official 2.6.1 version.
 
