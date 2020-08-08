@@ -5,11 +5,11 @@ The `pulsarctl` is a CLI tool written by Golang language for the Apache Pulsar p
 # Prerequisites
 
 - pulsarctl 0.5.0+
-- Get the `webServiceURL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](#How to get service URL)
-- Get the OAuth2 `privateKeyFile` of a service account to access your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
-- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
-- Get the `issuerUrl` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
-- Get the `clientId` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](#How to get OAuth2 options)
+- Get the `webServiceURL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls)
+- Get the OAuth2 `privateKeyFile` of a service account to access your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
+- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
+- Get the `issuerUrl` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
+- Get the `clientId` of the your StreamNative Cloud Pulsar cluster: [How to get OAuth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
 
 More information reference to [here](https://github.com/streamnative/pulsarctl/blob/master/README.md).
 
