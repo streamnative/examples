@@ -8,10 +8,6 @@ This directory includes examples of how Pulsar CLI tools and Pulsar clients conn
   - [pulsar-client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsar-client)
   - [pulsar-perf](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsar-client)
 
-  **Note**
-
-  > Currently, pulsarctl and pulsar-admin support to connect to a cluster either through Oauth2 or through the token. Other CLI tools only support to connect to a cluster through the token.
-
 - Supported Pulsar clients
   - [Java client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/java)
   - [C++ client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/cpp)
