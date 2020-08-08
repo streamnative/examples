@@ -1,171 +1,47 @@
 # Overview
 
-## Programming Languages
+This directory includes examples of how Pulsar CLI tools and Pulsar clients connect to a Pulsar cluster through OAuth2 or the token.
 
-This directory includes examples of Apache Pulsar client applications, showcasing producers and consumers, written in various programming languages. The README for each language walks through the necessary steps to run each example. When each client establishes a connection with the Pulsar cluster through **OAuth2** or **Token**.
- 
-For the OAuth2, it needs to obtain the specified options from the Pulsar cluster and OAuth2 services. [How to get OAuth2 options](#How to get OAuth2 options) explains how you get these options.
+- Supported Pulsar CLI tools
+  - [pulsarctl](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsarctl)
+  - [pulsar-admin](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsar-admin)
+  - [pulsar-client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsar-client)
+  - [pulsar-perf](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsar-client)
 
-Currently, we support the following clients and `pulsarctl` to connect through OAuth2:
+  **Note**
 
-- Java
-- Go
-- CPP
-- pulsarctl
+  > Currently, pulsarctl and pulsar-admin support to connect to a cluster either through Oauth2 or through the token. Other CLI tools only support to connect to a cluster through the token.
 
-The following clients and Pulsar CLI tools are supported to connect to cluster through the Token. And [How to get Token options](#How to get Token options) explains how you get these options.
+- Supported Pulsar clients
+  - [Java client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/java)
+  - [C++ client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/cpp)
+  - [Go client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/go)
+  - [Python client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/python)
+  - [Node.js client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/node)
 
-- Java
-- Go
-- CPP
-- Python
-- NodeJS
-- pulsarctl
-- pulsar-admin
-- pulsar-client
-- pulsar-perf
+  **Note**
 
-Before starting, we assume that the `service account`, `pulsar instance` and `pulsar cluster` have been created in the current environment, and their `names` and `namespace` as follows:
+  > Currently, Java client, C++ client, and Go client support to connect to a cluster either through Oauth2 or through the token. Other Pulsar clients only support to connect to a cluster through the token.
 
-/ | name | namespace
----|---|---
-service account | test-service-account-name | test-service-account-namespace
-pulsar instance | test-pulsar-instance-name | test-pulsar-instance-namespace
-pulsar cluster  | test-pulsar-cluster-name | test-pulsar-cluster-namespace
+Before starting, you should create the service account, Pulsar instance, and Pulsar cluster. We take the following resources as examples.
 
-After the above resources are created, you can get the expected output through the following command.
+| Item | Name | Namespace |
+| --- | --- |--- |
+| Service account | test-service-account-name | test-service-account-namespace |
+| Pulsar instance | test-pulsar-instance-name | test-pulsar-instance-namespace |
+| Pulsar cluster  | test-pulsar-cluster-name | test-pulsar-cluster-namespace |
 
-## How to get service URL
+# Get Oauth2 options
 
-- `SERVICE_URL`
-- `WEB_SERVICE_URL`
+To connect to a cluster through the Oauth2, you should specify the following fields.
 
-For the `SERVICE_URL` field, you can get the **hostname** through the following command:
+- `type`: Oauth2 authentication type. Currently, this field can only be set to the `client_credentials`.
+- `clientId`: client ID.
+- `issuerUrl`: URL of the authentication provider which allows the Pulsar client to obtain an access token.
+- `privateKey`: URL of a JSON credentials file.
+- `audience`: Address of the accessed service.
 
-```shell script
-$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
-
-# e.g:
-$ snctl pulsarclusters get test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
-```
-
-Output:
-
-```text
-cloud.streamnative.dev
-```
-
-A `SERVICE_URL` is a combination of protocol, hostname and port, so an example of a complete `SERVICE_URL` is as follows:
-
-
-```text
-pulsar://cloud.streamnative.dev:6650
-
-# For tls
-pulsar+ssl://cloud.streamnative.dev:6651
-```
-
-For the `WEB_SERVICE_URL` field, you can get the **hostname** through the following command:
-
-```shell script
-$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
-
-Flags:
-  -h, --help              help for get-token
-  -f, --key-file string   Path to the private key file
-      --login             Use an interactive login
-      --skip-open         if the web browser should not be opened automatically
-
-# e.g:
-$ snctl get pulsarclusters test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
-```
-
-Output:
-
-```text
-cloud.streamnative.dev
-```
-
-A `WEB_SERVICE_URL` is a combination of protocol, hostname and port, so an example of a complete `WEB_SERVICE_URL` is as follows:
-
-```text
-http://cloud.streamnative.dev:8080
-
-# For tls
-https://cloud.streamnative.dev:443
-```
-
-## How to get token options
-
-When you use Token to connect to Pulsar cluster, you need to provide the following options:
-
-- `AUTH_PARAMS`
-
-For the `AUTH_PARAMS` field, you can get it through the following command:
-
-```shell script
-$ snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE] [flags]
-
-Flags:
-  -h, --help              help for get-token
-  -f, --key-file string   Path to the private key file
-      --login             Use an interactive login
-      --skip-open         if the web browser should not be opened automatically
-
-# e.g:
-$ snctl auth get-token test-pulsar-instance-name -n test-pulsar-instance-namespace --login
-```
-
-Output:
-
-```text
-We've launched your web browser to complete the login process.
-Verification code: ABCD-EFGH
-
-Waiting for login to complete...
-Logged in as cloud@streamnative.io.
-Welcome to Apache Pulsar!
-
-Use the following access token to access Pulsar instance '[PULSAR_INSTANCE_NAMESPACE]/[PULSAR_INSTANCE_NAME]':
-
-abcdefghijklmnopqrstuiwxyz0123456789
-```
-
-> Tips: In code implementation, for safety and convenience, you can consider setting `AUTH_PARAMS` as an environment variable.
-
-## How to get OAuth2 options
-
-When configuring and using OAuth2, you need to specify the following parameters:
-
-- `type`
-- `issuerUrl`
-- `audience`
-- `privateKey`
-- `clientId`
-
-For the OAuth2 `type` field, currently you only support `client_credentials`. So the value of the current type field is `client_credentials`
-
-For the `privateKey` field, you need to get the path of a private key data file. The following example shows how to get this file:
-
-```shell script
-$ snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [SERVICE_ACCOUNT_NAMESPACE] [flags]
-
-Flags:
-  -h, --help              help for export-service-account
-  -f, --key-file string   Path to the private key file.
-      --no-wait           Skip waiting for service account readiness.
-
-#e.g:
-$ snctl auth export-service-account test-service-account-name -n test-service-account-namespace -f [/path/to/key/file.txt]
-```
-
-Output:
-
-```text
-Wrote private key file <Path of your private key file>
-```
-
-For the `clientId` and `issuerUrl` fields, you can get the corresponding value from the `privateKey` file. The following example shows how to get the `clientId` and `issueUrl` fields.
+For the `clientId` and `issuerUrl` fields, you can get the corresponding value from the Oauth2 key file. Here is an example of the Oauth2 key file.
 
 ```text
 {
@@ -177,15 +53,124 @@ For the `clientId` and `issuerUrl` fields, you can get the corresponding value f
 }
 ```
 
-For the `audience` field, it is the combination of the name and namespace of pulsar instance and `urn:sn:pulsar`, the example as follows:
+For the `privateKey` field, you can use the following command to get the path of an Oauth2 key file.
+
+```shell script
+snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [SERVICE_ACCOUNT_NAMESPACE] [flags]
+
+Flags:
+  -h, --help              help for export-service-account
+  -f, --key-file string   Path to the private key file.
+      --no-wait           Skip waiting for service account readiness.
+```
+
+This example shows how to get the Oauth2 key file.
+
+```
+snctl auth export-service-account test-service-account-name -n test-service-account-namespace -f [/path/to/key/file.txt]
+```
+
+**Output:**
+
+```text
+Wrote private key file <Path of your private key file>
+```
+
+For the `audience` field, it is a combination of the `urn:sn:pulsar`, as well as the namespace amd name of the Pulsar instance. Here is an example of the `audience` field.
 
 ```text
 urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance-name
 ```
 
-You can get all the pulsar instances in the current environment through the following command:
+# Get service URLs
+
+- `SERVICE_URL`: the Pulsar service URL for your cluster. A `SERVICE_URL` is a combination of the protocol, hostname and port ID.
+- `WEB_SERVICE_URL`: Pulsar Web service URL for your cluster. A `WEB_SERVICE_URL` is a combination of the protocol, hostname and port ID.
+
+For both the `SERVICE_URL` and  `WEB_SERVICE_URL`  fields, you can use the following command to get the `hostname` value .
 
 ```shell script
-$ snctl pulsarinstances get -A
+$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
+
+This example shows how to get the `hostname` value of the `SERVICE_URL` and  `WEB_SERVICE_URL` fields.
+
+```
+snctl pulsarclusters get test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
+```
+
+**Output:**
+
+```text
+cloud.streamnative.dev
+```
+
+Here are examples of the service URL.
+
+- Common service URL
+
+  ```text
+  pulsar://cloud.streamnative.dev:6650
+  ```
+
+- Service URL with TLS authentication
+
+  ```
+  pulsar+ssl://cloud.streamnative.dev:6651
+  ```
+
+Here are examples of the Web service URL.
+
+- Common Web service URL
+
+  ```text
+  http://cloud.streamnative.dev:8080
+  ```
+
+- Web service URL with TLS authentication
+
+  ```
+  https://cloud.streamnative.dev:443
+  ```
+
+# Get token
+
+To connect to a Pulsar cluster through a token, you need to specify the `AUTH_PARAMS` option with the token you obtained through the following command.
+
+```shell script
+snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE] [flags]
+
+Flags:
+  -h, --help              help for get-token
+  -f, --key-file string   Path to the private key file
+      --login             Use an interactive login
+      --skip-open         if the web browser should not be opened automatically
+```
+
+This example shows how to get a token.
+
+```
+snctl auth get-token test-pulsar-instance-name -n test-pulsar-instance-namespace --login
+```
+
+**Output:**
+
+```text
+We've launched your web browser to complete the login process.
+Verification code: ABCD-EFGH
+
+Waiting for login to complete...
+Logged in as cloud@streamnative.io.
+Welcome to Apache Pulsar!
+
+Use the following access token to access Pulsar instance 'test-pulsar-instance-namespace/test-pulsar-instance-name':
+
+abcdefghijklmnopqrstuiwxyz0123456789
+```
+
+**Tip**
+
+> In code implementation, for safety and convenience, you can set  `AUTH_PARAMS` as an environment variable.
+
+
 
