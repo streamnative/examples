@@ -2,8 +2,6 @@
 
 This directory includes examples of how Pulsar CLI tools and Pulsar clients connect to a Pulsar cluster through OAuth2 or the token.
 
-You can use one of the following Pulsar CLI tools to support to the Pulsar cluster and then manage Pulsar components.
-
 - Supported Pulsar CLI tools
   - [pulsarctl](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsarctl)
   - [pulsar-admin](https://github.com/streamnative/pulsar-examples/tree/master/cloud/pulsar-admin)
