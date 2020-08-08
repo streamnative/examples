@@ -14,6 +14,8 @@ The `pulsar-client` and `pulsar-perf` are CLI tool written in Java language for 
 
 ## pulsar-client
 
+### Token authentication plugin
+
 The `pulsar-client` supports to connect to Pulsar cluster through Token, as shown below:
 
 ```shell script
@@ -31,13 +33,15 @@ Output:
 12:21:50.920 [main] INFO  org.apache.pulsar.client.cli.PulsarClientTool - 10 messages successfully produced
 ```
 
+### OAuth2 authentication plugin
+
 The `pulsar-client` supports to connect to Pulsar cluster through OAuth2, as shown below:
 
 ```shell script
 bin/pulsar-client \
   --url SERVICE_URL \
   --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
-  --auth-params '{"privateKey":"file:///path/to/key/file.txt",
+  --auth-params '{"privateKey":"file:///path/to/key/file.json",
     "issuerUrl":"https://test.auth0.com",
     "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
   produce test-topic -m "test-message" -n 10
@@ -51,6 +55,8 @@ Output:
 ```
 
 ## pulsar-perf
+
+### Token authentication plugin
 
 The `pulsar-perf` supports to connect to Pulsar cluster through Token, as shown below:
 
@@ -76,12 +82,14 @@ Output:
 ...
 ```
 
+### OAuth2 authentication plugin
+
 The `pulsar-perf` supports to connect to Pulsar cluster through OAuth2, as shown below:
 
 ```shell script
 bin/pulsar-perf produce --service-url pulsar+ssl://cloud.streamnative.dev:6651 \
   --auth_plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
-  --auth-params '{"privateKey":"file:///path/to/key/file.txt",
+  --auth-params '{"privateKey":"file:///path/to/key/file.json",
     "issuerUrl":"https://test.auth0.com",
     "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
   -r 1000 -s 1024 test-topic

@@ -12,7 +12,7 @@ The `pulsar-admin` is a CLI tool written in Java language for the Apache Pulsar 
 
 # Usage
 
-## Token
+## Token authentication plugin
 
 The `pulsar-admin` supports to connect to Pulsar cluster through Token, as shown below:
 
@@ -31,14 +31,14 @@ Output:
 "pulsar"
 ```
 
-## OAuth2
+## OAuth2 authentication plugin
 
 The `pulsar-admin` supports to connect to Pulsar cluster through OAuth2, as shown below:
 
 ```shell script
 bin/pulsar-admin --admin-url https://cloud.streamnative.dev:443 \
   --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
-  --auth-params '{"privateKey":"file:///path/to/key/file.txt",
+  --auth-params '{"privateKey":"file:///path/to/key/file.json",
     "issuerUrl":"https://test.auth0.com",
     "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
   tenants list

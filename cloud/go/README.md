@@ -29,7 +29,7 @@ The consumer receives the message from the `topic-1` and `acknowledges` each rec
 ```bash
 $ go build -o consumer sampleConsumer.go
 $ ./consumer -serviceURL pulsar+ssl://cloud.streamnative.dev:6651 \
-       -privateKeyFile /path/to/private/key/file.txt\
+       -privateKeyFile /path/to/private/key/file.json\
        -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
        -issuerUrl https://cloud.streamnative.dev\
        -clientId abcdefghigk0123456789
@@ -55,7 +55,7 @@ Received message msgId: {{10 26 0 0} <nil> 0xc0000e0160 {13817980335716792128 17
 ```bash
 $ go build -o producer sampleProdcer.go
 $ ./producer -serviceURL pulsar+ssl://cloud.streamnative.dev:6651 \
-       -privateKeyFile /path/to/private/key/file.txt\
+       -privateKeyFile /path/to/private/key/file.json\
        -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
        -issuerUrl https://cloud.streamnative.dev\
        -clientId abcdefghigk0123456789

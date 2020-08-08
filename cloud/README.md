@@ -156,7 +156,7 @@ Flags:
       --no-wait           Skip waiting for service account readiness.
 
 #e.g:
-$ snctl auth export-service-account test-service-account-name -n test-service-account-namespace -f [/path/to/key/file.txt]
+$ snctl auth export-service-account test-service-account-name -n test-service-account-namespace -f [/path/to/key/file.json]
 ```
 
 Output:
