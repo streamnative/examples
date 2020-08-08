@@ -167,6 +167,3 @@ abcdefghijklmnopqrstuiwxyz0123456789
 **Tip**
 
 > In code implementation, for safety and convenience, you can set  `AUTH_PARAMS` as an environment variable.
-
-
-
