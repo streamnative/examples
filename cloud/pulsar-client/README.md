@@ -4,9 +4,11 @@ The `pulsar-client` and `pulsar-perf` are CLI tool written in Java language for 
 
 # Prerequisites
 
-- Pulsar broker 2.7.0-742fc5c9b+
+> Pulsar client is required to be newer than 2.6.1 which will include the OAuth2 authentication plugin.
 
-> You can get this tarball from [bintray](https://bintray.com/streamnative/maven/org.apache.pulsar/2.7.0-742fc5c9b). When Pulsar 2.6.1 is released, you can also use the official 2.6.1 version.
+- Pulsar broker 2.7.0-742fc5c9b+
+- Get the `SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](#How to get service URL)
+- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get token options](#How to get token options)
 
 # Usage
 
@@ -15,17 +17,18 @@ The `pulsar-client` supports to connect to Pulsar cluster through Token, as show
 ```shell script
 ./bin/pulsar-client \
     --url SERVICE_URL \
-    --auth-params AUTH_PARAMS \
+    --auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken \
+    --auth-params token:AUTH_PARAMS \
     produce test-topic -m "test-message" -n 10
 ```
 
 The `pulsar-perf` supports to connect to Pulsar cluster through Token, as shown below:
 
 ```shell script
-./bin/pulsar-perf \
+./bin/pulsar-perf produce \
     --service-url SERVICE_URL \
-    --auth-params AUTH_PARAMS \
-    produce -r 1000 -s 1024 test-topic
+    --auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken \
+    --auth-params token:AUTH_PARAMS \
+    -r 1000 -s 1024 test-topic
 ```
 
-How to get the `SERVICE_URL` and `AUTH_PARAMS` fields, please reference to **how to get Token options**.
