@@ -43,7 +43,7 @@ $ pulsarctl oauth2 activate \
     --issuer-endpoint https://cloud.streamnative.dev \
     --client-id abcdefghigk0123456789 \
     --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
-    --key-file /path/to/private/key/file.txt
+    --key-file /path/to/private/key/file.json
 ```
 
 Output:
@@ -61,7 +61,7 @@ $ pulsarctl namespaces list public \
     --issuer-endpoint https://cloud.streamnative.dev \
     --client-id abcdefghigk0123456789 \
     --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
-    --key-file /path/to/private/key/file.txt
+    --key-file /path/to/private/key/file.json
 ```
 
 Output:
@@ -81,7 +81,7 @@ The `pulsarctl` itself provides the function of the Go Admin API. You can use th
 ```shell script
 $ go build pulsarctl pulsarctl.go
 $ ./pulsarctl -webServiceURL https://cloud.streamnative.dev:443 \
-         -privateKeyFile /path/to/private/key/file.txt\
+         -privateKeyFile /path/to/private/key/file.json\
          -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
          -issuerUrl https://cloud.streamnative.dev\
          -clientId abcdefghigk0123456789
