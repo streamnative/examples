@@ -18,9 +18,9 @@ If you have not installed Go, install it according to the [installation instruct
 In this example, the Go producer publishes data to the `topic-1` in your Pulsar cluster. The consumer receives the message from the `topic-1` and acknowledges each received message.
 The content of each message payload is a combination of `hello-` and a digital (0-9), such as `hello-0`).
 
-1. Get the Oauth2 options. For details, see [Get Oauth2 options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-options).
+1. Get the Oauth2 options. For details, see [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters).
 
-2. Get the service URLs. For details, see [Get service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-service-urls).
+2. Get the service URLs. For details, see [How to get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
 
 3. Run the Go consumer to receive messages from topic `topic-1`.
 
