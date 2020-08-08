@@ -45,7 +45,7 @@ This section describes how to connect to a Pulsar cluster through the Oauth2 aut
 
     ```shell script
     ./bin/pulsar-admin \
-        --url WEB_SERVICE_URL \
+        --admin-url WEB_SERVICE_URL \
         --auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken \
         --auth-params token:AUTH_PARAMS \
         tenants list
