@@ -4,49 +4,56 @@ The `pulsar-admin` is a CLI tool written in Java language for the Apache Pulsar 
 
 # Prerequisites
 
-> Pulsar client is required to be newer than 2.6.1 which will include the OAuth2 authentication plugin.
-
+- Pulsar client 2.6.1 or higher version (only for connecting the Pulsar cluster through the OAuth2 authentication plugin).
 - Pulsar broker 2.7.0-742fc5c9b+
-- Get the `WEB_SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls)
-- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get Token authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-token-authentication-parameters)
 
-# Usage
+# Example
 
-## Token authentication plugin
+This section describes how to connect to a Pulsar cluster through the Oauth2 authentication plugin or the Token authentication plugin.
 
-The `pulsar-admin` supports to connect to Pulsar cluster through Token, as shown below:
+## Connect to cluster through OAuth2 authentication plugin
 
-```shell script
-./bin/pulsar-admin \
-    --url WEB_SERVICE_URL \
-    --auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken \
-    --auth-params token:AUTH_PARAMS \
-    tenants list
-```
+1. Get the Web service URLs. For details, see [Get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
 
-Output:
+2. Get the Oauth2 authentication parameters. For details, see [Get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters).
 
-```text
-"public"
-"pulsar"
-```
+3. Connect to the Pulsar cluster through the Oauth2 authentication plugin.
 
-## OAuth2 authentication plugin
+    ```shell script
+    bin/pulsar-admin --admin-url https://cloud.streamnative.dev:443 \
+      --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
+      --auth-params '{"privateKey":"file:///path/to/key/file.json",
+        "issuerUrl":"https://test.auth0.com",
+        "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
+      tenants list
+    ```
 
-The `pulsar-admin` supports to connect to Pulsar cluster through OAuth2, as shown below:
+    **Output**:
 
-```shell script
-bin/pulsar-admin --admin-url https://cloud.streamnative.dev:443 \
-  --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
-  --auth-params '{"privateKey":"file:///path/to/key/file.json",
-    "issuerUrl":"https://test.auth0.com",
-    "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
-  tenants list
-```
+    ```text
+    "public"
+    "pulsar"
+    ```
 
-Output:
+## Connect to cluster through Token authentication plugin
 
-```text
-"public"
-"pulsar"
-```
+1. Get the Web service URLs. For details, see [Get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
+
+2. Get the Token authentication parameters. For details, see [Get Token authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-token-authentication-parameters).
+
+3. Connect to the Pulsar cluster through the Token authentication plugin.
+
+    ```shell script
+    ./bin/pulsar-admin \
+        --admin-url WEB_SERVICE_URL \
+        --auth-plugin org.apache.pulsar.client.impl.auth.AuthenticationToken \
+        --auth-params token:AUTH_PARAMS \
+        tenants list
+    ```
+
+    **Output**:
+
+    ```text
+    "public"
+    "pulsar"
+    ```

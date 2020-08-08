@@ -13,16 +13,16 @@ If you have not installed Go, install it according to the [installation instruct
 
 **Note**
 
-> This example shows how to connect to a Pulsar cluster through OAuth2. To connect to a Pulsar cluster through the token, see the implementation of [connectByToken.go](https://github.com/streamnative/pulsar-examples/blob/master/cloud/go/connectByToken.go).
+> This example shows how to connect to a Pulsar cluster through the OAuth2 authentication plugin. To connect to a Pulsar cluster through the Token authentication plugin, see the implementation of [connectByToken.go](https://github.com/streamnative/pulsar-examples/blob/master/cloud/go/connectByToken.go).
 
 In this example, the Go producer publishes data to the `topic-1` in your Pulsar cluster. The consumer receives the message from the `topic-1` and acknowledges each received message.
 The content of each message payload is a combination of `hello-` and a digital (0-9), such as `hello-0`).
 
-1. Get the Oauth2 options. For details, see [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters).
+1. Get the service URLs. For details, see [Get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
 
-2. Get the service URLs. For details, see [How to get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
+2. Get the Oauth2 authentication parameters. For details, see [Get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters).
 
-3. Run the Go consumer to receive messages from topic `topic-1`.
+3. Run the Go consumer to receive messages from the topic `topic-1`.
 
        ```bash
        go build -o consumer sampleConsumer.go
@@ -32,9 +32,8 @@ The content of each message payload is a combination of `hello-` and a digital (
               -issuerUrl https://cloud.streamnative.dev\
               -clientId abcdefghigk0123456789
        ```
-       Replace the Oauth2 options (`privateKeyFile`, `audience`, `issuerUrl`, and `clientId`) and the `-serviceURL` with the values you get from Step 1 and Step 2 respectively.
 
-       **Output:**
+       **Output**:
 
        ```text
        Received message msgId: {{10 17 0 0} <nil> 0xc0000e0160 {13817980335716751128 17136978 0x4cf4080}} -- content: 'hello-7'
@@ -49,7 +48,7 @@ The content of each message payload is a combination of `hello-` and a digital (
        Received message msgId: {{10 26 0 0} <nil> 0xc0000e0160 {13817980335716792128 17177978 0x4cf4080}} -- content: 'hello-6'
        ```
 
-4. Run the Go producer and publish messages to the `topic-1`.
+4. Run the Go producer to publish messages to the topic `topic-1`.
 
        ```bash
        go build -o producer sampleProdcer.go
@@ -60,9 +59,7 @@ The content of each message payload is a combination of `hello-` and a digital (
               -clientId abcdefghigk0123456789
        ```
 
-       Replace the Oauth2 options (`privateKeyFile`, `audience`, `issuerUrl`, and `clientId`) and the `-serviceURL` with the values you get from Step 1 and Step 2 respectively.
-
-       **Output:**
+       **Output**:
 
        ```text
        Published message: {10 20 0 0} 

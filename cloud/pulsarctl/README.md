@@ -5,90 +5,93 @@ The `pulsarctl` is a CLI tool written by Golang language for the Apache Pulsar p
 # Prerequisites
 
 - pulsarctl 0.5.0+
-- Get the `webServiceURL` of your StreamNative Cloud Pulsar cluster: [How to get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls)
-- Get the OAuth2 `privateKeyFile` of a service account to access your StreamNative Cloud Pulsar cluster: [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
-- Get the `audience` of the your StreamNative Cloud Pulsar cluster: [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
-- Get the `issuerUrl` of the your StreamNative Cloud Pulsar cluster: [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
-- Get the `clientId` of the your StreamNative Cloud Pulsar cluster: [How to get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters)
 
 More information reference to [here](https://github.com/streamnative/pulsarctl/blob/master/README.md).
 
-# Usage
+# Example
 
-## Connect to cluster through Token
+## Connect to cluster through OAuth2 authentication plugin
 
-The `pulsarctl` supports to connect to Pulsar cluster through Token, the example as follows:
-
-```shell script
-pulsarctl \
-    --admin-service-url WEB_SERVICE_URL \
-    --token AUTH_PARAMS \
-    tenants list
-```
-
-For details about how to get the `WEB_SERVICE_URL` and `AUTH_PARAMS` fields, please reference to [How to get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls) and [How to get Token authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-token-authentication-parameters)
-
-## Connect to cluster through OAuth2
-
-The `pulsarctl` supports to connect to Pulsar cluster through OAuth2, provide the following two ways:
+pulsarctl supports to connect to Pulsar cluster through the OAuth2 authentication plugin in the following two ways.
 
 ### Use CLI Tool
 
-The `pulsarctl` supports to connect to Pulsar cluster through OAuth2, as shown below:
+1. Get the Web service URLs. For details, see [Get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
 
-1. Activate an account with keyfile.
+2. Get the Oauth2 authentication parameters. For details, see [Get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters).
 
-```shell script
-$ pulsarctl oauth2 activate \
-    --issuer-endpoint https://cloud.streamnative.dev \
-    --client-id abcdefghigk0123456789 \
-    --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
-    --key-file /path/to/private/key/file.json
-```
+3. Activate an account with Oauth2 key file.
 
-Output:
+    ```shell script
+    pulsarctl oauth2 activate \
+        --issuer-endpoint https://cloud.streamnative.dev \
+        --client-id abcdefghigk0123456789 \
+        --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
+        --key-file /path/to/private/key/file.json
+    ```
 
-```text
-Logged in as cloud@streamnative.dev.
-Welcome to Pulsar!
-```
+    **Output**:
 
-2. Using pulsarctl to get pulsar resources.
+    ```text
+    Logged in as cloud@streamnative.dev.
+    Welcome to Pulsar!
+    ```
 
-```shell script
-$ pulsarctl namespaces list public \
-    --admin-service-url https://cloud.streamnative.dev:443 \
-    --issuer-endpoint https://cloud.streamnative.dev \
-    --client-id abcdefghigk0123456789 \
-    --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
-    --key-file /path/to/private/key/file.json
-```
+4. Use pulsarctl to get Pulsar resources.
 
-Output:
+    ```shell script
+    pulsarctl namespaces list public \
+        --admin-service-url https://cloud.streamnative.dev:443 \
+        --issuer-endpoint https://cloud.streamnative.dev \
+        --client-id abcdefghigk0123456789 \
+        --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
+        --key-file /path/to/private/key/file.json
+    ```
 
-```text
-+----------------+
-| NAMESPACE NAME |
-+----------------+
-| public/default |
-+----------------+
-```
+    **Output**:
+
+    ```text
+    +----------------+
+    | NAMESPACE NAME |
+    +----------------+
+    | public/default |
+    +----------------+
+    ```
 
 ### Use Go Admin API
 
-The `pulsarctl` itself provides the function of the Go Admin API. You can use the interface of the Admin API to use the function of OAuth2 to establish a connection with the Pulsar cluster. 
+1. Get the Web service URLs. For details, see [Get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
 
-```shell script
-$ go build pulsarctl pulsarctl.go
-$ ./pulsarctl -webServiceURL https://cloud.streamnative.dev:443 \
-         -privateKeyFile /path/to/private/key/file.json\
-         -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
-         -issuerUrl https://cloud.streamnative.dev\
-         -clientId abcdefghigk0123456789
-```
+2. Get the Oauth2 authentication parameters. For details, see [Get Oauth2 authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-oauth2-authentication-parameters).
 
-Output:
+3. Connect to the Pulsar cluster through the Oauth2 authentication plugin.
 
-```text
-the namespace is: [public/default]
-```
+    ```shell script
+    go build pulsarctl pulsarctl.go
+    ./pulsarctl -webServiceURL https://cloud.streamnative.dev:443 \
+          -privateKeyFile /path/to/private/key/file.json\
+          -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
+          -issuerUrl https://cloud.streamnative.dev\
+          -clientId abcdefghigk0123456789
+    ```
+
+    **Output**:
+
+    ```text
+    the namespace is: [public/default]
+    ```
+
+## Connect to cluster through Token authentication plugin
+
+1. Get the Web service URLs. For details, see [Get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
+
+2. Get the Token authentication parameters. For details, see [Get Token authentication parameters](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-token-authentication-parameters).
+
+3. Connect to the Pulsar cluster through the Token authentication plugin.
+
+    ```shell script
+    pulsarctl \
+        --admin-service-url WEB_SERVICE_URL \
+        --token AUTH_PARAMS \
+        tenants list
+    ```
