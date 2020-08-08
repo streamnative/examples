@@ -4,8 +4,8 @@ This document describes how to produce message to and consume message from a Pul
 
 # Prerequisites
 
-- Get the `SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](../README.md#How to get service URL)
-- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get token options](../README.md#How to get token options)
+- Get the `SERVICE_URL` of your StreamNative Cloud Pulsar cluster: [How to get service URL](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-service-urls)
+- Get the `AUTH_PARAMS` of your StreamNative Cloud Pulsar cluster: [How to get token options](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-token)
 
 Pulsar Node.js client library is based on the C++ client library. Follow the instructions for
 [C++ library](https://pulsar.apache.org/docs/en/client-libraries-cpp/) for installing the binaries through
