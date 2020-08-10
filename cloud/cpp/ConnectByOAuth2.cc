@@ -18,19 +18,20 @@
  * under the License.
  */
 #include <iostream>
+#include <pulsar/Authentication.h>
 #include <pulsar/Client.h>
 
 using namespace pulsar;
 
 int main() {
     ClientConfiguration config;
-    std::string params = R"({
-    "issuer_url": "https://dev-kt-aa9ne.us.auth0.com/oauth/token",
-    "private_key": "../../pulsar-broker/src/test/resources/authentication/token/cpp_credentials_file.json",
-    "audience": "https://dev-kt-aa9ne.us.auth0.com/api/v2/"})";
+    std::string oauthParams = R"({
+    "issuer_url": "https://cloud/oauth/token",
+    "private_key": "/resources/authentication/token/cpp_credentials_file.json",
+    "audience": "https://cloud.auth0.com/api/v2/"})";
 
     config.setAuth(pulsar::AuthOauth2::create(params));
 
-    Client client("pulsar+ssl://cluster.test.us-east4.streamnative.test.g.sn2.dev:6651", config);
+    Client client("pulsar+ssl://cloud.streamnative.dev:6651", config);
     client.close();
 }
