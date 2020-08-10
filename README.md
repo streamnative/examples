@@ -10,6 +10,10 @@ This is a curated list of demos that showcase Apache Pulsar® messaging and even
 
 - [PubSub Client Examples](clients/README.md)
 
+# Cloud
+
+- [SteamNative Cloud Examples](cloud/README.md)
+
 # Flink
 
 - [Pulsar Flink Connector](pulsar-flink/README.md)
