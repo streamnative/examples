@@ -25,7 +25,7 @@ using namespace pulsar;
 
 int main() {
     ClientConfiguration config;
-    std::string params = R"({
+    std::string oauthParams = R"({
     "issuer_url": "https://cloud/oauth/token",
     "private_key": "/resources/authentication/token/cpp_credentials_file.json",
     "audience": "https://cloud.auth0.com/api/v2/"})";

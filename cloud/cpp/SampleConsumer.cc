@@ -25,9 +25,9 @@ using namespace pulsar;
 
 int main(int argc, char *argv[]) {
     ClientConfiguration config;
-    std::string params = argv[2];
+    std::string oauthParams = argv[2];
 
-    config.setAuth(pulsar::AuthOauth2::create(params));
+    config.setAuth(pulsar::AuthOauth2::create(oauthParams));
 
     Client client(argv[1], config);
 
