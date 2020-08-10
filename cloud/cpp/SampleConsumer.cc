@@ -18,20 +18,18 @@
  * under the License.
  */
 #include <iostream>
+#include <pulsar/Authentication.h>
 #include <pulsar/Client.h>
 
 using namespace pulsar;
 
-int main() {
+int main(int argc, char *argv[]) {
     ClientConfiguration config;
-    std::string params = R"({
-    "issuer_url": "https://dev-kt-aa9ne.us.auth0.com/oauth/token",
-    "private_key": "../../pulsar-broker/src/test/resources/authentication/token/cpp_credentials_file.json",
-    "audience": "https://dev-kt-aa9ne.us.auth0.com/api/v2/"})";
+    std::string params = argv[2];
 
     config.setAuth(pulsar::AuthOauth2::create(params));
 
-    Client client("pulsar+ssl://mhlcluster.mhltest.us-east4.streamnative.test.g.sn2.dev:6651", config);
+    Client client(argv[1], config);
 
     Consumer consumer;
     Result result = client.subscribe("persistent://public/default/my-topic", "consumer-1", consumer);
