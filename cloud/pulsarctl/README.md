@@ -67,7 +67,7 @@ pulsarctl supports to connect to Pulsar cluster through the OAuth2 authenticatio
 3. Connect to the Pulsar cluster through the Oauth2 authentication plugin.
 
     ```shell script
-    go build pulsarctl pulsarctl.go
+    go build pulsarctl ConnectByOAuth2.go
     ./pulsarctl -webServiceURL https://cloud.streamnative.dev:443 \
           -privateKeyFile /path/to/private/key/file.json\
           -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
