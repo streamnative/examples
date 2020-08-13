@@ -52,17 +52,13 @@ snctl pulsarclusters get test-pulsar-cluster-name -n test-pulsar-cluster-namespa
 cloud.streamnative.dev
 ```
 
-Here are examples of the service URL.
-
-- Service URL with TLS authentication
+Here is an example of the service URL.
 
   ```
   pulsar+ssl://cloud.streamnative.dev:6651
   ```
 
-Here are examples of the Web service URL.
-
-- Web service URL with TLS authentication
+Here is an example of the Web service URL.
 
   ```
   https://cloud.streamnative.dev:443
