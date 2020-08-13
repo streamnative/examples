@@ -5,7 +5,6 @@ The `pulsar-admin` is a CLI tool written in Java language for the Apache Pulsar 
 # Prerequisites
 
 - Pulsar client 2.6.1 or higher version (only for connecting the Pulsar cluster through the OAuth2 authentication plugin).
-- Pulsar broker 2.7.0-742fc5c9b+
 
 # Example
 

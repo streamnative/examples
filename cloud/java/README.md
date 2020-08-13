@@ -5,7 +5,7 @@ This document describes how to produce messages to and consume messages from a A
 # Prerequisites
 
 - Java 1.8 or higher version
-- Pulsar broker: 2.7.0-742fc5c9b+
+- Java Client: 2.6.1+
 
 # Example
 

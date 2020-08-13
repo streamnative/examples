@@ -54,12 +54,6 @@ cloud.streamnative.dev
 
 Here are examples of the service URL.
 
-- Common service URL
-
-  ```text
-  pulsar://cloud.streamnative.dev:6650
-  ```
-
 - Service URL with TLS authentication
 
   ```
@@ -67,12 +61,6 @@ Here are examples of the service URL.
   ```
 
 Here are examples of the Web service URL.
-
-- Common Web service URL
-
-  ```text
-  http://cloud.streamnative.dev:8080
-  ```
 
 - Web service URL with TLS authentication
 
