@@ -24,7 +24,7 @@ pulsarctl supports to connect to Pulsar cluster through the OAuth2 authenticatio
 
     ```shell script
     pulsarctl oauth2 activate \
-        --issuer-endpoint https://cloud.streamnative.dev \
+        --issuer-endpoint https://streamnative.cloud \
         --client-id abcdefghigk0123456789 \
         --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
         --key-file /path/to/private/key/file.json
@@ -41,8 +41,8 @@ pulsarctl supports to connect to Pulsar cluster through the OAuth2 authenticatio
 
     ```shell script
     pulsarctl namespaces list public \
-        --admin-service-url https://cloud.streamnative.dev:443 \
-        --issuer-endpoint https://cloud.streamnative.dev \
+        --admin-service-url https://streamnative.cloud:443 \
+        --issuer-endpoint https://streamnative.cloud \
         --client-id abcdefghigk0123456789 \
         --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name \
         --key-file /path/to/private/key/file.json
@@ -68,10 +68,10 @@ pulsarctl supports to connect to Pulsar cluster through the OAuth2 authenticatio
 
     ```shell script
     go build pulsarctl ConnectByOAuth2.go
-    ./pulsarctl -webServiceURL https://cloud.streamnative.dev:443 \
+    ./pulsarctl -webServiceURL https://streamnative.cloud:443 \
           -privateKeyFile /path/to/private/key/file.json\
           -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
-          -issuerUrl https://cloud.streamnative.dev\
+          -issuerUrl https://streamnative.cloud\
           -clientId abcdefghigk0123456789
     ```
 

@@ -25,7 +25,7 @@ This section describes how to connect to a Pulsar cluster through the Oauth2 aut
       --url SERVICE_URL \
       --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
       --auth-params '{"privateKey":"file:///path/to/key/file.json",
-        "issuerUrl":"https://test.auth0.com",
+        "issuerUrl":"https://auth.streamnative.cloud",
         "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
       produce test-topic -m "test-message" -n 10
     ```
@@ -71,10 +71,10 @@ This section describes how to connect to a Pulsar cluster through the Oauth2 aut
 3. Connect to the Pulsar cluster through the Oauth2 authentication plugin.
 
     ```shell script
-    bin/pulsar-perf produce --service-url pulsar+ssl://cloud.streamnative.dev:6651 \
+    bin/pulsar-perf produce --service-url pulsar+ssl://streamnative.cloud:6651 \
       --auth_plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
       --auth-params '{"privateKey":"file:///path/to/key/file.json",
-        "issuerUrl":"https://test.auth0.com",
+        "issuerUrl":"https://auth.streamnative.cloud",
         "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
       -r 1000 -s 1024 test-topic
     ```

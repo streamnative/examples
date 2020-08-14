@@ -37,7 +37,7 @@ The content of each message payload is  `content`.
 
 ```bash
 $ g++ --std=c++11 SampleConsumer.cc -o SampleConsumer -I/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/include -lpulsar -L/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/lib
-$ ./SampleConsumer pulsar+ssl://cloud.streamnative.dev:6651 '{"issuer_url": "https://cloud.streamnative.dev", "private_key": "/path/to/private/key/file.json", "audience": "urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name"}'
+$ ./SampleConsumer pulsar+ssl://streamnative.cloud:6651 '{"issuer_url": "https://streamnative.cloud", "private_key": "/path/to/private/key/file.json", "audience": "urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name"}'
 ```
 
 Replace the Oauth2 parameters (`issuer_url`, `audience`, and `private_key`) and the `args[1](serviceURL)` with the values that you get from Step 1 and Step 2 respectively.
@@ -52,7 +52,7 @@ Received: Message(prod=standalone-1-2, seq=0, publish_time=1596467242114, payloa
 
 ```bash
 $ g++ --std=c++11 SampleProducer.cc -o SampleProducer -I/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/include -lpulsar -L/usr/local/Cellar/libpulsar/{PULSAR_VERSION}/lib
-$ ./SampleProducer pulsar+ssl://cloud.streamnative.dev:6651 '{"issuer_url": "https://cloud.streamnative.dev", "private_key": "/path/to/private/key/file.json", "audience": "urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name"}'
+$ ./SampleProducer pulsar+ssl://streamnative.cloud:6651 '{"issuer_url": "https://streamnative.cloud", "private_key": "/path/to/private/key/file.json", "audience": "urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name"}'
 ```
 
 Output:

@@ -32,7 +32,7 @@ The content of each message payload is a combination of `my-message-` and a digi
 
     ```bash
     cd cloud/node
-    export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+    export SERVICE_URL="pulsar+ssl://streamnative.cloud:6651"
     export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
     node sample_consumer.js
     ```
@@ -56,7 +56,7 @@ The content of each message payload is a combination of `my-message-` and a digi
 
     ```bash
     cd cloud/node
-    export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+    export SERVICE_URL="pulsar+ssl://streamnative.cloud:6651"
     export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
     node sample_producer.js
     ```

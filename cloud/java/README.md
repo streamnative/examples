@@ -28,7 +28,7 @@ The content of each message payload is a combination of `my-message-` and a digi
 
       # Run the consumer
       mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer" \
-          -Dexec.args="--serviceUrl pulsar+ssl://cloud.streamnative.dev:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://cloud.streamnative.dev --privateKey file:///path/to/private/key/file.txt"
+          -Dexec.args="--serviceUrl pulsar+ssl://streamnative.cloud:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://streamnative.cloud --privateKey file:///path/to/private/key/file.txt"
       ```
 
       **Output**:
@@ -54,7 +54,7 @@ The content of each message payload is a combination of `my-message-` and a digi
 
       # Run the producer
       mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumer" \
-          -Dexec.args="--serviceUrl pulsar+ssl://cloud.streamnative.dev:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://cloud.streamnative.dev --privateKey file:///path/to/private/key/file.txt"
+          -Dexec.args="--serviceUrl pulsar+ssl://streamnative.cloud:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://streamnative.cloud --privateKey file:///path/to/private/key/file.txt"
       ```
 
       **Output**:

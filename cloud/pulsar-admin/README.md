@@ -22,7 +22,7 @@ This section describes how to connect to a Pulsar cluster through the Oauth2 aut
     bin/pulsar-admin --admin-url https://cloud.streamnative.dev:443 \
       --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
       --auth-params '{"privateKey":"file:///path/to/key/file.json",
-        "issuerUrl":"https://test.auth0.com",
+        "issuerUrl":"https://auth.streamnative.cloud",
         "audience":"urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance"}' \
       tenants list
     ```
