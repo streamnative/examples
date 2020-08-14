@@ -26,10 +26,10 @@ The content of each message payload is a combination of `hello-` and a digital (
 
        ```bash
        go build -o consumer sampleConsumer.go
-       ./consumer -serviceURL pulsar+ssl://cloud.streamnative.dev:6651 \
+       ./consumer -serviceURL pulsar+ssl://streamnative.cloud:6651 \
               -privateKey /path/to/private/key/file.json\
               -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
-              -issuerUrl https://cloud.streamnative.dev\
+              -issuerUrl https://streamnative.cloud\
               -clientId abcdefghigk0123456789
        ```
 
@@ -52,10 +52,10 @@ The content of each message payload is a combination of `hello-` and a digital (
 
        ```bash
        go build -o producer sampleProdcer.go
-       ./producer -serviceURL pulsar+ssl://cloud.streamnative.dev:6651 \
+       ./producer -serviceURL pulsar+ssl://streamnative.cloud:6651 \
               -privateKey /path/to/private/key/file.json\
               -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
-              -issuerUrl https://cloud.streamnative.dev\
+              -issuerUrl https://streamnative.cloud\
               -clientId abcdefghigk0123456789
        ```
 

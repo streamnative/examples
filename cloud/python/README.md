@@ -43,7 +43,7 @@ The content of each message payload is a combination of `hello-` and a digital (
 
     ```bash
     cd cloud/python
-    export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+    export SERVICE_URL="pulsar+ssl://streamnative.cloud:6651"
     export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
     python SampleConsumer.py
     ```
@@ -67,7 +67,7 @@ The content of each message payload is a combination of `hello-` and a digital (
 
     ```bash
     cd cloud/python
-    export SERVICE_URL="pulsar+ssl://cloud.streamnative.dev:6651"
+    export SERVICE_URL="pulsar+ssl://streamnative.cloud:6651"
     export AUTH_PARAMS="abcdefghijklmnopqretuiwxyz0123456789"
     python SampleProducer.py
     ```

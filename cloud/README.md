@@ -55,13 +55,13 @@ cloud.streamnative.dev
 Here is an example of the service URL.
 
   ```
-  pulsar+ssl://cloud.streamnative.dev:6651
+  pulsar+ssl://streamnative.cloud:6651
   ```
 
 Here is an example of the Web service URL.
 
   ```
-  https://cloud.streamnative.dev:443
+  https://streamnative.cloud:443
   ```
 
 # Get Oauth2 authentication parameters
@@ -105,7 +105,7 @@ To connect to a Pulsar cluster through the Oauth2 authentication plugin, you sho
     "client_id":"0123456789abcdefg",
     "client_secret":"ABCDEFG-JzAFKtj0Dcub9KF1WKN-qhFHBvgfAU_123456789-KI9",
     "client_email":"test@gtest.auth0.com",
-    "issuer_url":"https://test.auth0.com"
+    "issuer_url":"https://auth.streamnative.cloud"
     }
     ```
 
