@@ -32,6 +32,6 @@ int main() {
 
     config.setAuth(pulsar::AuthOauth2::create(params));
 
-    Client client("pulsar+ssl://cloud.streamnative.dev:6651", config);
+    Client client("pulsar+ssl://streamnative.cloud:6651", config);
     client.close();
 }
