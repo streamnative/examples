@@ -49,7 +49,7 @@ snctl pulsarclusters get test-pulsar-cluster-name -n test-pulsar-cluster-namespa
 **Output**:
 
 ```text
-cloud.streamnative.dev
+streamnative.cloud
 ```
 
 Here is an example of the service URL.
@@ -109,7 +109,7 @@ To connect to a Pulsar cluster through the Oauth2 authentication plugin, you sho
     }
     ```
 
-- For the `audience` parameter, it is a combination of the `urn:sn:pulsar`, as well as the namespace amd name of the Pulsar instance. Here is an example of the `audience` parameter.
+- For the `audience` parameter, it is a combination of the `urn:sn:pulsar`, as well as the namespace and the name of the Pulsar instance. Here is an example of the `audience` parameter.
 
     ```text
     urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance-name

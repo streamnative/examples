@@ -19,7 +19,7 @@ This section describes how to connect to a Pulsar cluster through the Oauth2 aut
 3. Connect to the Pulsar cluster through the Oauth2 authentication plugin.
 
     ```shell script
-    bin/pulsar-admin --admin-url https://cloud.streamnative.dev:443 \
+    bin/pulsar-admin --admin-url https://streamnative.cloud:443 \
       --auth-plugin org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2 \
       --auth-params '{"privateKey":"file:///path/to/key/file.json",
         "issuerUrl":"https://auth.streamnative.cloud",
