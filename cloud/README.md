@@ -21,7 +21,7 @@ This directory includes examples of how Pulsar CLI tools and Pulsar clients conn
 
 To use these tools or clients to connect to StreamNative Cloud, you need get the Pulsar service URLs of the StreamNative Cloud and OAuth2 or Token authentication parameters that are used to connect to the service URLs.
 
-Before starting, you should already install snctl, and create the service account, Pulsar instance, and Pulsar cluster. We take the following resources as examples.
+Before starting, you should already install snctl, and create the [service account](https://streamnative.io/docs/cloud/stable/managed-access/service-account.md#create-service-account-through-snctl), [Pulsar instance](https://streamnative.io/docs/cloud/stable/use/instance.md#create-instance-through-snctl), and [Pulsar cluster](https://streamnative.io/docs/cloud/stable/use/cluster.md#create-cluster-through-snctl). We take the following resources as examples.
 
 | Item | Name | Namespace |
 | --- | --- |--- |
