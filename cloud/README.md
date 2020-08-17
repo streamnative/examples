@@ -21,13 +21,19 @@ This directory includes examples of how Pulsar CLI tools and Pulsar clients conn
 
 To use these tools or clients to connect to StreamNative Cloud, you need get the Pulsar service URLs of the StreamNative Cloud and OAuth2 or Token authentication parameters that are used to connect to the service URLs.
 
-Before starting, you should already install snctl, and create the [service account](https://streamnative.io/docs/cloud/stable/managed-access/service-account.md#create-service-account-through-snctl), [Pulsar instance](https://streamnative.io/docs/cloud/stable/use/instance.md#create-instance-through-snctl), and [Pulsar cluster](https://streamnative.io/docs/cloud/stable/use/cluster.md#create-cluster-through-snctl). We take the following resources as examples.
+Before starting, you should already install `snctl`, and create the [service account](https://streamnative.io/docs/cloud/stable/managed-access/service-account.md#create-service-account-through-snctl), [Pulsar instance](https://streamnative.io/docs/cloud/stable/use/instance.md#create-instance-through-snctl), and [Pulsar cluster](https://streamnative.io/docs/cloud/stable/use/cluster.md#create-cluster-through-snctl). We take the following resources as examples.
 
-| Item | Name | Namespace |
+| Item | Name | OrganizationName |
 | --- | --- |--- |
-| Pulsar instance | test-pulsar-instance-name | test-pulsar-instance-namespace |
-| Pulsar cluster  | test-pulsar-cluster-name | test-pulsar-cluster-namespace |
-| Service account | test-service-account-name | test-service-account-namespace |
+| Pulsar instance | test-pulsar-instance-name | test-organization-name |
+| Pulsar cluster  | test-pulsar-cluster-name | test-organization-name |
+| Service account | test-service-account-name | test-organization-name |
+
+> You can get the organization name by following commands:
+>
+> ```shell script
+> $ snctl get organizations -A
+> ```
 
 # Get Pulsar service URLs
 
@@ -37,13 +43,13 @@ Before starting, you should already install snctl, and create the [service accou
 For both the `SERVICE_URL` and  `WEB_SERVICE_URL`  parameters, you can use the following command to get the `hostname` value .
 
 ```shell script
-$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [PULSAT_CLUSTER_NAMESPACE] -o json | jq '.spec.serviceEndpoints[0].dnsName'
+$ snctl get pulsarclusters [PULSAR_CLUSTER_NAME] -n [ORGANIZATION_NAME] -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 This example shows how to get the `hostname` value of the `SERVICE_URL` and  `WEB_SERVICE_URL` parameters.
 
 ```
-snctl pulsarclusters get test-pulsar-cluster-name -n test-pulsar-cluster-namespace -o json | jq '.spec.serviceEndpoints[0].dnsName'
+snctl get pulsarclusters test-pulsar-cluster-name -n test-organization-name -o json | jq '.spec.serviceEndpoints[0].dnsName'
 ```
 
 **Output**:
@@ -77,7 +83,7 @@ To connect to a Pulsar cluster through the Oauth2 authentication plugin, you sho
 - For the `privateKey` parameter, you can use the following command to get the path of an Oauth2 key file.
 
     ```shell script
-    snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [SERVICE_ACCOUNT_NAMESPACE] [flags]
+    snctl auth export-service-account [SERVICE_ACCOUNT_NAME] -n [ORGANIZATION_NAME] [flags]
     
     Flags:
       -h, --help              help for export-service-account
@@ -88,7 +94,7 @@ To connect to a Pulsar cluster through the Oauth2 authentication plugin, you sho
     This example shows how to get the Oauth2 key file.
     
     ```
-    snctl auth export-service-account test-service-account-name -n test-service-account-namespace -f [/path/to/key/file.json]
+    snctl auth export-service-account test-service-account-name -n test-organization-name -f [/path/to/key/file.json]
     ```
     
     **Output:**
@@ -109,10 +115,10 @@ To connect to a Pulsar cluster through the Oauth2 authentication plugin, you sho
     }
     ```
 
-- For the `audience` parameter, it is a combination of the `urn:sn:pulsar`, as well as the namespace and the name of the Pulsar instance. Here is an example of the `audience` parameter.
+- For the `audience` parameter, it is a combination of the `urn:sn:pulsar`, as well as the organization name and name of the Pulsar instance. Here is an example of the `audience` parameter.
 
     ```text
-    urn:sn:pulsar:test-pulsar-instance-namespace:test-pulsar-instance-name
+    urn:sn:pulsar:test-organization-name:test-pulsar-instance-name
     ```
 
 # Get Token authentication parameters
@@ -120,7 +126,7 @@ To connect to a Pulsar cluster through the Oauth2 authentication plugin, you sho
 To connect to a Pulsar cluster through Token authentication plugin, you need to specify the `AUTH_PARAMS` option with the token you obtained through the following command.
 
 ```shell script
-snctl auth get-token [PULSAR_INSTANCE_NAME] -n [PULSAR_INSTANCE_NAMESPACE] [flags]
+snctl auth get-token [PULSAR_INSTANCE_NAME] -n [ORGANIZATION_NAME] [flags]
 
 Flags:
   -h, --help              help for get-token
@@ -132,7 +138,7 @@ Flags:
 This example shows how to get a token.
 
 ```
-snctl auth get-token test-pulsar-instance-name -n test-pulsar-instance-namespace --login
+snctl auth get-token test-pulsar-instance-name -n test-organization-name --login
 ```
 
 **Output:**
@@ -145,7 +151,7 @@ Waiting for login to complete...
 Logged in as cloud@streamnative.io.
 Welcome to Apache Pulsar!
 
-Use the following access token to access Pulsar instance 'test-pulsar-instance-namespace/test-pulsar-instance-name':
+Use the following access token to access Pulsar instance 'test-organization-name/test-pulsar-instance-name':
 
 abcdefghijklmnopqrstuiwxyz0123456789
 ```
