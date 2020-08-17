@@ -33,7 +33,7 @@ pulsarctl supports to connect to Pulsar cluster through the OAuth2 authenticatio
     **Output**:
 
     ```text
-    Logged in as cloud@streamnative.dev.
+    Logged in as cloud@streamnative.cloud.
     Welcome to Pulsar!
     ```
 
