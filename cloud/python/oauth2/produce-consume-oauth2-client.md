@@ -1,4 +1,4 @@
-# Python produce and consume using oauth2 authentication plugin
+# Produce and consume messages using Oauth2 authentication plugin
 
 This example demonstrates how to use oauth2 authentication plugin to connect to the pulsar service for producing and consuming.
 
@@ -55,5 +55,4 @@ This example demonstrates how to use oauth2 authentication plugin to connect to 
     Produce message 'message 8 from oauth2 producer' to the pulsar service successfully.
     Produce message 'message 9 from oauth2 producer' to the pulsar service successfully.
     ```
-
 
