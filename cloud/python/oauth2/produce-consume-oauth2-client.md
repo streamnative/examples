@@ -4,7 +4,7 @@ This example demonstrates how to use oauth2 authentication plugin to connect to 
 
 ## Prerequisites
 
-- Python3 or higher
+- Python 3 or higher
 - pulsar-client 2.6.2 or higher
 
 ## Examples
@@ -55,4 +55,3 @@ This example demonstrates how to use oauth2 authentication plugin to connect to 
     Produce message 'message 8 from oauth2 producer' to the pulsar service successfully.
     Produce message 'message 9 from oauth2 producer' to the pulsar service successfully.
     ```
-
