@@ -31,31 +31,31 @@ cd pulsar/pulsar-client-cpp/python
 sudo python setup.py install
 ```
 
-# Example
+# Examples
 
-## Connect to the Pulsar service with OAuth2 authentication plugin
+## Connect to the Pulsar cluster with OAuth2 authentication plugin
 
 1. Get the service URLs. For details, see [Get Pulsar service URLs](https://github.com/streamnative/pulsar-examples/tree/master/cloud#get-pulsar-service-urls).
 
 2. Get the oauth2 authentication parameters. For details, see [Get Oauth2 authentication parameters](https://github.com/streamnative/examples/tree/master/cloud#get-oauth2-authentication-parameters).
 
-3. Run the Python consumer example to receive messages from the topic `oauth2`.
+3. Run the Python consumer example to receive messages from the topic `my-topic`.
 
     ```shell
     python3 OAuth2Consumer.py \
         -su "pulsar+ssl://streamnative.cloud:6651 \
-        -t oauth2 -n 10 --auth-params '{
+        -t my-topic -n 10 --auth-params '{
         "issuer_url": "https://auth.streamnative.cloud",
         "private_key": "/path/to/private.key",
         "audience": "urn:sn:pulsar:test-organization-name:test-pulsar-instance-name"}'
     ```
 
-4. Run the Python producer to publish messages to the topic `oauth2`.
+4. Run the Python producer to publish messages to the topic `my-topic`.
 
     ```shell
     python3 OAuth2Producer.py \
         -su "pulsar+ssl://streamnative.cloud:6651 \
-        -t oauth2 -n 10 --auth-params '{
+        -t my-topic -n 10 --auth-params '{
         "issuer_url": "https://auth.streamnative.cloud",
         "private_key": "/path/to/private.key",
         "audience": "urn:sn:pulsar:test-organization-name:test-pulsar-instance-name"}'
@@ -77,7 +77,7 @@ sudo python setup.py install
     Produce message 'message 9 from oauth2 producer' to the pulsar service successfully.
     ```
 
-## Connect to the Pulsar service with Token authentication plugin
+## Connect to the Pulsar cluster with Token authentication plugin
 
 In this example, the Python producer publishes data to the `my-topic` in your Pulsar cluster. The consumer receives the message from the `my-topic` and `acknowledges` each received message.
 The content of each message payload is a combination of `hello-` and a digital (0-9) (e.g: `hello-0`).
