@@ -41,7 +41,7 @@ This example demonstrates how to use the Oauth2 authentication plugin to connect
     }'
     ```
     
-    After running this producer example, you will see the following successful message.
+    **Output**
     
     ```shell
     Produce message 'message 0 from oauth2 producer' to the pulsar service successfully.
