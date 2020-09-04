@@ -29,7 +29,7 @@ This example demonstrates how to use the Oauth2 authentication plugin to connect
         "audience": "urn:sn:pulsar:test-organization-name:test-pulsar-instance-name"}'
     ```
 
-4. Open another terminal, run a producer example to produce 10 messages to the pulsar topic `oauth2`.
+4. Run the Python producer to publish messages to the topic `oauth2`.
 
     ```shell
     python3 OAuth2Producer.py \
