@@ -18,7 +18,7 @@ This example demonstrates how to use the Oauth2 authentication plugin to connect
 
 2. Get the oauth2 authentication parameters. For details, see [Get Oauth2 authentication parameters](https://github.com/streamnative/examples/tree/master/cloud#get-oauth2-authentication-parameters).
 
-3. Run a consume example to wait for the produced messages from the topic `oauth2`.
+3. Run the Python consumer example to receive messages from the topic `oauth2`.
 
     ```shell
     python3 OAuth2Consumer.py \
