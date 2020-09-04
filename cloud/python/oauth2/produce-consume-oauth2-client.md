@@ -1,6 +1,6 @@
 # Produce and consume messages using Oauth2 authentication plugin
 
-This example demonstrates how to use oauth2 authentication plugin to connect to the pulsar service for producing and consuming.
+This example demonstrates how to use the Oauth2 authentication plugin to connect to the Pulsar service for producing and consuming messages.
 
 ## Prerequisites
 
