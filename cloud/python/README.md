@@ -5,7 +5,7 @@ This document describes how to produce message to and consume message from a Pul
 # Prerequisites
 
 - Python 3 or higher
-- pulsar-client 2.6.2 or higher
+- pulsar-client 2.6.3, 2.7.0 or higher
 
 # Install pulsar-client library
 
@@ -16,7 +16,7 @@ This section describes how to install the pulsar-client library through pip or t
 To install the pulsar-client library as a pre-built package using the [pip](https://pip.pypa.io/en/stable/) package manager.
 
 ```bash
-pip install pulsar-client==2.6.2
+pip install pulsar-client==2.6.3
 ```
 
 ## Install pulsar-client library from source code
