@@ -355,7 +355,7 @@ func (o *ingestionOps) Add(cmd *cobra.Command) {
 		"Url to get green taxi data")
 	cmd.Flags().StringVar(&o.yellowDataUrl, "yellowDataUrl", "https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2019-01.csv",
 		"Url to get yellow taxi data")
-	cmd.Flags().BoolVar(&o.verbose, "verbose", true, "Log data")
+	cmd.Flags().BoolVar(&o.verbose, "verbose", false, "Log data")
 }
 
 func ingestData(verbose bool, pulsar, auth, url, schema, topic string, speed int, dataType DataType, maxRecordNumber int64, wg *sync.WaitGroup) {
@@ -436,7 +436,7 @@ func ingestToPulsar(verbose bool, pulsarUrl, auth, url, schema, topic string, sp
 				fmt.Println("An error encountered ::", err)
 				return err
 			}
-			produceWithRetry(producer, record, 3, dataType)
+			produceWithRetry(verbose, producer, record, 3, dataType)
 			if verbose {
 				fmt.Printf("Row %d : %v \n", i, record)
 			}
@@ -453,16 +453,18 @@ func ingestToPulsar(verbose bool, pulsarUrl, auth, url, schema, topic string, sp
 	return err
 }
 
-func produceWithRetry(producer pulsar.Producer, taxiRecord []string, retry int, dataType DataType) {
+func produceWithRetry(verbose bool, producer pulsar.Producer, taxiRecord []string, retry int, dataType DataType) {
 	if retry >= 0 {
 		producer.SendAsync(context.Background(), &pulsar.ProducerMessage{
 			Value: buildMsg(taxiRecord, dataType),
 		}, func(id pulsar.MessageID, message *pulsar.ProducerMessage, e error) {
 			if e != nil {
-				produceWithRetry(producer, taxiRecord, retry-1, dataType)
+				produceWithRetry(verbose, producer, taxiRecord, retry-1, dataType)
 				fmt.Printf("Got error publishing message %v with exception %s, retry left %d", message, e, retry)
 			} else {
-				fmt.Printf("Published message %s", id)
+				if verbose {
+					fmt.Printf("Published message %s", id)
+				}
 			}
 		})
 	}
