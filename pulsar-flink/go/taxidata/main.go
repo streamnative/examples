@@ -159,6 +159,10 @@ type GreenTaxiData struct {
          "name":"Flag",
          "type":"string"
       },
+	  {
+         "name":"RatecodeID",
+         "type":"int"
+      },
       {
          "name":"PickUpLocationID",
          "type":"int"
@@ -181,6 +185,10 @@ type GreenTaxiData struct {
       },
       {
          "name":"MTATax",
+         "type":"double"
+      },
+      {
+         "name":"TipAmount",
          "type":"double"
       },
       {
@@ -209,6 +217,7 @@ type YellowTaxiData struct {
 	DropOffDateTime      string
 	PassengerCount       int
 	TripDistance         float64
+	RatecodeID           int
 	Flag                 string
 	PickUpLocationID     int
 	DropOffLocationID    int
@@ -216,6 +225,7 @@ type YellowTaxiData struct {
 	FareAmount           float64
 	Extra                float64
 	MTATax               float64
+	TipAmount            float64
 	TollsAmount          float64
 	ImprovementSurcharge float64
 	TotalAmount          float64
@@ -256,7 +266,7 @@ const (
 
 const (
 	GreenTaxiSchema  = "{\"type\":\"record\",\"name\":\"NYCTaxiDataSchema\",\"namespace\":\"io.streamnative.pulsar.avro.taxidata\",\"doc\":\"This is an avro schema for NYC taxi data.\",\"fields\":[{\"name\":\"VendorID\",\"type\":\"int\"},{\"name\":\"PickUpDateTime\",\"type\":\"string\"},{\"name\":\"DropOffDateTime\",\"type\":\"string\"},{\"name\":\"Flag\",\"type\":\"string\"},{\"name\":\"RatecodeID\",\"type\":\"int\"},{\"name\":\"PickUpLocationID\",\"type\":\"int\"},{\"name\":\"DropOffLocationID\",\"type\":\"int\"},{\"name\":\"PassengerCount\",\"type\":\"int\"},{\"name\":\"TripDistance\",\"type\":\"double\"},{\"name\":\"FareAmount\",\"type\":\"double\"},{\"name\":\"Extra\",\"type\":\"double\"},{\"name\":\"MTATax\",\"type\":\"double\"},{\"name\":\"TipAmount\",\"type\":\"double\"},{\"name\":\"TollsAmount\",\"type\":\"double\"},{\"name\":\"EhailFee\",\"type\":\"double\" },{\"name\":\"ImprovementSurcharge\",\"type\":\"double\"},{\"name\":\"TotalAmount\",\"type\":\"double\"},{\"name\":\"PaymentType\",\"type\":\"int\"},{\"name\":\"TripType\",\"type\":\"int\"},{\"name\":\"CongestionSurcharge\",\"type\":\"double\" }]}"
-	YellowTaxiSchema = "{\"type\":\"record\",\"name\":\"NYCTaxiDataSchema\",\"namespace\":\"io.streamnative.pulsar.avro.taxidata\",\"doc\":\"This is an avro schema for NYC taxi data.\",\"fields\":[{\"name\":\"VendorID\",\"type\":\"int\"},{\"name\":\"PickUpDateTime\",\"type\":\"string\"},{\"name\":\"DropOffDateTime\",\"type\":\"string\"},{\"name\":\"PassengerCount\",\"type\":\"int\"},{\"name\":\"TripDistance\",\"type\":\"double\"},{\"name\":\"Flag\",\"type\":\"string\"},{\"name\":\"PickUpLocationID\",\"type\":\"int\"},{\"name\":\"DropOffLocationID\",\"type\":\"int\"},{\"name\":\"PaymentType\",\"type\":\"int\"},{\"name\":\"FareAmount\",\"type\":\"double\"},{\"name\":\"Extra\",\"type\":\"double\"},{\"name\":\"MTATax\",\"type\":\"double\"},{\"name\":\"TollsAmount\",\"type\":\"double\"},{\"name\":\"ImprovementSurcharge\",\"type\":\"double\"},{\"name\":\"TotalAmount\",\"type\":\"double\"},{\"name\":\"CongestionSurcharge\",\"type\":\"double\"}]}"
+	YellowTaxiSchema = "{\"type\":\"record\",\"name\":\"NYCTaxiDataSchema\",\"namespace\":\"io.streamnative.pulsar.avro.taxidata\",\"doc\":\"This is an avro schema for NYC taxi data.\",\"fields\":[{\"name\":\"VendorID\",\"type\":\"int\"},{\"name\":\"PickUpDateTime\",\"type\":\"string\"},{\"name\":\"DropOffDateTime\",\"type\":\"string\"},{\"name\":\"PassengerCount\",\"type\":\"int\"},{\"name\":\"TripDistance\",\"type\":\"double\"},{\"name\":\"RatecodeID\",\"type\":\"int\"},{\"name\":\"Flag\",\"type\":\"string\"},{\"name\":\"PickUpLocationID\",\"type\":\"int\"},{\"name\":\"DropOffLocationID\",\"type\":\"int\"},{\"name\":\"PaymentType\",\"type\":\"int\"},{\"name\":\"FareAmount\",\"type\":\"double\"},{\"name\":\"Extra\",\"type\":\"double\"},{\"name\":\"MTATax\",\"type\":\"double\"},{\"name\":\"TipAmount\",\"type\":\"double\"},{\"name\":\"TollsAmount\",\"type\":\"double\"},{\"name\":\"ImprovementSurcharge\",\"type\":\"double\"},{\"name\":\"TotalAmount\",\"type\":\"double\"},{\"name\":\"CongestionSurcharge\",\"type\":\"double\"}]}"
 )
 
 var longHelpText = `
@@ -513,17 +523,19 @@ func buildYellowTaxiDataMsg(record []string) YellowTaxiData {
 		DropOffDateTime:      record[2],
 		PassengerCount:       getInt(record[3]),
 		TripDistance:         getDouble(record[4]),
-		Flag:                 record[5],
-		PickUpLocationID:     getInt(record[6]),
-		DropOffLocationID:    getInt(record[7]),
-		PaymentType:          getInt(record[8]),
-		FareAmount:           getDouble(record[9]),
-		Extra:                getDouble(record[10]),
-		MTATax:               getDouble(record[11]),
-		TollsAmount:          getDouble(record[12]),
-		ImprovementSurcharge: getDouble(record[13]),
-		TotalAmount:          getDouble(record[14]),
-		CongestionSurcharge:  getDouble(record[15]),
+		RatecodeID:           getInt(record[5]),
+		Flag:           	  record[6],
+		PickUpLocationID:     getInt(record[7]),
+		DropOffLocationID:    getInt(record[8]),
+		PaymentType:          getInt(record[9]),
+		FareAmount:           getDouble(record[10]),
+		Extra:                getDouble(record[11]),
+		MTATax:               getDouble(record[12]),
+		TipAmount:            getDouble(record[13]),
+		TollsAmount:          getDouble(record[14]),
+		ImprovementSurcharge: getDouble(record[15]),
+		TotalAmount:          getDouble(record[16]),
+		CongestionSurcharge:  getDouble(record[17]),
 	}
 }
 
