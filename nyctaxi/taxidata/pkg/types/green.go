@@ -30,15 +30,17 @@ const GreenTaxiTripSchema = `
       },
       {
          "name":"PickUpDateTime",
-         "type":"string"
+         "type":"long",
+         "logicalType":"timestamp-millis"
       },
       {
          "name":"DropOffDateTime",
-         "type":"string"
+         "type":"long",
+         "logicalType":"timestamp-millis"
       },
       {
-         "name":"Flag",
-         "type":"string"
+         "name":"StoreAndFwdFlag",
+         "type":"boolean"
       },
       {
          "name":"RatecodeID",
@@ -110,9 +112,9 @@ const GreenTaxiTripSchema = `
 
 type GreenTaxiTrip struct {
 	VendorID             int
-	PickUpDateTime       string
-	DropOffDateTime      string
-	Flag                 string
+	PickUpDateTime       int64
+	DropOffDateTime      int64
+	StoreAndFwdFlag      bool
 	RatecodeID           int
 	PickUpLocationID     int
 	DropOffLocationID    int
@@ -134,9 +136,9 @@ type GreenTaxiTrip struct {
 func ParseGreenTaxiTrip(record []string) GreenTaxiTrip {
 	return GreenTaxiTrip{
 		VendorID:             getInt(record[0]),
-		PickUpDateTime:       record[1],
-		DropOffDateTime:      record[2],
-		Flag:                 record[3],
+		PickUpDateTime:       getTimestamp(record[1]),
+		DropOffDateTime:      getTimestamp(record[2]),
+		StoreAndFwdFlag:      getBoolean(record[3]),
 		RatecodeID:           getInt(record[4]),
 		PickUpLocationID:     getInt(record[5]),
 		DropOffLocationID:    getInt(record[6]),

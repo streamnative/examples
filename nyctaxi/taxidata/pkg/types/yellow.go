@@ -30,11 +30,13 @@ const YellowTaxiTripSchema = `
       },
       {
          "name":"PickUpDateTime",
-         "type":"string"
+         "type":"long",
+         "logicalType":"timestamp-millis"
       },
       {
          "name":"DropOffDateTime",
-         "type":"string"
+         "type":"long",
+         "logicalType":"timestamp-millis"
       },
       {
          "name":"PassengerCount",
@@ -45,8 +47,8 @@ const YellowTaxiTripSchema = `
          "type":"double"
       },
       {
-         "name":"Flag",
-         "type":"string"
+         "name":"StoreAndFwdFlag",
+         "type":"boolean"
       },
 	  {
          "name":"RatecodeID",
@@ -102,12 +104,12 @@ const YellowTaxiTripSchema = `
 
 type YellowTaxiTrip struct {
 	VendorID             int
-	PickUpDateTime       string
-	DropOffDateTime      string
+	PickUpDateTime       int64
+	DropOffDateTime      int64
 	PassengerCount       int
 	TripDistance         float64
 	RatecodeID           int
-	Flag                 string
+	StoreAndFwdFlag      bool
 	PickUpLocationID     int
 	DropOffLocationID    int
 	PaymentType          int
@@ -124,12 +126,12 @@ type YellowTaxiTrip struct {
 func ParseYellowTaxiTrip(record []string) YellowTaxiTrip {
 	return YellowTaxiTrip{
 		VendorID:             getInt(record[0]),
-		PickUpDateTime:       record[1],
-		DropOffDateTime:      record[2],
+		PickUpDateTime:       getTimestamp(record[1]),
+		DropOffDateTime:      getTimestamp(record[2]),
 		PassengerCount:       getInt(record[3]),
 		TripDistance:         getDouble(record[4]),
 		RatecodeID:           getInt(record[5]),
-		Flag:                 record[6],
+		StoreAndFwdFlag:      getBoolean(record[6]),
 		PickUpLocationID:     getInt(record[7]),
 		DropOffLocationID:    getInt(record[8]),
 		PaymentType:          getInt(record[9]),
