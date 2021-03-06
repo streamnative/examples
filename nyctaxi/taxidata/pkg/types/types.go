@@ -17,7 +17,18 @@
 
 package types
 
-import "strconv"
+import (
+	"strconv"
+	"time"
+)
+
+const (
+	TimestampFormat = "2006-01-02 15:04:05"
+)
+
+var (
+	TimestampLocation, _ = time.LoadLocation("America/New_York")
+)
 
 func getInt(s string) int {
 	i, err := strconv.Atoi(s)
@@ -33,4 +44,16 @@ func getDouble(s string) float64 {
 		return 0.0
 	}
 	return f
+}
+
+func getTimestamp(s string) int64 {
+	t, err := time.ParseInLocation(TimestampFormat, s, TimestampLocation)
+	if err != nil {
+		return 0
+	}
+	return t.Unix()
+}
+
+func getBoolean(s string) bool {
+	return s == "Y"
 }

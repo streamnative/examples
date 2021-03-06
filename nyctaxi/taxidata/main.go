@@ -295,25 +295,3 @@ func greenMessage(record []string) interface{} {
 func yellowMessage(record []string) interface{} {
 	return types.ParseYellowTaxiTrip(record)
 }
-
-//func consumeData() {
-//	client, err := pulsar.NewClient(pulsar.ClientOptions{
-//		URL:            "pulsar://localhost:33000",
-//		Authentication: nil,
-//	})
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//	greenTaxiSchema := "{\"type\":\"record\",\"name\":\"NYCTaxiDataSchame\",\"namespace\":\"io.streamnative.pulsar.avro.taxidata\",\"doc\":\"This is an avro schema for NYC taxi data.\",\"fields\":[{\"name\":\"VendorID\",\"type\":\"int\"},{\"name\":\"PickUpDateTime\",\"type\":\"string\"},{\"name\":\"DropOffDateTime\",\"type\":\"string\"},{\"name\":\"Flag\",\"type\":\"string\"},{\"name\":\"RatecodeID\",\"type\":\"int\"},{\"name\":\"PickUpLocationID\",\"type\":\"int\"},{\"name\":\"DropOffLocationID\",\"type\":\"int\"},{\"name\":\"PassengerCount\",\"type\":\"int\"},{\"name\":\"TripDistance\",\"type\":\"double\"},{\"name\":\"FareAmount\",\"type\":\"double\"},{\"name\":\"Extra\",\"type\":\"double\"},{\"name\":\"MTATax\",\"type\":\"double\"},{\"name\":\"TipAmount\",\"type\":\"double\"},{\"name\":\"TollsAmount\",\"type\":\"double\"},{\"name\":\"EhailFee\",\"type\":\"double\" },{\"name\":\"ImprovementSurcharge\",\"type\":\"double\"},{\"name\":\"TotalAmount\",\"type\":\"double\"},{\"name\":\"PaymentType\",\"type\":\"int\"},{\"name\":\"TripType\",\"type\":\"int\"},{\"name\":\"CongestionSurcharge\",\"type\":\"double\" }]}"
-//	jsonSchema := pulsar.NewJSONSchema(greenTaxiSchema, nil)
-//	consumer, err := client.Subscribe(pulsar.ConsumerOptions{
-//		Topic:                       "nyc-taxi-data222",
-//		SubscriptionName:            "my-sub",
-//		Schema:                      jsonSchema,
-//		SubscriptionInitialPosition: pulsar.SubscriptionPositionEarliest,
-//	})
-//	msg, err := consumer.Receive(context.Background())
-//	taxidata := &GreenTaxiTrip{}
-//	jsonSchema.Decode(msg.Payload(), taxidata)
-//	fmt.Println(taxidata)
-//}
