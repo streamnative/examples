@@ -22,6 +22,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"github.com/apache/pulsar-client-go/pulsar"
+	"github.com/sirupsen/logrus"
 	"github.com/streamnative/examples/nyctaxi/taxidata/pkg/options"
 	"github.com/streamnative/examples/nyctaxi/taxidata/pkg/types"
 	"io"
@@ -88,6 +89,10 @@ func main() {
 func (o *ingestionOps) Run(_ *cobra.Command, _ []string) error {
 	var ingestArgs []ingestionArgs
 	var wg sync.WaitGroup
+
+	if o.verbose {
+		logrus.SetLevel(logrus.DebugLevel)
+	}
 
 	switch o.dataType {
 	case "green":
