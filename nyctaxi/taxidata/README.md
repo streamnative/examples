@@ -1,67 +1,100 @@
-A little tool to ingest [NYC Taxi Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page) to 
-a pulsar topic to serve as an example dataset.
+The `taxidata` tool supports ingesting green/yellow NYC Taxi data to a Pulsar topic to serve as an example dataset. To obtain a data URL, right-click the data record and choose **Copy Link Address**.
+
+For more details about the dataset, see [TLC Trip Record Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page).
 
 ## Setup
-Prepare a working pulsar cluster following the guide from official site: https://pulsar.apache.org/
 
-Then, clone this repository and build the `taxidata` tool:
-```bash
-go build
-```
+- Prepare a working Pulsar cluster. For details about how to create a Pulsar cluster through the `pulsar-admin` tool, see [Create Pulsar Cluster](https://pulsar.apache.org/docs/en/pulsar-admin/#create).
+
+- Build the `taxidata` tool.
+
+  1. Clone this repository from GitHub to your local computer.
+
+		```bash
+		git clone https://github.com/streamnative/examples
+		cd examples/nyctaxi/taxidata
+		```
+
+  2. Build the `taxidata` tool.
+
+		```bash
+		go build
+		```
 
 ## Usage
-Use the `taxidata` tool to ingest the NYC Taxi data.
-```text
-  taxidata [flags]
 
-Flags:
-      --dataType string              Type of data to ingest, can be 'green', 'yellow' or 'both' (default "both")
-      --greenDataUrl string          Url to get green taxi data (default "https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2019-01.csv")
-  -h, --help                         help for taxiData
-      --maxRecordNumber int          Maximum number of message to ingest, if not specified will ingest whole record set. (default 10000)
-      --pulsarUrl string             Url of pulsar cluster to connect
-      --speed int                    Speed for ingestion as number of message/second (default 100)
-      --topicNameGreen string        Topic to ingest green taxi data to (default "taxidata-green")
-      --topicNameYellow string       Topic to ingest yellow taxi data to (default "taxidata-yellow")
-      --verbose                      Log data (default false)
-      --yellowDataUrl string         Url to get yellow taxi data (default "https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2019-01.csv")
-```
-More detail about the dataset can be found on the [TLC Trip Record Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page) page. 
-This tool supports ingesting the green/yellow taxi trip records, starting from January 2019. To obtain a data URL, right-click and choose 'Copy Link Address'.
+This section describes `taxidata` configurations and gives an example about how to use the `taxidata` tool to load data to Pulsar topics. 
 
-Notice the speed can only control maximum ingestion speed, actual ingestion rate also depends on network conditions.
+### Configurations
 
-This tool supports a variety of authentication providers:
-```text
-      --auth-plugin string       The plugin to use for plugin authentication
-      --auth-params string       The parameters for plugin authentication
-      --token string             The token to use for token authentication
-      --token-file string        The file with a token to use for token authentication
-      --tls-cert-file string     The file with a TLS certificate for TLS authentication
-      --tls-key-file string      The file with a TLS private key for TLS authentication
-      --oauth2-issuer string     The issuer endpoint for OAuth2 authentication
-      --oauth2-audience string   The audience identifier for OAuth2 authentication
-      --oauth2-key-file string   The file with client credentials for OAuth2 authentication
-```
+This table lists parameters available for the `taxidata` command.
 
-### Examples 
-Ingest both green and yellow taxi data from 2019/01 to topic `public/default/taxidata-green` and to `public/default/taxidata-yellow` at the 
-speed of 100 records/sec to a maximum of 1000 records from each data set:
-```bash
-taxidata --pulsarUrl pulsar://localhost:6650 --maxRecordNumber 1000 --speed 100
-```
+| Parameter | Description | Default |
+| --- | --- | --- |
+| `--dataType` | Type of data to ingest, available values: `green`, `yellow` or `both`| `both` |
+| `--greenDataUrl` | URL to get the green Taxi data | https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2019-01.csv |
+| `--maxRecordNumber` | Maximum number of message to ingest, if not specified will ingest whole record set. | 10000 |
+| `--pulsarUrl` | URL to connect to the Pulsar cluster | N/A|
+| `--speed` | Speed for ingestion as number of message/second. The `speed` parameter is used to specify the maximum ingestion speed. The actual ingestion rate depends on your network conditions. | 100 |
+| `--topicNameGreen` | Topic to ingest green Taxi data to | `taxidata-green` |
+| `--topicNameYellow` | Topic to ingest yellow Taxi data to | `taxidata-yellow` |
+| `--verbose` | Log data | `false` |
+| `--yellowDataUrl` | URL to get the yellow Taxi data | https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2019-01.csv) |
 
-Ingest green taxi data to the specified topic `my-tenant/my-namespace/taxidata-green`:
-```bash
-taxidata --pulsarUrl pulsar://localhost:6650 --dataType green --topicNameGreen my-tenant/my-namespace/taxidata-green
-```
+This table lists authentication parameters supported by the `taxidata` tool.
 
-Ingest yellow taxi data from the specified data URL:
-```bash
-taxidata --pulsarUrl pulsar://localhost:6650 --dataType yellow --yellowDataUrl https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2019-03.csv
-```
+| Parameter | Description |
+| --- | --- |
+| `--auth-plugin` | The plugin for plugin authentication |
+| `--auth-params` | The parameters for plugin authentication |
+| `--token` | The token for token authentication |
+| `--token-file` | The file with a token for token authentication |
+| `--tls-cert-file` | The file with a TLS certificate for TLS authentication |
+| `--tls-key-file` | The file with a TLS private key for TLS authentication |
+| `--oauth2-issuer` | The issuer endpoint for OAuth2 authentication |
+| `--oauth2-audience` | The audience identifier for OAuth2 authentication |
+| `--oauth2-key-file` | The file with client credentials for OAuth2 authentication |
 
-Ingest taxi data using a TLS connection with TLS authentication:
-```bash
-taxidata --pulsarUrl pulsar+ssl://localhost:6651 --tls-cert-file my-role.cert.pem --tls-key-file my-role.key-pk8.pem
-```
+### Examples
+
+This example shows how to use the `taxidata` tool to ingest both green and yellow NYC Taxi data to topics `public/default/taxidata-green` and `public/default/taxidata-yellow` in StreamNative Cloud.
+
+1. Create a Pulsar cluster through [StreamNative Cloud Manager](https://console.streamnative.cloud/login). For details, see [Create Pulsar Cluster](https://docs.streamnative.io/cloud/stable/use/cluster#create-cluster-through-streamnative-cloud-manager).
+
+2. Create a service account with the super-admin permission for the cluster and download the key file of the service account to your local computer. For details, see [Work with service account](https://docs.streamnative.io/cloud/stable/managed-access/service-account#work-with-service-account-through-streamnative-cloud-manager).
+
+3. Create a Flink cluster. For details, see [Create Flink cluster](https://docs.streamnative.io/cloud/stable/compute/flink-sql.md#create-flink-cluster). The Flink cluster is associated with the Pulsar cluster.
+
+4. Connect to the Pulsar cluster through the OAuth2 authentication plugin.
+
+	```bash
+	taxidata \
+	--oauth2-issuer https://auth.streamnative.cloud  \
+	--oauth2-audience urn:sn:pulsar:pulsar-namespace-name:pulsar-instance-name \
+	--oauth2-key-file /absolute path/to/key/file.json \
+	--pulsarUrl BROKER_SERVICE_URL
+	```
+
+5. Load the NYC Taxi data to topics `public/default/greenTaxi` and `public/default/yellowTaxi` in StreamNative Cloud.
+
+	```bash
+	taxidata \
+	--topicNameGreen public/default/greenTaxi \
+	--topicNameYellow public/default/yellowTaxi \
+	--oauth2-issuer https://auth.streamnative.cloud  \
+	--oauth2-audience urn:sn:pulsar:pulsar-namespace-name:pulsar-instance-name \
+	--oauth2-key-file /absolute path/to/key/file.json \
+	--pulsarUrl BROKER_SERVICE_URL
+	```
+
+6. Submit one or more FLink SQL query jobs through the StreamNative Cloud Manager.
+
+   1. On the left pane of the StreamNative Cloud Manager, click **SQL**.
+
+   2. Select the Flink database (Flink cluster) and Flink catalog (Pulsar cluster).
+
+   3. Select the `public/default` table.
+
+   4. Write one or more SQL statements on the **SQL Editor** window and click then **Run**.
+
+7. Scroll down the page to check the query results at the **Result** area.
