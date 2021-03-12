@@ -1,4 +1,4 @@
-The `taxidata` tool supports ingesting green/yellow NYC Taxi data to a Pulsar topic to serve as an example dataset. To obtain a data URL, right-click the data record and choose **Copy Link Address**.
+The `taxidata` tool supports ingesting green or yellow NYC Taxi data to a Pulsar topic to serve as an example dataset. To obtain a data URL, right-click the data record and choose **Copy Link Address**.
 
 For more details about the dataset, see [TLC Trip Record Data](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page).
 
@@ -31,31 +31,31 @@ This table lists parameters available for the `taxidata` command.
 
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `--dataType` | Type of data to ingest, available values: `green`, `yellow` or `both`| `both` |
-| `--greenDataUrl` | URL to get the green Taxi data | https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2019-01.csv |
-| `--maxRecordNumber` | Maximum number of message to ingest, if not specified will ingest whole record set. | 10000 |
-| `--pulsarUrl` | URL to connect to the Pulsar cluster | N/A|
-| `--speed` | Speed for ingestion as number of message/second. The `speed` parameter is used to specify the maximum ingestion speed. The actual ingestion rate depends on your network conditions. | 100 |
-| `--topicNameGreen` | Topic to ingest green Taxi data to | `taxidata-green` |
-| `--topicNameYellow` | Topic to ingest yellow Taxi data to | `taxidata-yellow` |
-| `--verbose` | Log data | `false` |
-| `--yellowDataUrl` | URL to get the yellow Taxi data | https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2019-01.csv) |
+| `--dataType` | The type of data to ingest. Available values are `green`, `yellow` or `both`. | `both` |
+| `--greenDataUrl` | The URL to get the green Taxi data. | https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2019-01.csv |
+| `--maxRecordNumber` | The maximum number of messages to ingest. If it is not specified, all records will be ingested. | 10000 |
+| `--pulsarUrl` | The URL to connect to the Pulsar cluster. | N/A|
+| `--speed` | The speed for ingestion（messages per second). The `speed` parameter is used to specify the maximum ingestion speed. The actual ingestion rate depends on your network conditions. | 100 |
+| `--topicNameGreen` | The topic to which the green Taxi data is produced. | `taxidata-green` |
+| `--topicNameYellow` | The topic to which the yellow Taxi data is produced. | `taxidata-yellow` |
+| `--verbose` | the log data. | `false` |
+| `--yellowDataUrl` | The URL to get the yellow Taxi data. | https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2019-01.csv) |
 
 This table lists authentication parameters supported by the `taxidata` tool.
 
 | Parameter | Description |
 | --- | --- |
-| `--auth-plugin` | The plugin for plugin authentication |
-| `--auth-params` | The parameters for plugin authentication |
-| `--token` | The token for token authentication |
-| `--token-file` | The file with a token for token authentication |
-| `--tls-cert-file` | The file with a TLS certificate for TLS authentication |
-| `--tls-key-file` | The file with a TLS private key for TLS authentication |
-| `--oauth2-issuer` | The issuer endpoint for OAuth2 authentication |
-| `--oauth2-audience` | The audience identifier for OAuth2 authentication |
-| `--oauth2-key-file` | The file with client credentials for OAuth2 authentication |
+| `--auth-plugin` | The plugin used for the plugin authentication method. |
+| `--auth-params` | The parameters  for the plugin authentication method. |
+| `--token` | The token for the token authentication method. |
+| `--token-file` | The file with a token for the token authentication method. |
+| `--tls-cert-file` | The file with a TLS certificate for the TLS authentication method. |
+| `--tls-key-file` | The file with a TLS private key for the TLS authentication method. |
+| `--oauth2-issuer` | The issuer endpoint for the OAuth2 authentication method. |
+| `--oauth2-audience` | The audience identifier for the OAuth2 authentication method. |
+| `--oauth2-key-file` | The file with client credentials for the OAuth2 authentication method. |
 
-### Examples
+### Example
 
 This example shows how to use the `taxidata` tool to ingest both green and yellow NYC Taxi data to topics `public/default/taxidata-green` and `public/default/taxidata-yellow` in StreamNative Cloud.
 
@@ -75,7 +75,7 @@ This example shows how to use the `taxidata` tool to ingest both green and yello
 	--pulsarUrl BROKER_SERVICE_URL
 	```
 
-5. Load the NYC Taxi data to topics `public/default/greenTaxi` and `public/default/yellowTaxi` in StreamNative Cloud.
+5. Load the NYC Taxi data to the `public/default/greenTaxi` and `public/default/yellowTaxi` topics in StreamNative Cloud.
 
 	```bash
 	taxidata \
@@ -95,6 +95,6 @@ This example shows how to use the `taxidata` tool to ingest both green and yello
 
    3. Select the `public/default` table.
 
-   4. Write one or more SQL statements on the **SQL Editor** window and click then **Run**.
+   4. Write one or more SQL statements on the **SQL Editor** window and then click **Run**.
 
 7. Scroll down the page to check the query results at the **Result** area.
