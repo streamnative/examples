@@ -23,7 +23,7 @@ For more details about the dataset, see [TLC Trip Record Data](https://www1.nyc.
 
 ## Usage
 
-This section describes `taxidata` configurations and gives an example about how to use the `taxidata` tool to load data to Pulsar topics. 
+This section describes `taxidata` configurations and gives an example about how to use the `taxidata` tool to load data to Pulsar topics.
 
 ### Configurations
 
@@ -87,7 +87,7 @@ This example shows how to use the `taxidata` tool to ingest both green and yello
 	--pulsarUrl BROKER_SERVICE_URL
 	```
 
-6. Submit one or more FLink SQL query jobs through the StreamNative Cloud Manager.
+6. Execute one or more FLink SQL queries through the StreamNative Cloud Manager.
 
    1. On the left pane of the StreamNative Cloud Manager, click **SQL**.
 
