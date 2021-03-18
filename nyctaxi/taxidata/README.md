@@ -4,7 +4,7 @@ For more details about the dataset, see [TLC Trip Record Data](https://www1.nyc.
 
 ## Setup
 
-- Prepare a working Pulsar cluster. For details about how to create a Pulsar cluster through the `pulsar-admin` tool, see [Create Pulsar Cluster](https://pulsar.apache.org/docs/en/pulsar-admin/#create).
+- Prepare a working Pulsar cluster. For details about how to create a Pulsar cluster through the StreamNative Cloud Manager, see [Create Pulsar Cluster](https://docs.streamnative.io/cloud/stable/use/cluster#create-cluster-through-streamnative-cloud-manager).
 
 - Build the `taxidata` tool.
 
@@ -71,7 +71,7 @@ This example shows how to use the `taxidata` tool to ingest both green and yello
 	taxidata \
 	--oauth2-issuer https://auth.streamnative.cloud  \
 	--oauth2-audience urn:sn:pulsar:pulsar-namespace-name:pulsar-instance-name \
-	--oauth2-key-file /absolute path/to/key/file.json \
+	--oauth2-key-file /path/to/key/file.json \
 	--pulsarUrl BROKER_SERVICE_URL
 	```
 
@@ -83,7 +83,7 @@ This example shows how to use the `taxidata` tool to ingest both green and yello
 	--topicNameYellow public/default/yellowTaxi \
 	--oauth2-issuer https://auth.streamnative.cloud  \
 	--oauth2-audience urn:sn:pulsar:pulsar-namespace-name:pulsar-instance-name \
-	--oauth2-key-file /absolute path/to/key/file.json \
+	--oauth2-key-file /path/to/key/file.json \
 	--pulsarUrl BROKER_SERVICE_URL
 	```
 
