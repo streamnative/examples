@@ -56,7 +56,8 @@ public class TokenConsumer {
         while (running) {
             final ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
             if (!records.isEmpty()) {
-                records.forEach(record -> System.out.println("Receive record: " + record));
+                records.forEach(record -> System.out.println("Receive record: " + record.value() + " from "
+                        + record.topic() + "-" + record.partition() + "@" + record.offset()));
                 running = false;
             }
         }
