@@ -13,6 +13,7 @@
  */
 package io.streamnative.examples.kafka;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
@@ -25,17 +26,17 @@ import org.apache.kafka.common.serialization.StringDeserializer;
  * A token authentication example of Kafka consumer.
  */
 public class TokenConsumer {
-    public static void main(String[] args) {
-        final String bootstrapServers = "localhost:9092";
-        final String topic = "persistent://public/default/my-topic";
-        final String group = "my-group";
-        final String namespace = "public/default";
-        final String token = "token:eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyb290In0.gt-c0gy2JL6LyXziRfW3DbiTxsaWDaQEFuWRiYkn2Q"
-                + "t5mmbzHWPZw2LI06YcK3n2ekq00MB5VlOiZRpyJPw61pn6uE6bS1e5pOSN5XqWZT9yoLd5tviDdyTG4itcIhiRThMZBYuajGuSRf"
-                + "g0zDN3onxWedvgEkA_3krXxKF6RyWJM3JFtfh6XxkmRF3djVswpjQMJIqB9td42_noVoHkVdcXO_Gev7_X9tcdetM-bIvpvpbOFf"
-                + "nQoMhZ1_kf3vbb0fhHp9oixpO0bk-TExakGBSp4wTqys2PcKN9e9B8Yz4x-4fyYBWi0oTURzE-RDAPjR6OcXRICe4QxIsKfnS_5g"
-                ;
+    public static void main(String[] args) throws IOException {
+        // 1. Get the configured parameters from token.properties
+        final Properties tokenProps = new Properties();
+        tokenProps.load(TokenProducer.class.getClassLoader().getResourceAsStream("token.properties"));
+        final String bootstrapServers = tokenProps.getProperty("bootstrap.servers");
+        final String topic = tokenProps.getProperty("topic");
+        final String group = tokenProps.getProperty("group");
+        final String namespace = tokenProps.getProperty("namespace");
+        final String token = tokenProps.getProperty("token");
 
+        // 2. Create a consumer with token authentication, which is equivalent to SASL/PLAIN mechanism in Kafka
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -47,9 +48,10 @@ public class TokenConsumer {
         props.put("sasl.jaas.config", String.format(
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
                 namespace, token));
-
         final KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Collections.singleton(topic));
+
+        // 3. Consume some messages and quit immediately
         boolean running = true;
         while (running) {
             final ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));

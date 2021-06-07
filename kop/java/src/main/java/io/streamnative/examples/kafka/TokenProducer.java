@@ -13,6 +13,7 @@
  */
 package io.streamnative.examples.kafka;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -26,16 +27,16 @@ import org.apache.kafka.common.serialization.StringSerializer;
  * A token authentication example of Kafka producer.
  */
 public class TokenProducer {
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        final String bootstrapServers = "localhost:9092";
-        final String topic = "persistent://public/default/my-topic";
-        final String namespace = "public/default";
-        final String token = "token:eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyb290In0.gt-c0gy2JL6LyXziRfW3DbiTxsaWDaQEFuWRiYkn2Q"
-                + "t5mmbzHWPZw2LI06YcK3n2ekq00MB5VlOiZRpyJPw61pn6uE6bS1e5pOSN5XqWZT9yoLd5tviDdyTG4itcIhiRThMZBYuajGuSRf"
-                + "g0zDN3onxWedvgEkA_3krXxKF6RyWJM3JFtfh6XxkmRF3djVswpjQMJIqB9td42_noVoHkVdcXO_Gev7_X9tcdetM-bIvpvpbOFf"
-                + "nQoMhZ1_kf3vbb0fhHp9oixpO0bk-TExakGBSp4wTqys2PcKN9e9B8Yz4x-4fyYBWi0oTURzE-RDAPjR6OcXRICe4QxIsKfnS_5g"
-                ;
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+        // 1. Get the configured parameters from token.properties
+        final Properties tokenProps = new Properties();
+        tokenProps.load(TokenProducer.class.getClassLoader().getResourceAsStream("token.properties"));
+        final String bootstrapServers = tokenProps.getProperty("bootstrap.servers");
+        final String topic = tokenProps.getProperty("topic");
+        final String namespace = tokenProps.getProperty("namespace");
+        final String token = tokenProps.getProperty("token");
 
+        // 2. Create a producer with token authentication, which is equivalent to SASL/PLAIN mechanism in Kafka
         final Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -44,9 +45,10 @@ public class TokenProducer {
         props.put("sasl.mechanism", "PLAIN");
         props.put("sasl.jaas.config", String.format(
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
-                namespace, token));
-
+                tokenProps.getProperty("namespace"), tokenProps.getProperty("token")));
         final KafkaProducer<String, String> producer = new KafkaProducer<>(props);
+
+        // 3. Produce one message
         final Future<RecordMetadata> recordMetadataFuture = producer.send(new ProducerRecord<>(topic, "hello"));
         final RecordMetadata recordMetadata = recordMetadataFuture.get();
         System.out.println("Send hello to " + recordMetadata);
