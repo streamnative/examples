@@ -1,0 +1,340 @@
+initialize: false
+# set the namespace you wish to install 
+namespace: pulsar
+# change to false if you want to manage namespace by yourself
+namespaceCreate: true
+components:
+  kop: false
+  streamnative_console: true
+  proxy: true
+  vault: true
+  pulsar_manager: false
+
+monitoring:
+  # monitoring - prometheus
+  prometheus: false
+  # monitoring - grafana
+  grafana: false
+  # monitoring - node_exporter
+  node_exporter: false
+  # alerting - alert-manager
+  alert_manager: false
+  datadog: false
+  loki: false
+
+auth:
+  authentication:
+    enabled: true
+  authorization:
+    enabled: true
+  superUsers:
+    broker: broker-admin
+    client: admin
+    proxy: proxy-admin
+    pulsar_manager: super
+    streamnative_console: super
+  vault:
+    enabled: true
+
+vault:
+  serviceAccount:
+    created: true
+  volume:
+    persistence: false
+    name: "raft"
+    size: 10Gi
+    local_storage: true
+    #storageClassName: "local-hdd"
+  volumeMounts:
+  - name: vault-raft
+    mountPath: /vault/file
+
+  config:
+    storage:
+      raft:
+        path: "/vault/file"
+    listener:
+      tcp:
+        tls_disable: true
+        address: "[::]:8200"
+    api_addr: http://vault.default:8200
+    cluster_addr: "http://${.Env.POD_NAME}:8201"
+    ui: true
+  
+
+zookeeper:
+  operator:
+    enabled: true
+  replicaCount: 3
+  resources:
+    requests:
+      memory: 500Mi
+      cpu: 100m
+  volumes:
+    useSeparateDiskForTxlog: true
+    data:
+      name: data
+      size: 10Gi
+      storageClassName: local-ssd
+    dataLog:
+      name: datalog
+      size: 10Gi
+      storageClassName: local-hdd
+  configData:
+    PULSAR_MEM: >
+      -Xms300M -Xmx300M
+    PULSAR_EXTRA_OPTS: >
+      -Dzookeeper.snapCount=1000000
+    PULSAR_PREFIX_maxClientCnxns: "1000"
+
+bookkeeper:
+  operator:
+    enabled: true
+  replicaCount: 3
+  resources:
+    limits:
+      cpu: 100m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  volumes:
+    journal:
+      name: journal
+      size: 5Gi
+      storageClassName: local-ssd
+    ledgers:
+      name: ledgers
+      size: 10Gi
+      storageClassName: local-hdd
+  configData:
+    PULSAR_GC: >
+      -XX:+ExitOnOutOfMemoryError
+    PULSAR_MEM: >
+      -Xms100M
+      -Xmx100M
+      -XX:MaxDirectMemorySize=100M
+    PULSAR_EXTRA_OPTS: >
+      -Dpulsar.allocator.exit_on_oom=true
+      -Dio.netty.recycler.maxCapacity.default=1000
+      -Dio.netty.recycler.linkCapacity=1024
+      -Dnetworkaddress.cache.ttl=60
+    # set your customized config here
+    PULSAR_PREFIX_useTransactionalCompaction: "true"
+    PULSAR_PREFIX_persistBookieStatusEnabled: "false"
+
+broker:
+  operator:
+    enabled: true
+  externalDNSName: ""
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  # enable functionmesh
+  functionmesh:
+    enabled: true
+  
+  configData:
+    PULSAR_MEM: >
+      -Xms100M
+      -Xmx100M
+      -XX:MaxDirectMemorySize=100M
+    PULSAR_GC: >
+      -XX:+ExitOnOutOfMemoryError
+    PULSAR_EXTRA_OPTS: >
+      -Dpulsar.allocator.exit_on_oom=true
+      -Dio.netty.recycler.maxCapacity.default=1000
+      -Dio.netty.recycler.linkCapacity=1024
+      -Dnetworkaddress.cache.ttl=60
+    authenticationEnabled: "false"
+    authorizationEnabled: "false"
+    managedLedgerDefaultEnsembleSize: "2"
+    managedLedgerDefaultWriteQuorum: "2"
+    managedLedgerDefaultAckQuorum: "2"
+
+
+proxy:
+  operator:
+    enabled: true
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  configData:
+    PULSAR_MEM: >
+      -Xms100M -Xmx100M -XX:MaxDirectMemorySize=100M
+    PULSAR_GC: >
+      -XX:+ExitOnOutOfMemoryError
+    PULSAR_EXTRA_OPTS: >
+      -Dpulsar.allocator.exit_on_oom=true
+      -Dio.netty.recycler.maxCapacity.default=1000
+      -Dio.netty.recycler.linkCapacity=1024
+      -Dnetworkaddress.cache.ttl=60
+    httpOutputBufferSize: "512"
+    httpNumThreads: "6"
+    # enable vault authentication
+    authenticationEnabled: "false"
+    authorizationEnabled: "false"
+
+# streamnative_console
+streamnative_console:
+  component: streamnative-console
+  # config username and password for the console
+  username: "admin"
+  password: "admin123"
+  ports:
+    frontend: 9527
+    backend: 7750
+  replicaCount: 1
+  volumes:
+    persistence: false
+    data:
+      name: data
+      size: 5Gi
+      storageClassName: local-ssd
+  configData:
+    DEFAULT_ORGANIZATION: streamnative
+    DEFAULT_NAME: streamnative
+    INSTANCE_NAME: pulsar
+  #service:
+  #  type: LoadBalancer
+  #  ports:
+  #    frontend: 80
+
+prometheus:
+  # keep request = limit to keep this container in guaranteed class
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  volumes:
+    data:
+      name: data
+      size: 5Gi
+      storageClassName: local-ssd
+grafana:
+  resources:
+    # keep request = limit to keep this container in guaranteed class
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 100m
+      memory: 200Mi
+
+alert_manager:
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: 100m
+  config:
+    global:
+      resolve_timeout: 1m
+  # add your rules here
+  rules:
+    groups:
+      - name: node
+        rules:
+          - alert: InstanceDown
+            expr: up == 0
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Instance {{ $labels.kubernetes_pod_name }} down."
+              description: "{{ $labels.kubernetes_pod_name }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+
+      - name: zookeeper
+        rules:
+          - alert: HighWatchers
+            expr: zookeeper_server_watches_count{job="zookeeper"} > 1000000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Watchers of Zookeeper server is over than 1000k."
+              description: "Watchers of Zookeeper server {{ $labels.kubernetes_pod_name }} is over than 1000k, current value is {{ $value }}."
+
+
+      - name: bookie
+        rules:
+          - alert: HighEntryAddLatency
+            expr: bookkeeper_server_ADD_ENTRY_REQUEST{job="bookie", quantile="0.99", success="true"} > 200
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Entry add latency is over than 200ms"
+              description: "Entry add latency on bookie {{ $labels.instance }} is over than 200ms, current value is {{ $value }}."
+
+      - name: broker
+        rules:
+          - alert: HighStorageWriteLatency
+            expr: pulsar_storage_write_latency_le_1000{job="broker"} > 1000
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Pulsar storage write latency is over than 1s"
+              description: "Pulsar storage write latency is over than 1s on topic {{ $labels.topic }}, current value is {{ $value }}."
+
+
+      - name: jvm
+        rules:
+          - alert: JvmHeapLimit
+            # Alert when a JVM process is using all heap memory
+            expr: (100 * jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"}) > 95
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "High JVM heap memory usage"
+              description: "JVM heap memory usage of {{ $labels.kubernetes_pod_name }} - {{ $value }} is larger than 95%"
+
+
+images:
+  zookeeper:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+  bookie:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+  presto:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+  autorecovery:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+  broker:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+  proxy:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+  functions:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+  streamnative_console:
+    repository: streamnative/sn-pulsar-manager
+    tag: 0.7.0-14
+  vault:
+    repository: vault
+    tag: 1.7.0
+  vault_init:
+    repository: registry.cn-hangzhou.aliyuncs.com/cloud-enterprise/pulsar_vault_init
+    tag: v1.0.2
+
+pulsar_metadata:
+  image:
+    repository: streamnative/sn-pulsar
+    tag: 2.8.0-rc-202106101515
+
+imagePuller:
+  hook:
+    enabled: false
+  continuous:
+    enabled: false
