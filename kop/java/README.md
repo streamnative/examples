@@ -7,11 +7,13 @@ This document describes how to produce messages to and consume messages from a K
 - Java 1.8 or higher version
 - Maven
 
-> Currently it uses Kafka client 2.0.0. If you want to use another version of Kafka client, you can change the `kafka.version` property in `pom.xml`. The supported version is from 1.0.0 to 2.6.0.
+> **NOTE**
+>
+> This example uses Kafka client 2.0.0. If you want to use another version of Kafka client, you can change the `kafka.version` property in `pom.xml` file. Kafka client version 1.0.0 - 2.6.0 are supported.
 
 # Example
 
-See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security.md) for how to configure KoP with token authentication. Assuming the target topic name is `my-topic` whose namespace is `public/default`.
+See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security.md) for how to configure KoP with token authentication. This example takes a topic named `my-topic` under `public/default` namespace as reference.
 
 1. Grant produce and consume permissions to the specific role.
 
@@ -21,7 +23,9 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
      --actions produce,consume
    ```
 
-   NOTE: the `conf/client.conf` should be configured, see [Configure CLI Tools](http://pulsar.apache.org/docs/en/security-jwt/#cli-tools).
+   > **NOTE**
+   >
+   > The `conf/client.conf` should be configured. For details, see [Configure CLI Tools](http://pulsar.apache.org/docs/en/security-jwt/#cli-tools).
 
 2. Configure the token in [token.properties](src/main/resources/token.properties).
 

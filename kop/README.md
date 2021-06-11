@@ -1,6 +1,6 @@
 # Overview
 
-This directory includes examples of how Kafka clients connect to KoP cluster through Token authentication plugin.
+This directory includes examples of how Kafka clients connect to a KoP cluster through the Token authentication plugin.
 
 - Supported Kafka clients
   - [Java client](https://github.com/streamnative/pulsar-examples/tree/master/kop/java) 
