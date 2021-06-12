@@ -45,7 +45,7 @@ public class TokenProducer {
         props.put("sasl.mechanism", "PLAIN");
         props.put("sasl.jaas.config", String.format(
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
-                tokenProps.getProperty("namespace"), tokenProps.getProperty("token")));
+                namespace, token));
         final KafkaProducer<String, String> producer = new KafkaProducer<>(props);
 
         // 3. Produce one message
