@@ -1,13 +1,14 @@
 # Example for StreamNative Platform
 
 ```
+kubectl create namespace pulsar-demo
 helm install  -f values_cluster.yaml mycluster streamnative/sn-pulsar  --set initialize=true
 ```
 
 Wait until all pods are `Running` or `Completed`!
 
 ```
-kubectl get po -n pulsar
+kubectl get po -n pulsar-demo
 
 NAME                                               READY   STATUS      RESTARTS   AGE
 mycluster-pulsar-bookie-0                          1/1     Running     0          2m28s

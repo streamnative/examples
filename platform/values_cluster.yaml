@@ -72,7 +72,7 @@ broker:
   # set your own domain for accesing kop outside from the cluster
   advertisedDomain: "kop.sn.dev"
   kop:
-    enabled: true
+    enabled: false
     tls:
       # create a secret with keystore.jks and truststore.jks for kop tls security
       certSecretName: "kop-secret"
