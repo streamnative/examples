@@ -1,0 +1,185 @@
+---
+# Source: provisioner/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: local-volume-provisioner
+  namespace: kube-system
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+---
+# Source: provisioner/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-volume-provisioner-config
+  namespace: kube-system
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+data:
+  storageClassMap: |
+    local-ssd:
+      hostDir: /mnt/ssd
+      mountDir: /mnt/ssd
+      volumeMode: Filesystem
+    local-hdd:
+      hostDir: /mnt/hdd
+      mountDir: /mnt/hdd
+      volumeMode: Filesystem
+---
+# Source: provisioner/templates/storageclass.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-ssd
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete
+---
+# Source: provisioner/templates/storageclass.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-hdd
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete
+---
+# Source: provisioner/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: local-volume-provisioner-node-clusterrole
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get"]
+---
+# Source: provisioner/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: local-volume-provisioner-pv-binding
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+subjects:
+- kind: ServiceAccount
+  name: local-volume-provisioner
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:persistent-volume-provisioner
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: provisioner/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: local-volume-provisioner-node-binding
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+subjects:
+- kind: ServiceAccount
+  name: local-volume-provisioner
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: local-volume-provisioner-node-clusterrole
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: provisioner/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: local-volume-provisioner
+  namespace: kube-system
+  labels:
+    helm.sh/chart: provisioner-2.5.0
+    app.kubernetes.io/name: provisioner
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: local-volume-provisioner
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: provisioner
+      app.kubernetes.io/instance: local-volume-provisioner
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: provisioner
+        app.kubernetes.io/instance: local-volume-provisioner
+      annotations:
+        checksum/config: 4e298ae625d8c491c9092cd204df8e026c714cc87f4c1e8a3062f410fc7aa4d5
+    spec:
+      serviceAccountName: local-volume-provisioner
+      containers:
+        - name: provisioner
+          image: k8s.gcr.io/sig-storage/local-volume-provisioner:v2.4.0
+          securityContext:
+            privileged: true
+          env:
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MY_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: JOB_CONTAINER_IMAGE
+            value: k8s.gcr.io/sig-storage/local-volume-provisioner:v2.4.0
+          ports:
+          - name: metrics
+            containerPort: 8080
+          volumeMounts:
+            - name: provisioner-config
+              mountPath: /etc/provisioner/config
+              readOnly: true
+            - name: provisioner-dev
+              mountPath: /dev
+            - name: local-ssd
+              mountPath: /mnt/ssd
+              mountPropagation: HostToContainer
+            - name: local-hdd
+              mountPath: /mnt/hdd
+              mountPropagation: HostToContainer
+      volumes:
+        - name: provisioner-config
+          configMap:
+            name: local-volume-provisioner-config
+        - name: provisioner-dev
+          hostPath:
+            path: /dev
+        - name: local-ssd
+          hostPath:
+            path: /mnt/ssd
+        - name: local-hdd
+          hostPath:
+            path: /mnt/hdd

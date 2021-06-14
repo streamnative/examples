@@ -1,11 +1,10 @@
 # Example for StreamNative Platform
 
 ```
-export PULSAR_CHART=[path to pulsar chart]
-helm install  -f values_cluster.yaml mycluster $PULSAR_CHART/  --set initialize=true
+helm install  -f values_cluster.yaml mycluster streamnative/sn-pulsar  --set initialize=true
 ```
 
-Wait until all pods are ready or Completed!
+Wait until all pods are `Running` or `Completed`!
 
 ```
 kubectl get po -n pulsar
@@ -30,8 +29,8 @@ mycluster-pulsar-zookeeper-1                       1/1     Running     0        
 mycluster-pulsar-zookeeper-2                       1/1     Running     0          3m32s
 ```
 
-If you want to upgrade cluster after config change, run belowing command.
+To upgrade cluster after changing the cluster configurations, run the following command.
 
 ```
-helm upgrade -f values_cluster.yaml mycluster $PULSAR_CHART/
+helm upgrade -f values_cluster.yaml mycluster streamnative/sn-pulsar
 ```
