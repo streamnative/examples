@@ -1,5 +1,10 @@
 namespace: pulsar-demo
 
+tls:
+  enabled: false
+  proxy:
+    enabled: false
+
 zookeeper:
   replicaCount: 3
   resources:
@@ -70,21 +75,22 @@ bookkeeper:
 
 broker:
   # set your own domain for accesing kop outside from the cluster
-  advertisedDomain: "kop.sn.dev"
-  kop:
-    enabled: false
-    tls:
-      # create a secret with keystore.jks and truststore.jks for kop tls security
-      certSecretName: "kop-secret"
-      # create a secret for keystore and truststore cert
-      passwordSecretRef:
-        key: password
-        name: kop-keystore-password
-  istio:
-    gateway:
-      selector:
-        # set your istio gateway label here
-        istio: "ingressgateway"
+  #advertisedDomain: "kop.sn.dev"
+  #kop:
+  #  enabled: false
+  #  tls:
+  #    enabled: true
+  #    # create a secret with keystore.jks and truststore.jks for kop tls security
+  #    certSecretName: "kop-secret"
+  #    # create a secret for keystore and truststore cert
+  #    passwordSecretRef:
+  #      key: password
+  #      name: kop-keystore-password
+  #istio:
+  #  gateway:
+  #    selector:
+  #      # set your istio gateway label here
+  #      istio: "ingressgateway"
 
   replicaCount: 2
   resources:
@@ -107,11 +113,12 @@ broker:
     managedLedgerDefaultWriteQuorum: "2"
     managedLedgerDefaultAckQuorum: "2"
 
+    # For audit log
+    #PULSAR_PREFIX_brokerInterceptors: "audit-log"
+    #PULSAR_PREFIX_brokerInterceptorsDirectory: "./interceptors"
+    #PULSAR_PREFIX_snAuditLogConfig: >
+    #  {"defaultTopics":{"allowed":"persistent://sn/system/audit_log_all","denied":"persistent://sn/system/audit_log_all"}}
 
-tls:
-  enabled: false
-  proxy:
-    enabled: false
 proxy:
   replicaCount: 1
   resources:
@@ -128,21 +135,17 @@ proxy:
       -Dio.netty.recycler.maxCapacity.default=1000
       -Dio.netty.recycler.linkCapacity=1024
       -Dnetworkaddress.cache.ttl=60
-    tlsAllowInsecureConnection: "true"
-    tlsTrustCertsFilePath: "/etc/tls/pulsar-proxy-tls/ca.crt"
   tlsSecretName: "demo-sn-pulsar-proxy-tls"
 
 # streamnative_console
 streamnative_console:
   component: streamnative-console
-  username: "admin"
-  password: "admin123"
   ports:
     frontend: 9527
     backend: 7750
   replicaCount: 1
   volumes:
-    persistence: false
+    #persistence: true
     data:
       name: data
       size: 5Gi
@@ -390,7 +393,7 @@ alert_manager:
               summary: "High JVM direct memory usage"
               description: "JVM direct memory usage of {{ $labels.kubernetes_pod_name }} - {{ $value }} is larger than 95%"
 
-# In most case, you don't need to change this
+# At most case, you don't need to change this
 vault:
   volume:
     persistence: true
@@ -417,3 +420,38 @@ vault:
     cluster_addr: "http://${.Env.POD_NAME}:8201"
     ui: true
   
+
+
+#monitoring:
+#  # monitoring - prometheus
+#  prometheus: false
+#  # monitoring - grafana
+#  grafana: false
+#  # monitoring - node_exporter
+#  node_exporter: false
+#  # alerting - alert-manager
+#  alert_manager: false
+
+## Ingresses for exposing Pulsar services
+ingress:
+  ## Ingresses for exposing pulsar service publicly
+  proxy:
+    enabled: false
+    type: LoadBalancer
+    tls:
+      # If you enable proxy tls, you should enable this too.
+      enabled: false
+    annotations:
+      # If you use aws lb, recommend to add this
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  ## Ingresses for exposing monitoring/management services publicly
+  controller:
+    enabled: false
+    annotations: 
+      # If you use aws lb, recommend to add this
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  control_center:
+    enabled: false
+    # Set external domain of the load balancer of ingress controller
+    # external_domain: 
+    # external_domain_scheme: https://
