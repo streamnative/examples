@@ -145,7 +145,7 @@ streamnative_console:
     backend: 7750
   replicaCount: 1
   volumes:
-    #persistence: true
+    persistence: true
     data:
       name: data
       size: 5Gi
