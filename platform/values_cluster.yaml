@@ -1,0 +1,457 @@
+namespace: pulsar-demo
+
+tls:
+  enabled: false
+  proxy:
+    enabled: false
+
+zookeeper:
+  replicaCount: 3
+  resources:
+    requests:
+      memory: 500Mi
+      cpu: 100m
+  volumes:
+    useSeparateDiskForTxlog: true
+    data:
+      name: data
+      size: 10Gi
+      # set your own storage class name or use the default storage class
+      #storageClassName: local-ssd
+    dataLog:
+      name: datalog
+      size: 10Gi
+      # set your own storage class name or use the default storage class
+      #storageClassName: local-hdd
+  configData:
+    PULSAR_MEM: >
+      -Xms300M -Xmx300M
+    PULSAR_EXTRA_OPTS: >
+      -Dzookeeper.snapCount=1000000
+    PULSAR_PREFIX_maxClientCnxns: "1000"
+
+bookkeeper:
+  replicaCount: 3
+  resources:
+    limits:
+      cpu: 100m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  volumes:
+    journal:
+      name: journal
+      size: 5Gi
+      # set your own storage class name or use the default storage class
+      #storageClassName: local-ssd
+    ledgers:
+      name: ledgers
+      size: 10Gi
+      # set your own storage class name or use the default storage class
+      #storageClassName: local-hdd
+  configData:
+    PULSAR_GC: >
+      -XX:+ExitOnOutOfMemoryError
+    PULSAR_MEM: >
+      -Xms100M
+      -Xmx100M
+      -XX:MaxDirectMemorySize=100M
+    PULSAR_EXTRA_OPTS: >
+      -Dpulsar.allocator.exit_on_oom=true
+      -Dio.netty.recycler.maxCapacity.default=1000
+      -Dio.netty.recycler.linkCapacity=1024
+      -Dnetworkaddress.cache.ttl=60
+    gcWaitTime: "900000"
+    journalFormatVersionToWrite: "6"
+    # set fileInfoFormatVersionToWrite to `1` in order to enable journal format version `6`
+    fileInfoFormatVersionToWrite: "1"
+    minorCompactionInterval: "3600"
+    majorCompactionInterval: "86400"
+    isThrottleByBytes: "true"
+    compactionRateByBytes: "10485760"
+    PULSAR_PREFIX_useTransactionalCompaction: "true"
+    PULSAR_PREFIX_persistBookieStatusEnabled: "false"
+
+broker:
+  # set your own domain for accesing kop outside from the cluster
+  #advertisedDomain: "kop.sn.dev"
+  #kop:
+  #  enabled: false
+  #  tls:
+  #    enabled: true
+  #    # create a secret with keystore.jks and truststore.jks for kop tls security
+  #    certSecretName: "kop-secret"
+  #    # create a secret for keystore and truststore cert
+  #    passwordSecretRef:
+  #      key: password
+  #      name: kop-keystore-password
+  #istio:
+  #  gateway:
+  #    selector:
+  #      # set your istio gateway label here
+  #      istio: "ingressgateway"
+
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  configData:
+    PULSAR_MEM: >
+      -Xms100M
+      -Xmx100M
+      -XX:MaxDirectMemorySize=100M
+    PULSAR_GC: >
+      -XX:+ExitOnOutOfMemoryError
+    PULSAR_EXTRA_OPTS: >
+      -Dpulsar.allocator.exit_on_oom=true
+      -Dio.netty.recycler.maxCapacity.default=1000
+      -Dio.netty.recycler.linkCapacity=1024
+      -Dnetworkaddress.cache.ttl=60
+    managedLedgerDefaultEnsembleSize: "2"
+    managedLedgerDefaultWriteQuorum: "2"
+    managedLedgerDefaultAckQuorum: "2"
+
+    # For audit log
+    #PULSAR_PREFIX_brokerInterceptors: "audit-log"
+    #PULSAR_PREFIX_brokerInterceptorsDirectory: "./interceptors"
+    #PULSAR_PREFIX_snAuditLogConfig: >
+    #  {"defaultTopics":{"allowed":"persistent://sn/system/audit_log_all","denied":"persistent://sn/system/audit_log_all"}}
+
+proxy:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  configData:
+    PULSAR_MEM: >
+      -Xms100M -Xmx100M -XX:MaxDirectMemorySize=100M
+    PULSAR_GC: >
+      -XX:+ExitOnOutOfMemoryError
+    PULSAR_EXTRA_OPTS: >
+      -Dpulsar.allocator.exit_on_oom=true
+      -Dio.netty.recycler.maxCapacity.default=1000
+      -Dio.netty.recycler.linkCapacity=1024
+      -Dnetworkaddress.cache.ttl=60
+  tlsSecretName: "demo-sn-pulsar-proxy-tls"
+
+# streamnative_console
+streamnative_console:
+  component: streamnative-console
+  ports:
+    frontend: 9527
+    backend: 7750
+  replicaCount: 1
+  volumes:
+    persistence: true
+    data:
+      name: data
+      size: 5Gi
+      #storageClassName: local-ssd
+  configData:
+    DEFAULT_ORGANIZATION: streamnative
+    DEFAULT_NAME: streamnative
+    INSTANCE_NAME: pulsar
+
+prometheus:
+  # keep request = limit to keep this container in guaranteed class
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  volumes:
+    data:
+      name: data
+      size: 5Gi
+      #storageClassName: local-ssd
+grafana:
+  resources:
+    # keep request = limit to keep this container in guaranteed class
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 100m
+      memory: 200Mi
+alert_manager:
+  resources:
+    requests:
+      memory: 100Mi
+      cpu: 100m
+  config:
+    global:
+      resolve_timeout: 1m
+  rules:
+    groups:
+      - name: node
+        rules:
+          - alert: InstanceDown
+            expr: up == 0
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Instance {{ $labels.kubernetes_pod_name }} down."
+              description: "{{ $labels.kubernetes_pod_name }} of job {{ $labels.job }} has been down for more than 5 minutes."
+
+          - alert: CpuUsage
+            expr: 100 * (1 - avg by(instance)(rate(node_cpu_seconds_total{mode='idle'}[1m]))) > 85
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Instance {{ $labels.instance }} has high CPU usage: {{ $value }}%"
+
+          - alert: PersistentVolumeSpace
+            expr: 100 * (1 - (kubelet_volume_stats_available_bytes / kubelet_volume_stats_capacity_bytes)) > 85
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Space used on {{ $labels.persistentvolumeclaim }} is above the critical threshold -- value: {{ $value }}%"
+
+          - alert: HighIOUtils
+            expr: irate(node_disk_io_time_seconds_total[1m]) > 0.8
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "High IO utils."
+              description: "High IO utils on instance {{ $labels.instance }} of job {{ $labels.job }} over than 80%, current value is {{ $value }}%"
+
+          - alert: HighDiskUsage
+            expr: (node_filesystem_size_bytes - node_filesystem_avail_bytes)  / node_filesystem_size_bytes > 0.8
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "High disk usage"
+              description: "High IO utils on instance {{ $labels.instance }} of job {{ $labels.job }} over than 80%, current value is {{ $value }}%"
+
+          - alert: HighInboundNetwork
+            expr: rate(node_network_receive_bytes_total{instance="$instance", device!="lo"}[30s]) or irate(node_network_receive_bytes_total{instance="$instance", device!="lo"}[30s]) / 1024 / 1024 > 512
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "High inbound network"
+              description: "High inbound network on instance {{ $labels.instance }} of job {{ $labels.job }} over than 512MB/s, current value is {{ $value }}/s"
+
+      - name: zookeeper
+        rules:
+          - alert: HighWatchers
+            expr: zookeeper_server_watches_count{job="zookeeper"} > 1000000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Watchers of Zookeeper server is over than 1000k."
+              description: "Watchers of Zookeeper server {{ $labels.kubernetes_pod_name }} is over than 1000k, current value is {{ $value }}."
+
+          - alert: HighEphemerals
+            expr: zookeeper_server_ephemerals_count{job="zookeeper"} > 10000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Ephemeral nodes of Zookeeper server is over than 10k."
+              description: "Ephemeral nodes of Zookeeper server {{ $labels.kubernetes_pod_name }} is over than 10k, current value is {{ $value }}."
+
+          - alert: HighConnections
+            expr: zookeeper_server_connections{job="zookeeper"} > 10000
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Connections of Zookeeper server is over than 10k."
+              description: "Connections of Zookeeper server {{ $labels.kubernetes_pod_name }} is over than 10k, current value is {{ $value }}."
+
+          - alert: HighDataSize
+            expr: zookeeper_server_data_size_bytes{job="zookeeper"} > 2147483648
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Data size of Zookeeper server is over than 2GB."
+              description: "Data size of Zookeeper server {{ $labels.instance }} is over than 2GB, current value is {{ $value }}."
+
+          - alert: HighRequestThroughput
+            expr: sum(irate(zookeeper_server_requests{job="zookeeper"}[30s])) by (type) > 1000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Request throughput on Zookeeper server is over than 1000 in 5m."
+              description: "Request throughput of {{ $labels.type}} on Zookeeper server {{ $labels.instance }} is over than 1k, current value is {{ $value }}."
+
+          - alert: HighRequestLatency
+            expr: zookeeper_server_requests_latency_ms{job="zookeeper", quantile="0.99"} > 100
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Request latency on Zookeeper server is over than 100ms."
+              description: "Request latency {{ $labels.type }} in p99 on Zookeeper server {{ $labels.instance }} is over than 100ms, current value is {{ $value }} ms."
+
+      - name: bookie
+        rules:
+          - alert: HighEntryAddLatency
+            expr: bookkeeper_server_ADD_ENTRY_REQUEST{job="bookie", quantile="0.99", success="true"} > 200
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Entry add latency is over than 200ms"
+              description: "Entry add latency on bookie {{ $labels.instance }} is over than 200ms, current value is {{ $value }}."
+
+          - alert: HighEntryReadLatency
+            expr: bookkeeper_server_READ_ENTRY_REQUEST{job="bookie", quantile="0.99", success="true"} > 1000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Entry read latency is over than 1s"
+              description: "Entry read latency on bookie {{ $labels.instance }} is over than 1s, current value is {{ $value }}."
+
+      - name: broker
+        rules:
+          - alert: HighStorageWriteLatency
+            expr: pulsar_storage_write_latency_le_1000{job="broker"} > 1000
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "Pulsar storage write latency is over than 1s"
+              description: "Pulsar storage write latency is over than 1s on topic {{ $labels.topic }}, current value is {{ $value }}."
+
+          - alert: TooManyTopics
+            expr: sum(pulsar_topics_count{job="broker"}) by (cluster) > 1000000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Topic count are over than 1000000."
+              description: "Topic count in cluster {{ $labels.cluster }} is more than 1000000, current value is {{ $value }}."
+
+          - alert: TooManyProducersOnTopic
+            expr: pulsar_producers_count > 10000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Producers on topic are more than 10000."
+              description: "Producers on topic {{ $labels.topic }} is more than 10000, current value is {{ $value }}."
+
+          - alert: TooManySubscriptionsOnTopic
+            expr: pulsar_subscriptions_count > 10000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Subscriptions on topic are more than 10000."
+              description: "Subscriptions on topic {{ $labels.topic }} is more than 10000, current value is {{ $value }}."
+
+          - alert: TooManyConsumersOnTopic
+            expr: pulsar_consumers_count > 10000
+            for: 5m
+            labels:
+              status: warning
+            annotations:
+              summary: "Consumers on topic are more than 10000."
+              description: "Consumers on topic {{ $labels.topic }} is more than 10000 , current value is {{ $value }}."
+
+          - alert: HighTopicGeoBacklog
+            expr: pulsar_replication_backlog > 1000000
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "High number of messages in topic geo replication backlog."
+              description: "High Number of messages in the geo-replication backlog of topic {{ $labels.topic }} is more than 1000000, current value is {{ $value }}."
+
+      - name: jvm
+        rules:
+          - alert: JvmHeapLimit
+            # Alert when a JVM process is using all heap memory
+            expr: (100 * jvm_memory_bytes_used{area="heap"} / jvm_memory_bytes_max{area="heap"}) > 95
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "High JVM heap memory usage"
+              description: "JVM heap memory usage of {{ $labels.kubernetes_pod_name }} - {{ $value }} is larger than 95%"
+
+          - alert: JvmDirectMemLimit
+            # Alert when a JVM process is using all direct memory
+            expr: (100 * jvm_memory_direct_bytes_used / jvm_memory_direct_bytes_max) > 95
+            for: 5m
+            labels:
+              severity: page
+            annotations:
+              summary: "High JVM direct memory usage"
+              description: "JVM direct memory usage of {{ $labels.kubernetes_pod_name }} - {{ $value }} is larger than 95%"
+
+# At most case, you don't need to change this
+vault:
+  volume:
+    persistence: true
+    name: "raft"
+    size: 10Gi
+    local_storage: true
+    # set your own storage class name or use the default storage class
+    #storageClassName: "local-hdd"
+
+  volumeMounts:
+  - name: vault-raft
+    mountPath: /vault/file
+
+  # use raft protocol for a vault cluster
+  config:
+    storage:
+      raft:
+        path: "/vault/file"
+    listener:
+      tcp:
+        tls_disable: true
+        address: "[::]:8200"
+    api_addr: http://vault.default:8200
+    cluster_addr: "http://${.Env.POD_NAME}:8201"
+    ui: true
+  
+
+
+#monitoring:
+#  # monitoring - prometheus
+#  prometheus: false
+#  # monitoring - grafana
+#  grafana: false
+#  # monitoring - node_exporter
+#  node_exporter: false
+#  # alerting - alert-manager
+#  alert_manager: false
+
+## Ingresses for exposing Pulsar services
+ingress:
+  ## Ingresses for exposing pulsar service publicly
+  proxy:
+    enabled: false
+    type: LoadBalancer
+    tls:
+      # If you enable proxy tls, you should enable this too.
+      enabled: false
+    annotations:
+      # If you use aws lb, recommend to add this
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  ## Ingresses for exposing monitoring/management services publicly
+  controller:
+    enabled: false
+    annotations: 
+      # If you use aws lb, recommend to add this
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  control_center:
+    enabled: false
+    # Set external domain of the load balancer of ingress controller
+    # external_domain: 
+    # external_domain_scheme: https://
