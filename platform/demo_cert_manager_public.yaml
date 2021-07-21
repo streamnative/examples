@@ -1,9 +1,75 @@
 namespace: pulsar-demo
 
 tls:
-  enabled: false
+  enabled: true
   proxy:
+    enabled: true
+    untrustedCa: false
+
+## cert-manager
+## templates/tls-cert-issuer.yaml
+##
+## Cert manager is used for automatically provisioning TLS certificates
+## for components within a Pulsar cluster
+certs:
+  internal_issuer:
     enabled: false
+  public_issuer:
+    enabled: true
+  issuers:
+    acme:
+      email: certs-support@streamnative.io
+      server: https://acme-v02.api.letsencrypt.org/directory
+      #server: https://acme-staging-v02.api.letsencrypt.org/directory
+      solver: route53
+      solvers:
+        route53:
+          region: us-west-2
+          hostedZoneID: xxxxx
+
+#external_dns:
+#  enabled: false
+#  provider: aws
+#  domain_filter: aws.yourdomain.local
+#  serviceAcct:
+#    name: external-dns
+#    annotations:
+#      eks.amazonaws.com/role-arn: arn:aws:iam::598203581484:role/sn-ibex-test-us-west-2-external-dns-role
+#  securityContext:
+#    fsGroup: 65534
+
+## Domain requested from External DNS
+domain:
+  enabled: true
+  suffix: snp.aws.yourdomain.local
+
+## Ingresses for exposing Pulsar services
+ingress:
+  ## Ingresses for exposing pulsar service publicly
+  proxy:
+    enabled: true
+    external_domain: data.snp.aws.yourdomain.local
+    type: LoadBalancer
+    tls:
+      # If you enable proxy tls, you should enable this too.
+      enabled: true
+    annotations:
+      # If you use aws lb, recommend to add this
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  ## Ingresses for exposing monitoring/management services publicly
+  controller:
+    enabled: true
+    annotations: 
+      # If you use aws lb, recommend to add this
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  control_center:
+    enabled: true
+    tls:
+      enabled: true
+    # Set external domain of the load balancer of ingress controller
+    external_domain: admin.snp.aws.yourdomain.local
+    external_domain_scheme: https://
+
 
 zookeeper:
   replicaCount: 3
@@ -75,22 +141,22 @@ bookkeeper:
 
 broker:
   # set your own domain for accesing kop outside from the cluster
-  #advertisedDomain: "kop.sn.dev"
-  #kop:
-  #  enabled: false
-  #  tls:
-  #    enabled: true
-  #    # create a secret with keystore.jks and truststore.jks for kop tls security
-  #    certSecretName: "kop-secret"
-  #    # create a secret for keystore and truststore cert
-  #    passwordSecretRef:
-  #      key: password
-  #      name: kop-keystore-password
-  #istio:
-  #  gateway:
-  #    selector:
-  #      # set your istio gateway label here
-  #      istio: "ingressgateway"
+  advertisedDomain: "messaging.snp.aws.yourdomain.local"
+  kop:
+    enabled: true
+    tls:
+      enabled: true
+      # create a secret with keystore.jks and truststore.jks for kop tls security
+      #certSecretName: "kop-secret"
+      # create a secret for keystore and truststore cert
+      #passwordSecretRef:
+      #  key: password
+      #  name: kop-keystore-password
+  istio:
+    gateway:
+      selector:
+        # set your istio gateway label here
+        istio: "ingressgateway"
 
   replicaCount: 2
   resources:
@@ -114,10 +180,10 @@ broker:
     managedLedgerDefaultAckQuorum: "2"
 
     # For audit log
-    PULSAR_PREFIX_brokerInterceptors: "audit-log"
-    PULSAR_PREFIX_brokerInterceptorsDirectory: "./interceptors"
-    PULSAR_PREFIX_snAuditLogConfig: >
-      {"defaultTopics":{"allowed":"persistent://sn/system/audit_log_allowed","denied":"persistent://sn/system/audit_log_denied"}}
+    #PULSAR_PREFIX_brokerInterceptors: "audit-log"
+    #PULSAR_PREFIX_brokerInterceptorsDirectory: "./interceptors"
+    #PULSAR_PREFIX_snAuditLogConfig: >
+    #  {"defaultTopics":{"allowed":"persistent://sn/system/audit_log_all","denied":"persistent://sn/system/audit_log_all"}}
 
 proxy:
   replicaCount: 1
@@ -135,7 +201,7 @@ proxy:
       -Dio.netty.recycler.maxCapacity.default=1000
       -Dio.netty.recycler.linkCapacity=1024
       -Dnetworkaddress.cache.ttl=60
-  tlsSecretName: "demo-sn-pulsar-proxy-tls"
+  #tlsSecretName: "demo-sn-pulsar-proxy-tls"
 
 # streamnative_console
 streamnative_console:
@@ -145,7 +211,7 @@ streamnative_console:
     backend: 7750
   replicaCount: 1
   volumes:
-    #persistence: true
+    persistence: true
     data:
       name: data
       size: 5Gi
@@ -392,6 +458,44 @@ alert_manager:
             annotations:
               summary: "High JVM direct memory usage"
               description: "JVM direct memory usage of {{ $labels.kubernetes_pod_name }} - {{ $value }} is larger than 95%"
+      - name: pulsar_io
+        rules:
+          - alert: Source Connector has no input messages
+            # Alert when a source connector has no input messages for 30 minutes
+            expr: sum(rate(pulsar_source_received_total[5m]) ) by (cluster, fqfn) <= 0
+            for: 30m
+            labels:
+              severity: page
+            annotations:
+              summary: "Source Connector has no input messages for 30m ( {{ $labels.cluster }}-{{ $labels.fqfn }})"
+              description: "Source Connector input message count is {{ $value }}"
+          - alert: Source Connector has no output messages
+            # Alert when a source connector has no output messages for 30 minutes
+            expr: sum(rate(pulsar_source_written_total[5m]) ) by (cluster, fqfn) <= 0
+            for: 30m
+            labels:
+              severity: page
+            annotations:
+              summary: "Source Connector has no output messages for 30m ( {{ $labels.cluster }}-{{ $labels.fqfn }})"
+              description: "Source Connector output message count is {{ $value }}"
+          - alert: Sink Connector has no input messages
+            # Alert when a sink connector has no input messages for 30 minutes
+            expr: sum(rate(pulsar_sink_received_total[5m]) ) by (cluster, fqfn) <= 0
+            for: 30m
+            labels:
+              severity: page
+            annotations:
+              summary: "Sink Connector has no input messages for 30m ( {{ $labels.cluster }}-{{ $labels.fqfn }})"
+              description: "Sink Connector input message count is {{ $value }}"
+          - alert: Sink Connector has no output messages
+            # Alert when a sink connector has no output messages for 30 minutes
+            expr: sum(rate(pulsar_sink_written_total[5m]) ) by (cluster, fqfn) <= 0
+            for: 30m
+            labels:
+              severity: page
+            annotations:
+              summary: "Sink Connector has no output messages for 30m ( {{ $labels.cluster }}-{{ $labels.fqfn }})"
+              description: "Sink Connector output message count is {{ $value }}"
 
 # At most case, you don't need to change this
 vault:
@@ -415,20 +519,10 @@ vault:
     listener:
       tcp:
         tls_disable: true
-        address: "0.0.0.0:8200"
-    api_addr: "http://${.Env.POD_NAME}:8200"
+        address: "[::]:8200"
+    api_addr: http://vault.default:8200
     cluster_addr: "http://${.Env.POD_NAME}:8201"
     ui: true
-    telemetry:
-      statsd_address: localhost:9125
-
-  #resources:
-  #  limits:
-  #    memory: "4Gi"
-  #    cpu: "200m"
-  #  requests:
-  #    memory: "4Gi"
-  #    cpu: "200m"
   
 
 
@@ -441,30 +535,6 @@ vault:
 #  node_exporter: false
 #  # alerting - alert-manager
 #  alert_manager: false
-
-## Ingresses for exposing Pulsar services
-ingress:
-  ## Ingresses for exposing pulsar service publicly
-  proxy:
-    enabled: false
-    type: LoadBalancer
-    tls:
-      # If you enable proxy tls, you should enable this too.
-      enabled: false
-    annotations:
-      # If you use aws lb, recommend to add this
-      service.beta.kubernetes.io/aws-load-balancer-type: nlb
-  ## Ingresses for exposing monitoring/management services publicly
-  controller:
-    enabled: false
-    annotations: 
-      # If you use aws lb, recommend to add this
-      service.beta.kubernetes.io/aws-load-balancer-type: nlb
-  control_center:
-    enabled: false
-    # Set external domain of the load balancer of ingress controller
-    # external_domain: 
-    # external_domain_scheme: https://
 
 ## Images
 ##
@@ -482,11 +552,6 @@ images:
     repository: streamnative/sn-platform
     tag: "2.8.0.5"
     pullPolicy: IfNotPresent
-  # NOTE: allow overriding the presto worker image
-  # presto_worker:
-  #   repository: streamnative/sn-platform
-  #   tag: 2.7.0.4
-  #   pullPolicy: IfNotPresent
   autorecovery:
     repository: streamnative/sn-platform
     tag: "2.8.0.5"
@@ -507,11 +572,6 @@ images:
     repository: streamnative/sn-platform
     tag: "2.8.0.5"
     pullPolicy: IfNotPresent
-  # NOTE: allow overriding the toolset image
-  # toolset:
-  #   repository: streamnative/sn-platform
-  #   tag: "2.8.0.5"
-  #   pullPolicy: IfNotPresent
   prometheus:
     repository: prom/prometheus
     tag: "v2.17.2"
