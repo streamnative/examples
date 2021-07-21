@@ -5,6 +5,52 @@ tls:
   proxy:
     enabled: false
 
+## Domain requested from External DNS
+domain:
+  enabled: true
+  suffix: snp.aws.yourdomain.local
+
+## Ingresses for exposing Pulsar services
+ingress:
+  ## Ingresses for exposing pulsar service publicly
+  proxy:
+    enabled: true
+    external_domain: data.snp.aws.yourdomain.local
+    type: LoadBalancer
+    tls:
+      # If you enable proxy tls, you should enable this too.
+      enabled: true
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: "data.snp.aws.yourdomain.local"
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-west-2:59811111:certificate/3d322assalkf-7b03-433e-9539-715c1f3c25ed"
+      # Enable this if the service is only accessed within your AWS VPC
+      #service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+    extraSpec:
+      externalTrafficPolicy: Local
+  ## Ingresses for exposing monitoring/management services publicly
+  controller:
+    enabled: true
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: "admin.snp.aws.yourdomain.local"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-west-2:59811111:certificate/3d322asdfasjoi-7b03-433e-9539-715c1f3c25ed"
+      service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    extraSpec:
+      externalTrafficPolicy: Local
+    # flag whether to terminate the tls at the loadbalancer level
+    tls:
+      termination: true
+  control_center:
+    enabled: true
+    tls:
+      enabled: true
+    # Set external domain of the load balancer of ingress controller
+    external_domain: admin.snp.aws.yourdomain.local
+    external_domain_scheme: https://
+
+
 zookeeper:
   replicaCount: 3
   resources:
@@ -114,10 +160,10 @@ broker:
     managedLedgerDefaultAckQuorum: "2"
 
     # For audit log
-    PULSAR_PREFIX_brokerInterceptors: "audit-log"
-    PULSAR_PREFIX_brokerInterceptorsDirectory: "./interceptors"
-    PULSAR_PREFIX_snAuditLogConfig: >
-      {"defaultTopics":{"allowed":"persistent://sn/system/audit_log_allowed","denied":"persistent://sn/system/audit_log_denied"}}
+    #PULSAR_PREFIX_brokerInterceptors: "audit-log"
+    #PULSAR_PREFIX_brokerInterceptorsDirectory: "./interceptors"
+    #PULSAR_PREFIX_snAuditLogConfig: >
+    #  {"defaultTopics":{"allowed":"persistent://sn/system/audit_log_all","denied":"persistent://sn/system/audit_log_all"}}
 
 proxy:
   replicaCount: 1
@@ -135,7 +181,6 @@ proxy:
       -Dio.netty.recycler.maxCapacity.default=1000
       -Dio.netty.recycler.linkCapacity=1024
       -Dnetworkaddress.cache.ttl=60
-  tlsSecretName: "demo-sn-pulsar-proxy-tls"
 
 # streamnative_console
 streamnative_console:
@@ -415,20 +460,10 @@ vault:
     listener:
       tcp:
         tls_disable: true
-        address: "0.0.0.0:8200"
-    api_addr: "http://${.Env.POD_NAME}:8200"
+        address: "[::]:8200"
+    api_addr: http://vault.default:8200
     cluster_addr: "http://${.Env.POD_NAME}:8201"
     ui: true
-    telemetry:
-      statsd_address: localhost:9125
-
-  #resources:
-  #  limits:
-  #    memory: "4Gi"
-  #    cpu: "200m"
-  #  requests:
-  #    memory: "4Gi"
-  #    cpu: "200m"
   
 
 
@@ -441,30 +476,6 @@ vault:
 #  node_exporter: false
 #  # alerting - alert-manager
 #  alert_manager: false
-
-## Ingresses for exposing Pulsar services
-ingress:
-  ## Ingresses for exposing pulsar service publicly
-  proxy:
-    enabled: false
-    type: LoadBalancer
-    tls:
-      # If you enable proxy tls, you should enable this too.
-      enabled: false
-    annotations:
-      # If you use aws lb, recommend to add this
-      service.beta.kubernetes.io/aws-load-balancer-type: nlb
-  ## Ingresses for exposing monitoring/management services publicly
-  controller:
-    enabled: false
-    annotations: 
-      # If you use aws lb, recommend to add this
-      service.beta.kubernetes.io/aws-load-balancer-type: nlb
-  control_center:
-    enabled: false
-    # Set external domain of the load balancer of ingress controller
-    # external_domain: 
-    # external_domain_scheme: https://
 
 ## Images
 ##
@@ -482,11 +493,6 @@ images:
     repository: streamnative/sn-platform
     tag: "2.8.0.5"
     pullPolicy: IfNotPresent
-  # NOTE: allow overriding the presto worker image
-  # presto_worker:
-  #   repository: streamnative/sn-platform
-  #   tag: 2.7.0.4
-  #   pullPolicy: IfNotPresent
   autorecovery:
     repository: streamnative/sn-platform
     tag: "2.8.0.5"
@@ -507,11 +513,6 @@ images:
     repository: streamnative/sn-platform
     tag: "2.8.0.5"
     pullPolicy: IfNotPresent
-  # NOTE: allow overriding the toolset image
-  # toolset:
-  #   repository: streamnative/sn-platform
-  #   tag: "2.8.0.5"
-  #   pullPolicy: IfNotPresent
   prometheus:
     repository: prom/prometheus
     tag: "v2.17.2"
