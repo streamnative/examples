@@ -175,6 +175,11 @@ grafana:
     limits:
       cpu: 100m
       memory: 200Mi
+  volumes:
+    data:
+      name: data
+      size: 5Gi
+      #storageClassName: local-ssd
 alert_manager:
   resources:
     requests:
@@ -419,8 +424,6 @@ vault:
     api_addr: "http://${.Env.POD_NAME}:8200"
     cluster_addr: "http://${.Env.POD_NAME}:8201"
     ui: true
-    telemetry:
-      statsd_address: localhost:9125
 
   #resources:
   #  limits:
