@@ -541,3 +541,19 @@ images:
     repository: vault
     tag: "1.7.0"
     pullPolicy: "IfNotPresent"
+
+configmapReload:
+  prometheus:
+    ## configmap-reload container image
+    ##
+    image:
+      repository: jimmidyson/configmap-reload
+      tag: v0.3.0
+      pullPolicy: IfNotPresent
+  alertmanager:
+    ## configmap-reload container image
+    ##
+    image:
+      repository: jimmidyson/configmap-reload
+      tag: v0.3.0
+      pullPolicy: IfNotPresent
