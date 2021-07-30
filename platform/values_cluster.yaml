@@ -541,6 +541,9 @@ images:
     repository: vault
     tag: "1.7.0"
     pullPolicy: "IfNotPresent"
+  vault_init:
+    repository: streamnative/pulsar_vault_init
+    tag: "v1.0.2"
 
 configmapReload:
   prometheus:
