@@ -51,7 +51,7 @@ The content of each message payload is a combination of `hello-` and a digital (
 4. Run the Go producer to publish messages to the topic `topic-1`.
 
        ```bash
-       go build -o producer sampleProdcer.go
+       go build -o producer sampleProducer.go
        ./producer -serviceURL pulsar+ssl://streamnative.cloud:6651 \
               -privateKey /path/to/private/key/file.json\
               -audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name\
