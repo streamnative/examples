@@ -20,26 +20,24 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.example</groupId>
-  <artifactId>java</artifactId>
+  <artifactId>transaction</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
-    <kafka.version>2.0.0</kafka.version>
-    <slf4j.simple.version>1.7.30</slf4j.simple.version>
+    <pulsar.version>2.8.0</pulsar.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-clients</artifactId>
-      <version>${kafka.version}</version>
+      <groupId>org.apache.pulsar</groupId>
+      <artifactId>pulsar-client</artifactId>
+      <version>${pulsar.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j.simple.version}</version>
-      <scope>runtime</scope>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.29</version>
     </dependency>
   </dependencies>
 
