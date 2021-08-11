@@ -25,6 +25,7 @@ The content of each message payload is a combination of `hello-` and a digital (
 3. Run the Go consumer to receive messages from the topic `topic-1`.
 
        ```bash
+       go mod tidy
        go build -o consumer sampleConsumer.go
        ./consumer -serviceURL pulsar+ssl://streamnative.cloud:6651 \
               -privateKey /path/to/private/key/file.json\
@@ -51,6 +52,7 @@ The content of each message payload is a combination of `hello-` and a digital (
 4. Run the Go producer to publish messages to the topic `topic-1`.
 
        ```bash
+       go mod tidy
        go build -o producer sampleProducer.go
        ./producer -serviceURL pulsar+ssl://streamnative.cloud:6651 \
               -privateKey /path/to/private/key/file.json\
