@@ -33,6 +33,7 @@ import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.client.api.Schema;
+import org.apache.pulsar.common.naming.TopicName;
 
 /**
  * Example that demonstrates how to use delayed message delivery feature.
@@ -68,10 +69,17 @@ public class DelayedMessageConsumerExample extends ExampleRunner<ConsumerFlags> 
                     .subscribe()) {
                 while (flags.numMessages <= 0 || numReceived < flags.numMessages) {
                     Message<String> msg = consumer.receive();
-                    System.out.println("Consumer Received message : " + msg.getValue()
-                            + "; Difference between publish time and receive time = "
-                            + (System.currentTimeMillis() - msg.getPublishTime()) / 1000
-                            + " seconds");
+                    StringBuilder consumerInfo = new StringBuilder();
+                    consumerInfo.append("Consumer Received message : ").append(msg.getValue());
+
+                    if (flags.printPartitionNum) {
+                        consumerInfo.append(", Partition : ")
+                                .append(TopicName.getPartitionIndex(msg.getTopicName()));
+                    }
+                    consumerInfo.append("; Difference between publish time and receive time = ")
+                            .append((System.currentTimeMillis() - msg.getPublishTime()) / 1000)
+                            .append(" seconds");
+                    System.out.println(consumerInfo);
                     consumer.acknowledge(msg);
                     ++numReceived;
                 }
