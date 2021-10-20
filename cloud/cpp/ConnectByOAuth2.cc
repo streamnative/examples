@@ -17,21 +17,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include <iostream>
 #include <pulsar/Authentication.h>
 #include <pulsar/Client.h>
 
 using namespace pulsar;
 
 int main() {
-    ClientConfiguration config;
-    std::string oauthParams = R"({
+    // C++ client provides two ways to construct an AuthOauth2 object
+    // 1. Create by ParamMap (std::map<std::string, std::string>), this way is more simple and efficient
+    ParamMap params;
+    params["issuer_url"] = "http://cloud/oauth/token";
+    params["private_key"] = "/resources/authentication/token/cpp_credentials_file.json";
+    params["audience"] = "https://cloud.auth0.com/api/v2/";
+    params["scope"] = "api://pulsar-cluster-1/.default";  // scope is optional
+
+    Client client1("pulsar+ssl://streamnative.cloud:6651",
+                   ClientConfiguration().setAuth(AuthOauth2::create(params)));
+    client1.close();
+
+    // 2. Create by JSON string, it will be parsed to a ParamMap internally
+    std::string paramsJson = R"({
     "issuer_url": "https://cloud/oauth/token",
     "private_key": "/resources/authentication/token/cpp_credentials_file.json",
-    "audience": "https://cloud.auth0.com/api/v2/"})";
+    "audience": "https://cloud.auth0.com/api/v2/",
+    "scope": "api://pulsar-cluster-1/.default"})";  // scope is optional
 
-    config.setAuth(pulsar::AuthOauth2::create(params));
-
-    Client client("pulsar+ssl://streamnative.cloud:6651", config);
-    client.close();
+    Client client2("pulsar+ssl://streamnative.cloud:6651",
+                   ClientConfiguration().setAuth(AuthOauth2::create(paramsJson)));
+    client2.close();
 }

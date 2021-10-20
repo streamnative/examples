@@ -6,6 +6,8 @@ Produce message to and consume message from a Pulsar cluster using [Apache pulsa
 
 - CPP Client: 2.6.1+
 
+Since 2.8.1.10, C++ client has supported configuring `scope` field for OAuth2 authentication.
+
 ## Linux
 
 Since 2.1.0 release, Pulsar ships pre-built RPM and Debian packages. You can download and install those packages directly.
