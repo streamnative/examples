@@ -89,21 +89,6 @@ public class DelayedMessageProducerWithMessageRouterExample extends ExampleRunne
                 new DelayedMessageProducerWithMessageRouterExample();
 
         example.run(args);
-//        int partitionByDelayTime = choosePartitionByDelayTime(0);
-//        System.out.println(partitionByDelayTime == 0);
-//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(1).toMillis());
-//        System.out.println(partitionByDelayTime == 0);
-//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(2).toMillis());
-//        System.out.println(partitionByDelayTime == 1);
-//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(10).toMillis());
-//        System.out.println(partitionByDelayTime == 1);
-//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(11).toMillis());
-//        System.out.println(partitionByDelayTime == 2);
-//        partitionByDelayTime = choosePartitionByDelayTime(Long.MAX_VALUE - 1);
-//        System.out.println(partitionByDelayTime == 7);
-//        partitionByDelayTime = choosePartitionByDelayTime(Long.MAX_VALUE);
-//        System.out.println(partitionByDelayTime == 7);
-
     }
 
     @Override
