@@ -53,11 +53,57 @@ import org.apache.pulsar.client.impl.MessageImpl;
 @Slf4j
 public class DelayedMessageProducerWithMessageRouterExample extends ExampleRunner<ProducerFlags> {
 
+    private static final long[] DELAY_LEVELS = new long[]{
+            0,
+            Duration.ofSeconds(30).toMillis(),
+            Duration.ofMinutes(1).toMillis(),
+            Duration.ofMinutes(10).toMillis(),
+            Duration.ofHours(1).toMillis(),
+            Duration.ofHours(12).toMillis(),
+            Duration.ofDays(1).toMillis(),
+            Duration.ofDays(3).toMillis(),
+            Duration.ofDays(7).toMillis(),
+            Long.MAX_VALUE
+    };
+
+    private static int choosePartitionByDelayTime(long time) {
+        int n = DELAY_LEVELS.length;
+        int left = 0, right = n - 1, index = n - 1;
+        while (left <= right) {
+            int mid = ((right - left) >> 1) + left;
+            if (time <= DELAY_LEVELS[mid]) {
+                index = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        if (index == 0) {
+            return 0;
+        }
+        return index - 1;
+    }
+
     public static void main(String[] args) {
         DelayedMessageProducerWithMessageRouterExample example =
                 new DelayedMessageProducerWithMessageRouterExample();
 
         example.run(args);
+//        int partitionByDelayTime = choosePartitionByDelayTime(0);
+//        System.out.println(partitionByDelayTime == 0);
+//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(1).toMillis());
+//        System.out.println(partitionByDelayTime == 0);
+//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(2).toMillis());
+//        System.out.println(partitionByDelayTime == 1);
+//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(10).toMillis());
+//        System.out.println(partitionByDelayTime == 1);
+//        partitionByDelayTime = choosePartitionByDelayTime(Duration.ofMinutes(11).toMillis());
+//        System.out.println(partitionByDelayTime == 2);
+//        partitionByDelayTime = choosePartitionByDelayTime(Long.MAX_VALUE - 1);
+//        System.out.println(partitionByDelayTime == 7);
+//        partitionByDelayTime = choosePartitionByDelayTime(Long.MAX_VALUE);
+//        System.out.println(partitionByDelayTime == 7);
+
     }
 
     @Override
@@ -97,7 +143,7 @@ public class DelayedMessageProducerWithMessageRouterExample extends ExampleRunne
 
                 // Delay 1 ~ numMessages seconds using DeliverAfter
                 for (int i = 0; i < numMessages; i++) {
-                    int delayTime = (i % numMessages) + 1;
+                    int delayTime = i * 10;
                     producer.newMessage()
                             .value("DeliverAfter message " + i + ", delay time : " + delayTime)
                             .deliverAfter(delayTime, TimeUnit.SECONDS)
@@ -118,15 +164,14 @@ public class DelayedMessageProducerWithMessageRouterExample extends ExampleRunne
             if (msg instanceof MessageImpl) {
                 MessageImpl<?> message = (MessageImpl<?>) msg;
                 long deliverAtTime = message.getMessageBuilder().getDeliverAtTime();
-                // We can route message by deliverAtTime if deliverAtTime exists,
-                // in this case just mod by partition nums.
+                // We can route message by deliverAtTime if deliverAtTime exists
                 if (deliverAtTime != 0) {
-                    long deliverAtTimeSeconds =
-                            Duration.ofMillis(deliverAtTime - System.currentTimeMillis()).getSeconds();
-                    if (deliverAtTimeSeconds < 0) {
-                        deliverAtTimeSeconds = 0;
+                    long deliverAtTimeMs = deliverAtTime - System.currentTimeMillis();
+                    if (deliverAtTimeMs < 0) {
+                        deliverAtTimeMs = 0;
                     }
-                    return (int) (deliverAtTimeSeconds % metadata.numPartitions());
+                    int partitionNum = choosePartitionByDelayTime(deliverAtTimeMs);
+                    return partitionNum >= metadata.numPartitions() ? metadata.numPartitions() - 1 : partitionNum;
                 }
             }
             // When message is normal message run this follow strategy.
