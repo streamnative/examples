@@ -126,7 +126,7 @@ public class DelayedMessageProducerWithMessageRouterExample extends ExampleRunne
                 }
                 producer.flush();
 
-                // Delay 1 ~ numMessages seconds using DeliverAfter
+                // Delay 0 ~ numMessages * 10 seconds using DeliverAfter
                 for (int i = 0; i < numMessages; i++) {
                     int delayTime = i * 10;
                     producer.newMessage()
