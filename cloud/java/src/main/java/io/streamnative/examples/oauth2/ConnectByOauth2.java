@@ -25,7 +25,6 @@ public class ConnectByOauth2 {
     public static void main(String[] args) throws Exception {
         String issuerUrl = "https://auth.streamnative.cloud/oauth/token";
         String credentialsUrl = "file:///path/to/KeyFile.json";
-        // String credentialsUrl = "data:application/json;base64,eyJjbGllbnRfaWQiOiJjbGllbnQtaWQiLCJjbGllbnRfc2VjcmV0IjoiY2xpZW50LXNlY3JldCJ9Cg==";
         String audience = "https://auth.streamnative.cloud/api/v2/";
 
         PulsarClient client = PulsarClient.builder()
