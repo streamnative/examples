@@ -26,6 +26,12 @@ public class JCommanderPulsar {
     @Parameter(names = {"--privateKey"}, description = "the credentials URL")
     String credentialsUrl = "";
 
+    @Parameter(names = {"--clientId"}, description = "the client ID")
+    String clientId = "";
+
+    @Parameter(names = {"--clientSecret"}, description = "the client Secret")
+    String clientSecret = "";
+
     @Parameter(names = {"--serviceUrl"}, description = "serviceURL is the address of the accessed broker")
     String serviceUrl = "";
 
