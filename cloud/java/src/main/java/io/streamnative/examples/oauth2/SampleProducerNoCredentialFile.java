@@ -39,7 +39,7 @@ public class SampleProducerNoCredentialFile {
         params.put("scope", jct.scope);
         authenticationOAuth2.configure(objectMapper.writeValueAsString(params));
         PulsarClient client = PulsarClient.builder()
-                .serviceUrl("puslar://localhost:6650")
+                .serviceUrl(jct.serviceUrl)
                 .authentication(authenticationOAuth2)
                 .build();
 
