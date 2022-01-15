@@ -84,5 +84,6 @@ The content of each message payload is a combination of `my-message-` and a digi
     export PRIVATE_KEY = ""
     export AUDIENCE = ""
     export SERVICE_URL = ""
+    node sample_producer_by_oauth2.js
     ```
 
