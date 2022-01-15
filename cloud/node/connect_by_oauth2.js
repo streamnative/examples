@@ -43,11 +43,7 @@ const client_secret = process.env.CLIENT_SECRET;
     if (scope.length > 0) {
         params['scope'] = scope
     }
-    const auth = new Pulsar.AuthenticationOauth2({
-        issuer_url: issuer_url,
-        private_key: private_key,
-        audience: audience,
-    });
+    const auth = new Pulsar.AuthenticationOauth2(params);
 
     // Create a client
     const client = new Pulsar.Client({

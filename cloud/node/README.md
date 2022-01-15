@@ -75,3 +75,14 @@ The content of each message payload is a combination of `my-message-` and a digi
     Sent message: my-message-8
     Sent message: my-message-9
     ```
+
+4. Run the Node.js producer to publish messages to the topic `my-topic` by the oauth2.
+
+    ```bash
+    cd cloud/node
+    export ISSER_URL = ""
+    export PRIVATE_KEY = ""
+    export AUDIENCE = ""
+    export SERVICE_URL = ""
+    ```
+
