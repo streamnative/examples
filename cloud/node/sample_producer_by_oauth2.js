@@ -17,7 +17,7 @@
 
 const Pulsar = require('pulsar-client');
 
-const issuer_url = process.env.ISSER_URL;
+const issuer_url = process.env.ISSUER_URL;
 const private_key = process.env.PRIVATE_KEY;
 const audience = process.env.AUDIENCE;
 const scope = process.env.SCOPE;
