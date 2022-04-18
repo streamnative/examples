@@ -77,6 +77,24 @@ sudo python setup.py install
     Produce message 'message 9 from oauth2 producer' to the pulsar service successfully.
     ```
 
+> *NOTE*
+>
+> Since 2.8.1.10, Python client has supported configuring `scope` field for OAuth2 authentication.
+>
+> For example,
+>
+> ```shell
+> python3 OAuth2Producer.py \
+>     -su "pulsar+ssl://streamnative.cloud:6651 \
+>     -t my-topic -n 10 --auth-params '{
+>     "issuer_url": "https://auth.streamnative.cloud",
+>     "private_key": "/path/to/private.key",
+>     "audience": "urn:sn:pulsar:test-organization-name:test-pulsar-instance-name"}',
+>     "scope": "api://pulsar-cluster-1/.default"
+> }'
+> ```
+
+
 ## Connect to the Pulsar cluster with Token authentication plugin
 
 In this example, the Python producer publishes data to the `my-topic` in your Pulsar cluster. The consumer receives the message from the `my-topic` and `acknowledges` each received message.
