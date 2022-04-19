@@ -187,7 +187,7 @@ docker run --rm \
 10. Stop the hydra server
 
 ```shell
-docker-compose -f $(git rev-parse --show-toplevel)/kop/java/src/main/resources/hydra/docker-compose.yml down -d
+docker-compose -f $(git rev-parse --show-toplevel)/kop/java/src/main/resources/hydra/docker-compose.yml down
 ```
 
 11. Stop the Pulsar server
