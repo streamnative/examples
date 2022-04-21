@@ -70,7 +70,9 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
 ## Example: OAuth2 authentication 
 
 See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security.md#oauthbearer) for how to configure KoP with OAuth authentication. This example takes a topic named `my-topic` under `public/default` namespace as reference.
+
 1. Configure the pulsar broker, this example will use the follow values:
+
 > **Note**
 >
 > Need to change the `credentials.json` and `kop-handler-oauth2.properties` paths to your local path. The example file can be found in `src/main/resources/`.
@@ -119,11 +121,7 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
    }
    ```
 
-> **NOTE**
->
-> The `conf/client.conf` should be configured. For details, see [Configure CLI Tools](http://pulsar.apache.org/docs/en/security-jwt/#cli-tools).
-
-2. Configure the oauth in [oauth.properties](src/main/resources/oauth.properties).
+3.Configure the oauth in [oauth.properties](src/main/resources/oauth.properties).
 
    ```properties
    bootstrap.servers=localhost:9092
@@ -134,13 +132,13 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
    audience=https://dev-kt-aa9ne.us.auth0.com/api/v2/
    ```
 
-3. Compile the project.
+4.Compile the project.
 
    ```
    mvn clean compile
    ```
 
-4. Run a Kafka producer to produce a `hello` message.
+5.Run a Kafka producer to produce a `hello` message.
 
    ```bash
    mvn exec:java -Dexec.mainClass=io.streamnative.examples.kafka.OAuthProducer
@@ -152,7 +150,7 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
    Send hello to persistent://public/default/my-topic-0@0
    ```
 
-5. Run a Kafka consumer to consume some messages.
+6. Run a Kafka consumer to consume some messages.
 
    ```bash
    mvn exec:java -Dexec.mainClass=io.streamnative.examples.kafka.OAuthConsumer
