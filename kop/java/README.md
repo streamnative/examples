@@ -73,10 +73,10 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
 
 1. Configure the pulsar broker, this example will use the follow values:
 
-> **Note**
->
-> Need to change the `credentials.json` and `kop-handler-oauth2.properties` paths to your local path. The example file can be found in `src/main/resources/`.
-> 
+   > **Note**
+   >
+   > Need to change the `credentials.json` and `kop-handler-oauth2.properties` paths to your local path. The example file can be found in `src/main/resources/`.
+   > 
    ```properties
    # Enable KoP
    messagingProtocols=kafka
@@ -121,7 +121,7 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
    }
    ```
 
-3.Configure the oauth in [oauth.properties](src/main/resources/oauth.properties).
+3. Configure the oauth in [oauth.properties](src/main/resources/oauth.properties).
 
    ```properties
    bootstrap.servers=localhost:9092
@@ -132,13 +132,13 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
    audience=https://dev-kt-aa9ne.us.auth0.com/api/v2/
    ```
 
-4.Compile the project.
+4. Compile the project.
 
    ```
    mvn clean compile
    ```
 
-5.Run a Kafka producer to produce a `hello` message.
+5. Run a Kafka producer to produce a `hello` message.
 
    ```bash
    mvn exec:java -Dexec.mainClass=io.streamnative.examples.kafka.OAuthProducer
