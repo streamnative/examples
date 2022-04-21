@@ -70,99 +70,77 @@ See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security
 ## Example: OAuth2 authentication 
 
 See [KoP Security](https://github.com/streamnative/kop/blob/master/docs/security.md#oauthbearer) for how to configure KoP with OAuth authentication. This example takes a topic named `my-topic` under `public/default` namespace as reference.
-1. Start the Hydra OAuth2 server.
-
-Start the Hydra OAuth2 server.
-```shell
-docker-compose -f $(git rev-parse --show-toplevel)/kop/java/src/main/resources/hydra/docker-compose.yml up -d
-```
-Initialize the Hydra OAuth2 server.
-```shell
-./$(git rev-parse --show-toplevel)/kop/java/src/main/resources/init_hydra_oauth_server.sh
-```
-
-2. Configure the oauth in Pulsar
-
-This example will use the follow values:
+1. Configure the pulsar broker, this example will use the follow values:
 > **Note**
 >
-> You need to replace the `privateKey` value with your local path to your `credentials_file.json` file.
-```properties
-# Enable the authentication
-authenticationEnabled=true
-authenticationProviders=org.apache.pulsar.broker.authentication.AuthenticationProviderToken
-superUserRoles=simple_client_id
-brokerClientAuthenticationPlugin=org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2
-brokerClientAuthenticationParameters={"type":"client_credentials","privateKey":"file:///path/to/simple_credentials_file.json","issuerUrl":"http://localhost:4444","audience":"http://example.com/api/v2/"}
-tokenPublicKey=data:;base64,MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA4g8rgGslfLNGdfh94KbfsMPjgX17nnEHnCLhrlVyA+jxSThiQyQVQCkZfav9k4cLCiKdoqxKtLV0RA3hWXGHE0qUNUJWVN3vz3NOI7ccEHBJHzbDk24NYxsW7M6zNfBfTc6ZrJr5XENy7emscODn8HJ2Qf1UkMUeze5EirJ2lsB9Zzo1GIw9ZU65W9HWWcgS5sL9eHlDRbVLmgph7jRzkQJGm2hOeyiE+ufUOWkBQH49BhKaNGfjZ8BOJ1WRsbIIVtwhS7m+HSIKmglboG+onNd5LYAmngbkCuhwjJajBQayxkeBeumvRQACC1+mKC5KaW40JmVRKFFHDcf892t6GX6c7PaVWPqvf2l6nYRbYT9nl4fQK1aUTiCqrPf2+WjEH1JIEwTfFZKTwpTtlr3ejGJMT7wH2L4uFbpguKawTo4lYHWN3IsryDfUVvNbb7l8KMqiuDIy+5R6WezajsCYI/GzvLGCYO1EnRTDFdEmipfbNT2/D91OPKNGmZLVUkVVlL0z+1iQtwfRamn2oRNHzMYMAplGikxrQld/IPUIbKjgtLWPDnfskoWvuCIDQdRzMpxAXa3O/cq5uQRpu2o8xZ8RYWixxrIGc1/8m+QQLy7DwcmVd0dGU29S+fnfOzWr43KWlyWfGsBLFxUkltjY6gx6oB6tsQVC3Cy5Eku8FdcCAwEAAQ==
-
-# Use the KoP's built-in handler
-kopOauth2AuthenticateCallbackHandler=io.streamnative.pulsar.handlers.kop.security.oauth.OauthValidatorCallbackHandler
-
-# Java property configuration file of OauthValidatorCallbackHandler
-kopOauth2ConfigFile=conf/kop-handler.properties
-
-# Enable the authorization for test
-authorizationEnabled=true
-authorizationProvider=org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider
-```
-
-3. Create a new OAuth2 client.
-
-```shell
-docker run --rm \
-  --network hydra_default \
-  oryd/hydra:v1.11.7 \
-  clients create \
-    --endpoint http://hydra:4445 \
-    --id test_role \
-    --secret test_secret \
-    --grant-types client_credentials \
-    --response-types token,code \
-    --token-endpoint-auth-method client_secret_post \
-    --audience http://example.com/api/v2/
-```
-
-4. Create a credentials file json named `credentials.json`
-
-```properties
-{
-  "client_id":"test_role",
-  "client_secret":"test_secret"
-}
-
-```
-
-5. Grant produce and consume permissions to the specific role.
-
-   ```bash
-   bin/pulsar-admin namespaces grant-permission public/default \
-     --role test_role \
-     --actions produce,consume
+> Need to change the `credentials.json` and `kop-handler-oauth2.properties` paths to your local path. The example file can be found in `src/main/resources/`.
+> 
+   ```properties
+   # Enable KoP
+   messagingProtocols=kafka
+   protocolHandlerDirectory=./protocols
+   allowAutoTopicCreationType=partitioned
+   
+   # Use `kafkaListeners` here for KoP 2.8.0 because `listeners` is marked as deprecated from KoP 2.8.0
+   kafkaListeners=PLAINTEXT://127.0.0.1:9092
+   # This config is not required unless you want to expose another address to the Kafka client.
+   # If it’s not configured, it will be the same with `kafkaListeners` config by default
+   kafkaAdvertisedListeners=PLAINTEXT://127.0.0.1:9092
+   brokerEntryMetadataInterceptors=org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor
+   
+   brokerDeleteInactiveTopicsEnabled=false
+   
+   # Enable the authentication
+   authenticationEnabled=true
+   authenticationProviders=org.apache.pulsar.broker.authentication.AuthenticationProviderToken
+   superUserRoles=Xd23RHsUnvUlP7wchjNYOaIfazgeHd9x@clients
+   brokerClientAuthenticationPlugin=org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2
+   brokerClientAuthenticationParameters={"type":"client_credentials","privateKey":"/path/to/credentials.json","issuerUrl":"https://dev-kt-aa9ne.us.auth0.com","audience":"https://dev-kt-aa9ne.us.auth0.com/api/v2/"}
+   tokenPublicKey=data:;base64,MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2tZd/4gJda3U2Pc3tpgRAN7JPGWx/Gn17v/0IiZlNNRbP/Mmf0Vc6G1qsnaRaWNWOR+t6/a6ekFHJMikQ1N2X6yfz4UjMc8/G2FDPRmWjA+GURzARjVhxc/BBEYGoD0Kwvbq/u9CZm2QjlKrYaLfg3AeB09j0btNrDJ8rBsNzU6AuzChRvXj9IdcE/A/4N/UQ+S9cJ4UXP6NJbToLwajQ5km+CnxdGE6nfB7LWHvOFHjn9C2Rb9e37CFlmeKmIVFkagFM0gbmGOb6bnGI8Bp/VNGV0APef4YaBvBTqwoZ1Z4aDHy5eRxXfAMdtBkBupmBXqL6bpd15XRYUbu/7ck9QIDAQAB
+   
+   # Use the KoP's built-in handler
+   kopOauth2AuthenticateCallbackHandler=io.streamnative.pulsar.handlers.kop.security.oauth.OauthValidatorCallbackHandler
+   
+   # Java property configuration file of OauthValidatorCallbackHandler
+   kopOauth2ConfigFile=/path/to/kop-handler-oauth2.properties
+   
+   saslAllowedMechanisms=OAUTHBEARER
    ```
 
-> **Note**
+
+2. Configure the credentials in [credentials.json](src/main/resources/credentials.json).
+
+   ```json
+   {
+   "client_id":"Xd23RHsUnvUlP7wchjNYOaIfazgeHd9x",
+   "client_secret":"rT7ps7WY8uhdVuBTKWZkttwLdQotmdEliaM5rLfmgNibvqziZ-g07ZH52N_poGAb",
+   "audience":"https://dev-kt-aa9ne.us.auth0.com/api/v2/",
+   "grant_type":"client_credentials"
+   }
+   ```
+
+> **NOTE**
 >
 > The `conf/client.conf` should be configured. For details, see [Configure CLI Tools](http://pulsar.apache.org/docs/en/security-jwt/#cli-tools).
 
-6. Configure OAuth2 authentication parameters in [oauth.properties](src/main/resources/oauth.properties).
+2. Configure the oauth in [oauth.properties](src/main/resources/oauth.properties).
 
    ```properties
    bootstrap.servers=localhost:9092
    topic=persistent://public/default/my-topic
    group=my-group
-   issuerUrl=http://localhost:4444
-   credentialsUrl=file:///path/to/credentials.json
-   audience=http://example.com/api/v2/
+   issuerUrl=https://dev-kt-aa9ne.us.auth0.com
+   credentialsUrl=/path/to/credentials.json
+   audience=https://dev-kt-aa9ne.us.auth0.com/api/v2/
    ```
 
-7. Compile the project.
+3. Compile the project.
 
    ```
    mvn clean compile
    ```
 
-8. Run a Kafka producer to produce a `hello` message.
+4. Run a Kafka producer to produce a `hello` message.
 
    ```bash
    mvn exec:java -Dexec.mainClass=io.streamnative.examples.kafka.OAuthProducer
@@ -174,7 +152,7 @@ docker run --rm \
    Send hello to persistent://public/default/my-topic-0@0
    ```
 
-9. Run a Kafka consumer to consume some messages.
+5. Run a Kafka consumer to consume some messages.
 
    ```bash
    mvn exec:java -Dexec.mainClass=io.streamnative.examples.kafka.OAuthConsumer
@@ -185,11 +163,3 @@ docker run --rm \
    ```
    Receive record: hello from persistent://public/default/my-topic-0@0
    ```
-   
-10. Stop the Hydra OAuth2 server.
-
-```shell
-docker-compose -f $(git rev-parse --show-toplevel)/kop/java/src/main/resources/hydra/docker-compose.yml down
-```
-
-11. Stop the Pulsar server.
