@@ -18,6 +18,9 @@ This directory includes examples of how Pulsar CLI tools and Pulsar clients conn
   - [Go client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/go)
   - [Python client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/python)
   - [Node.js client](https://github.com/streamnative/pulsar-examples/tree/master/cloud/node)
+  
+- Supported Pulsar transactions
+  - [Java client](https://github.com/streamnative/examples/tree/master/cloud/transaction/java) 
 
 To use these tools or clients to connect to StreamNative Cloud, you need get the Pulsar service URLs of the StreamNative Cloud and OAuth2 or Token authentication parameters that are used to connect to the service URLs.
 
