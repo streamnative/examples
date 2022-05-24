@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.apache.pulsar.client.api.Consumer;
+import org.apache.pulsar.client.api.Message;
 import org.apache.pulsar.client.api.Producer;
 import org.apache.pulsar.client.api.ProducerBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -36,8 +37,8 @@ import org.apache.pulsar.common.util.FutureUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TransactionExample {
-    private static final Logger log = LoggerFactory.getLogger(TransactionExample.class);
+public class TransactionAsyncExample {
+    private static final Logger log = LoggerFactory.getLogger(TransactionAsyncExample.class);
     public static void main(String[] args) throws Exception {
         JCommanderPulsar jct = new JCommanderPulsar();
         JCommander jCommander = new JCommander(jct, args);
@@ -57,22 +58,24 @@ public class TransactionExample {
                 .build();
 
         ProducerBuilder<String> producerBuilder = client.newProducer(Schema.STRING).enableBatching(false);
-        Producer<String> producer1 = producerBuilder.topic(topic1).create();
-        Producer<String> producer2 = producerBuilder.topic(topic2).create();
+        Producer<String> producer1 = producerBuilder.topic(topic1).sendTimeout(0, TimeUnit.SECONDS).create();
+        Producer<String> producer2 = producerBuilder.topic(topic2).sendTimeout(0, TimeUnit.SECONDS).create();
 
         Consumer<String> consumer1 = client.newConsumer(Schema.STRING).subscriptionName("test").topic(topic1).subscribe();
+        Consumer<String> consumer2 = client.newConsumer(Schema.STRING).subscriptionName("test").topic(topic2).subscribe();
 
-        // First prepare 10 pieces of messages that can be consumed
-        for (int i = 0; i < 10; i++) {
-            producer1.send("Hello Pulsar!");
+        int count = 2;
+        // First prepare two messages that can be consumed
+        for (int i = 0; i < count; i++) {
+            producer1.send("Hello Pulsar! count : " + i);
         }
 
-        // Consume these 10 messages and send 10 messages to topic-2 with the same transaction
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < count; i++) {
+            // Consume two messages and send two messages to topic-2 with the same transaction
             // Receive the message first, and then start the transaction after receiving the message.
             // If the transaction is started first and no message is received for
             // a long time, it will cause the transaction to time out.
-
+            final int number = i;
             consumer1.receiveAsync().thenAccept(message -> {
                 // receive message success then new transaction
                 try {
@@ -80,7 +83,7 @@ public class TransactionExample {
                         // new transaction success, then you can do you own op
                         List<CompletableFuture<?>> futures = new ArrayList<>();
                         // add send message with txn future to futures
-                        futures.add(producer2.newMessage(txn).value("Hello Pulsar!").sendAsync());
+                        futures.add(producer2.newMessage(txn).value("Hello Pulsar! count : " + number).sendAsync());
                         // add ack message with txn future to futures
                         futures.add(consumer1.acknowledgeAsync(message.getMessageId(), txn).exceptionally(e -> {
                             if (!(e.getCause() instanceof PulsarClientException.TransactionConflictException)) {
@@ -100,7 +103,7 @@ public class TransactionExample {
                                 log.info("txn : {} commit success!", txn);
                             }).exceptionally(e -> {
                                 log.error("txn : {} commit fail!", txn);
-                                // if not TransactionNotFoundException, you can commit again or abort
+                                // if not TransactionNotFoundException, you can commit again or abort. also you can wait txn timeout
                                 if (!(e.getCause() instanceof TransactionCoordinatorClientException.TransactionNotFoundException)) {
                                     txn.commit();
                                 }
@@ -111,7 +114,6 @@ public class TransactionExample {
                             txn.abort();
                             return null;
                         });
-
                     }).exceptionally(e -> {
                         // new transaction fail, should redeliver this message or negativeAcknowledge
                         // if you don't redeliver or negativeAcknowledge, the message will not receive again
@@ -125,5 +127,17 @@ public class TransactionExample {
                 }
             });
         }
+
+        for (int i = 0; i < count; i++) {
+            Message<String> message =  consumer2.receive();
+            System.out.println("Receive transaction message: " + message.getValue());
+        }
+
+        // release the io resource
+        consumer2.close();
+        consumer1.close();
+        producer1.close();
+        producer2.close();
+        client.close();
     }
 }

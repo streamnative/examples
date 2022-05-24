@@ -25,26 +25,12 @@ This document describes how to use transactions in cluster on a cluster with tra
       mvn clean package
 
       # Run the example
-      mvn exec:java -Dexec.mainClass="io.streamnative.examples.transaction.TransactionExample" \
+      mvn exec:java -Dexec.mainClass="io.streamnative.examples.transaction.TransactionAsyncExample" \
           -Dexec.args="--serviceUrl pulsar+ssl://streamnative.cloud:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://streamnative.cloud --privateKey file:///path/to/private/key/file.txt"
-      ```
-      ```code
-       Transaction transaction = client.newTransaction().withTransactionTimeout(10, TimeUnit.SECONDS).build().get();
-        
-       producer1.send("Hello Pulsar!");
-        
-       Message<String> message = consumer1.receive();
-        
-       consumer1.acknowledgeAsync(message.getMessageId(), transaction);
-        
-       producer2.send(message.getValue());
-        
-       transaction.commit().get();
-        
-       System.out.println("Receive transaction message: " + consumer2.receive( ).getValue());
       ```
       **Output**:
 
       ```text
-      Receive transaction message: Hello Pulsar!
+      Receive transaction message: Hello Pulsar! count : 1
+      Receive transaction message: Hello Pulsar! count : 2
       ```
