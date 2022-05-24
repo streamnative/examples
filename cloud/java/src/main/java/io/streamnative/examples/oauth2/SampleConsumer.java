@@ -20,6 +20,7 @@ package io.streamnative.examples.oauth2;
 import com.beust.jcommander.JCommander;
 
 import java.net.URL;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.client.api.*;
 
 import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
@@ -35,10 +36,19 @@ public class SampleConsumer {
 
         String topic = "persistent://public/default/topic-1";
 
+        Authentication authentication;
+
+        if (StringUtils.isEmpty(jct.scope)) {
+            authentication = AuthenticationFactoryOAuth2.clientCredentials(
+                new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience);
+        } else {
+            authentication = AuthenticationFactoryOAuth2.clientCredentials(
+                new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience, jct.scope);
+        }
+
         PulsarClient client = PulsarClient.builder()
                 .serviceUrl(jct.serviceUrl)
-                .authentication(
-                        AuthenticationFactoryOAuth2.clientCredentials(new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience))
+                .authentication(authentication)
                 .build();
 
         Consumer<byte[]> consumer = client.newConsumer(Schema.BYTES)

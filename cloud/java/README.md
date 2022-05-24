@@ -71,3 +71,51 @@ The content of each message payload is a combination of `my-message-` and a digi
       Publish my-message-8 and message ID 1121:8:-1:0
       Publish my-message-9 and message ID 1121:9:-1:0
       ```
+   
+5. Run the Java consumer by use clientId and clientSecret to receive messages from the topic `topic-1`.(Optional)
+
+      ```shell script
+      # Compile the Java code
+      mvn clean package
+    
+      # Run the consumer
+      mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleConsumerNoCredentialFile" \
+                -Dexec.args="--serviceUrl your-serviceUrl --audience your-audience  --scope your-scope --issuerUrl your-issuer-url --clientId your-client-id --clientSecret your-client-secret"
+      ```
+   
+      ```text
+       Receive message my-message-0
+       Receive message my-message-1
+       Receive message my-message-2
+       Receive message my-message-3
+       Receive message my-message-4
+       Receive message my-message-5
+       Receive message my-message-6
+       Receive message my-message-7
+       Receive message my-message-8
+       Receive message my-message-9
+      ```
+   
+4. Run the Java producer to publish messages to the topic `topic-1`.(Optional)
+
+      ```shell script
+      # Compile the Java code
+      mvn clean package
+
+      # Run the producer
+      mvn exec:java -Dexec.mainClass="io.streamnative.examples.oauth2.SampleProducerNoCredentialFile" \
+          -Dexec.args="--serviceUrl your-serviceUrl --audience your-audience  --scope your-scope --issuerUrl your-issuer-url --clientId your-client-id --clientSecret your-client-secret"
+      ```
+   
+      ```text
+       Publish my-message-0 and message ID 25:0:0:0
+       Publish my-message-1 and message ID 65:0:0:0
+       Publish my-message-2 and message ID 65:1:0:0
+       Publish my-message-3 and message ID 65:2:0:0
+       Publish my-message-4 and message ID 65:3:0:0
+       Publish my-message-5 and message ID 65:4:0:0
+       Publish my-message-6 and message ID 65:5:0:0
+       Publish my-message-7 and message ID 65:6:0:0
+       Publish my-message-8 and message ID 65:7:0:0
+       Publish my-message-9 and message ID 65:8:0:0
+      ```

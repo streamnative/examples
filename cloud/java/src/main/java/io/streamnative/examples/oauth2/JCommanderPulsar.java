@@ -19,9 +19,6 @@ package io.streamnative.examples.oauth2;
 
 import com.beust.jcommander.Parameter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class JCommanderPulsar {
     @Parameter(names = {"--issuerUrl"}, description = "issuerUrl is a named external system that provides identity and API access by issuing OAuth access tokens")
     String issuerUrl = "";
@@ -29,11 +26,20 @@ public class JCommanderPulsar {
     @Parameter(names = {"--privateKey"}, description = "the credentials URL")
     String credentialsUrl = "";
 
+    @Parameter(names = {"--clientId"}, description = "the client ID")
+    String clientId = "";
+
+    @Parameter(names = {"--clientSecret"}, description = "the client Secret")
+    String clientSecret = "";
+
     @Parameter(names = {"--serviceUrl"}, description = "serviceURL is the address of the accessed broker")
     String serviceUrl = "";
 
     @Parameter(names = {"--audience"}, description = "audience is the address of the accessed service")
     String audience = "";
+
+    @Parameter(names = {"--scope"}, description = "OAuth2 scope")
+    String scope = "";
 
     @Parameter(names = "--help", help = true)
     boolean help;
