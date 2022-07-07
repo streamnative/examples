@@ -23,7 +23,7 @@ cd examples/aop/amqp091-go
 go mod tidy
 ```
 
-3. Configure endpoint, audience and keyfile on producer/oauth-producer.go and consumer/oauth-consumer.go
+3. Configure endpoint, audience, keyfile and vhost on producer/oauth-producer.go and consumer/oauth-consumer.go
 
 
 4. Build and run example
