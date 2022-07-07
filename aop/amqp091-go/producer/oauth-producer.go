@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/apache/pulsar-client-go/oauth2"
 	"log"
+
+	"github.com/apache/pulsar-client-go/oauth2"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
