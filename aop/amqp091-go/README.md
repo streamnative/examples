@@ -17,7 +17,7 @@ git clone -b add-qmqp-091-go-example https://github.com/nodece/examples.git
 2. Download dependencies
 
 ```
-cd examples
+cd examples/aop/amqp091-go
 go mod tidy
 ```
 
