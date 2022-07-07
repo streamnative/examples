@@ -29,4 +29,6 @@ go mod tidy
 ```
 go build producer/oauth-producer.go
 go build consumer/oauth-consumer.go
+./oauth-consumer
+./oauth-producer
 ```
