@@ -2,12 +2,11 @@ package main
 
 import (
 	amqp "github.com/rabbitmq/amqp091-go"
-	aopamqpauth "github.com/streamnative/aop-amqp091-auth-go"
 )
 
 func main() {
 	token := "your-token"
-	tokenAuthentication, err := aopamqpauth.NewTokenAuthentication(token)
+	tokenAuthentication, err := NewTokenAuthentication(token)
 	if err != nil {
 		panic(err)
 	}
