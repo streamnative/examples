@@ -8,7 +8,7 @@ The `amqp091-go` is a AMQP client written by RabbitMQ.
 
 # Running steps
 
-## Please first create the command namespace, which will be configured to vhost
+## Please first create the namespace, which will be configured to vhost
 
 1. Clone example project
 
