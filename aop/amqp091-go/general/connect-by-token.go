@@ -1,17 +1,21 @@
 package main
 
 import (
+	"log"
+
 	amqp "github.com/rabbitmq/amqp091-go"
+	amqpauth "github.com/streamnative/aop-amqp091-auth-go"
 )
 
 func main() {
+	endpoint := "amqp://localhost:15002"
+
 	token := "your-token"
-	tokenAuthentication, err := NewTokenAuthentication(token)
+	tokenAuthentication, err := amqpauth.NewTokenAuthentication(token)
 	if err != nil {
-		panic(err)
+		log.Fatalf("NewTokenAuthentication: %v", err)
 	}
 
-	endpoint := "amqp://localhost:15002"
 	saslConfigs := []amqp.Authentication{tokenAuthentication}
 	connection, err := amqp.DialConfig(endpoint,
 		amqp.Config{

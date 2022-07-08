@@ -8,12 +8,12 @@ The `amqp091-go` is a AMQP client written by RabbitMQ.
 
 # Running steps
 
-## Please first create the namespace, which will be configured to vhost
+**Please first create the namespace, which will be configured to vhost**
 
 1. Clone example project
 
 ```
-git clone -b add-qmqp-091-go-example https://github.com/nodece/examples.git 
+git clone https://github.com/streamnative/examples.git 
 ```
 
 2. Download dependencies

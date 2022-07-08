@@ -4,29 +4,13 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/apache/pulsar-client-go/oauth2"
 	amqp "github.com/rabbitmq/amqp091-go"
-	amqpauth "github.com/streamnative/aop-amqp091-auth-go"
 )
 
 func main() {
-	endpoint := "amqp://your-host-cluster:5671"
+	endpoint := "amqp://user:password@your-host-cluster:5671/vhost2"
 
-	oauth2Authentication, err := amqpauth.NewOAuth2Authentication(
-		amqpauth.ClientCredentialsFlowOptions{
-			ClientCredentialsFlowOptions: oauth2.ClientCredentialsFlowOptions{
-				// your key file from here
-				// https://docs.streamnative.io/cloud/stable/managed-access/service-account#work-with-a-service-account-through-streamnative-cloud-manager
-				KeyFile: "/your-key-file-path.json",
-			},
-			// your audience from streamnative cloud console ui
-			Audience: "your-audience",
-		})
-	saslConfigs := []amqp.Authentication{oauth2Authentication}
-	conn, err := amqp.DialConfig(endpoint, amqp.Config{
-		SASL:  saslConfigs,
-		Vhost: "vhost2",
-	})
+	conn, err := amqp.Dial(endpoint)
 	if err != nil {
 		log.Fatalf("failed to open connection: %v", err)
 	}
