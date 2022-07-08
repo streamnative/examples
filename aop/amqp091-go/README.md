@@ -14,7 +14,7 @@ The `amqp091-go` is a AMQP client written by RabbitMQ.
 1. Clone example project
 
 ```
-git clone -b add-qmqp-091-go-example https://github.com/nodece/examples.git 
+git clone -b add-qmqp-091-go-example https://github.com/streamnative/examples.git 
 ```
 
 2. Download dependencies
@@ -43,7 +43,7 @@ go build basic-auth-consumer/basic-auth-consumer.go
 1. Clone example project
 
 ```
-git clone -b add-qmqp-091-go-example https://github.com/nodece/examples.git 
+git clone -b add-qmqp-091-go-example https://github.com/streamnative/examples.git 
 ```
 
 2. Download dependencies
