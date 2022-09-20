@@ -1,0 +1,18 @@
+spring:
+  pulsar:
+    client:
+      service-url: pulsar+ssl://free.o-j8r1u.snio.cloud:6651
+      auth-plugin-class-name: org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2
+      authentication:
+        private-key: file:///Users/user/Downloads/o-j8r1u-free.json
+        audience: urn:sn:pulsar:o-j8r1u:free
+        issuer-url: https://auth.streamnative.cloud/
+    producer:
+      batching-enabled: false
+      topic-name: persistent://public/default/signups-topic
+
+
+logging:
+  level:
+    org.apache.pulsar: error
+    io.streamnative.example: info
