@@ -30,7 +30,7 @@ int main() {
     "private_key": "/resources/authentication/token/cpp_credentials_file.json",
     "audience": "https://cloud.auth0.com/api/v2/"})";
 
-    config.setAuth(pulsar::AuthOauth2::create(params));
+    config.setAuth(pulsar::AuthOauth2::create(oauthParams));
 
     Client client("pulsar+ssl://streamnative.cloud:6651", config);
     client.close();
