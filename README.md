@@ -17,3 +17,7 @@ This is a curated list of demos that showcase Apache Pulsar® messaging and even
 # Flink
 
 - [Pulsar Flink Connector](pulsar-flink/README.md)
+
+# Spring for Apache Pulsar
+
+- [Spring for Apache Pulsar Example](spring-pulsar/README.md)
