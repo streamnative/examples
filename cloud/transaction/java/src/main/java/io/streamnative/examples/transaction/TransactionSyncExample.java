@@ -71,7 +71,7 @@ public class TransactionSyncExample {
                         AuthenticationFactoryOAuth2.clientCredentials(new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience))
                 .build();
 
-        // Create two producers to produce messages to input and output topics.
+        // Create three producers to produce messages to input and output topics.
         ProducerBuilder<String> producerBuilder = client.newProducer(Schema.STRING);
         Producer<String> inputProducer = producerBuilder.topic(inputTopic)
                 .sendTimeout(0, TimeUnit.SECONDS).create();
@@ -79,7 +79,7 @@ public class TransactionSyncExample {
                 .sendTimeout(0, TimeUnit.SECONDS).create();
         Producer<String> outputProducerTwo = producerBuilder.topic(outputTopicTwo)
                 .sendTimeout(0, TimeUnit.SECONDS).create();
-        // Create two consumers to consume messages for input and output topics.
+        // Create three consumers to consume messages for input and output topics.
         Consumer<String> inputConsumer = client.newConsumer(Schema.STRING)
                 .subscriptionName("test").topic(inputTopic).subscribe();
         Consumer<String> outputConsumerOne = client.newConsumer(Schema.STRING)
