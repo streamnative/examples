@@ -64,14 +64,14 @@ public class TransactionSyncExample {
         String outputTopicTwo = "persistent://public/default/output-topic-2";
 
         PulsarClient client = PulsarClient.builder()
-                // client should enable transaction, otherwise, can't do any transaction operation
+                // Create a Pulsar client and enable Transactions.
                 .enableTransaction(true)
                 .serviceUrl(jct.serviceUrl)
                 .authentication(
                         AuthenticationFactoryOAuth2.clientCredentials(new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience))
                 .build();
 
-        // create producers for input and output topics
+        // Create two producers to produce messages to input and output topics.
         ProducerBuilder<String> producerBuilder = client.newProducer(Schema.STRING);
         Producer<String> inputProducer = producerBuilder.topic(inputTopic)
                 .sendTimeout(0, TimeUnit.SECONDS).create();
@@ -79,7 +79,7 @@ public class TransactionSyncExample {
                 .sendTimeout(0, TimeUnit.SECONDS).create();
         Producer<String> outputProducerTwo = producerBuilder.topic(outputTopicTwo)
                 .sendTimeout(0, TimeUnit.SECONDS).create();
-        // create consumers for input and output topics
+        // Create two consumers to consume messages for input and output topics.
         Consumer<String> inputConsumer = client.newConsumer(Schema.STRING)
                 .subscriptionName("test").topic(inputTopic).subscribe();
         Consumer<String> outputConsumerOne = client.newConsumer(Schema.STRING)
@@ -88,7 +88,7 @@ public class TransactionSyncExample {
                 .subscriptionName("test").topic(outputTopicTwo).subscribe();
 
         int count = 2;
-        // create two messages to be consumed
+        // Produce messages to topics.
         for (int i = 0; i < count; i++) {
             inputProducer.send("Hello Pulsar! count : " + i);
         }
@@ -96,7 +96,7 @@ public class TransactionSyncExample {
         // consume messages and produce to output topics with transaction
         for (int i = 0; i < count; i++) {
 
-            // receive message from input topic
+            // The consumer successfully receives messages. Then, create a transaction.
             Message<String> message = inputConsumer.receive();
             Transaction txn = null;
             try {
@@ -104,11 +104,11 @@ public class TransactionSyncExample {
                         .withTransactionTimeout(10, TimeUnit.SECONDS).build().get();
                 // process the message here...
 
-                // produce messages to output topics with the transaction
+                // The producers produce messages to output topics with the transaction
                 outputProducerOne.newMessage(txn).value("Hello Pulsar! outputTopicOne count : " + i).send();
                 outputProducerTwo.newMessage(txn).value("Hello Pulsar! outputTopicTwo count : " + i).send();
 
-                // acknowledge the input message with the transaction
+                // The consumers acknowledge the input message with the transaction
                 inputConsumer.acknowledgeAsync(message.getMessageId(), txn).get();
                 // commit the transaction
                 txn.commit();
