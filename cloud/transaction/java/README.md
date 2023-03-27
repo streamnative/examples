@@ -26,7 +26,7 @@ This document describes how to use transactions in cluster on a cluster with tra
 
       # Run the example
       mvn exec:java -Dexec.mainClass="io.streamnative.examples.transaction.TransactionSyncExample" \
-          -Dexec.args="--serviceUrl pulsar+ssl://streamnative.cloud:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://streamnative.cloud --privateKey file:///path/to/private/key/file.txt"
+          -Dexec.args="--serviceUrl pulsar+ssl://streamnative.cloud:6651 --audience urn:sn:pulsar:pulsar-instance-ns:pulsar-instance-name --issuerUrl https://streamnative.cloud --privateKey file:///path/to/private/key/file.json"
       ```
       **Output**:
 
