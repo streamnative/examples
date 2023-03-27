@@ -67,14 +67,14 @@ public class TransactionAsyncExample {
         String outputTopicTwo = "persistent://public/default/output-topic-2";
 
         PulsarClient client = PulsarClient.builder()
-                // client should enable transaction, otherwise, can't do any transaction operation
+                // Create a Pulsar client and enable Transactions.
                 .enableTransaction(true)
                 .serviceUrl(jct.serviceUrl)
                 .authentication(
                         AuthenticationFactoryOAuth2.clientCredentials(new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience))
                 .build();
 
-        // create producers for input and output topics
+        // Create two producers to produce messages to input and output topics.
         ProducerBuilder<String> producerBuilder = client.newProducer(Schema.STRING);
         Producer<String> inputProducer = producerBuilder.topic(inputTopic)
                 .sendTimeout(0, TimeUnit.SECONDS).create();
@@ -82,7 +82,7 @@ public class TransactionAsyncExample {
                 .sendTimeout(0, TimeUnit.SECONDS).create();
         Producer<String> outputProducerTwo = producerBuilder.topic(outputTopicTwo)
                 .sendTimeout(0, TimeUnit.SECONDS).create();
-        // create consumers for input and output topics
+        // Create two consumers to consume messages for input and output topics.
         Consumer<String> inputConsumer = client.newConsumer(Schema.STRING)
                 .subscriptionName("test").topic(inputTopic).subscribe();
         Consumer<String> outputConsumerOne = client.newConsumer(Schema.STRING)
@@ -91,7 +91,7 @@ public class TransactionAsyncExample {
                 .subscriptionName("test").topic(outputTopicTwo).subscribe();
 
         int count = 2;
-        // create two messages to be consumed
+        // Produce messages to topics.
         for (int i = 0; i < count; i++) {
             inputProducer.send("Hello Pulsar! count : " + i);
         }
@@ -100,16 +100,16 @@ public class TransactionAsyncExample {
             final int number = i;
             // receive message from input topic
             inputConsumer.receiveAsync().thenAccept(message -> {
-                // receive message success then create transaction
+                // The consumer successfully receives messages. Then, create a transaction.
                 try {
                     client.newTransaction().withTransactionTimeout(10, TimeUnit.SECONDS).build().thenAccept(txn -> {
                         // process the message here...
 
-                        // produce messages to output topics with the transaction
+                        // The producers produce messages to output topics with the transaction
                         outputProducerOne.newMessage(txn).value("Hello Pulsar! outputTopicOne count : " + number).sendAsync();
                         outputProducerTwo.newMessage(txn).value("Hello Pulsar! outputTopicTwo count : " + number).sendAsync();
 
-                        // acknowledge the input message with the transaction
+                        // The consumers acknowledge the input message with the transaction
                         inputConsumer.acknowledgeAsync(message.getMessageId(), txn).exceptionally(e -> {
                             if (!(e.getCause() instanceof PulsarClientException.TransactionConflictException)) {
                                 // if not TransactionConflictException,
