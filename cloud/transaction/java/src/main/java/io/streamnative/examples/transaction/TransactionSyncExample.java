@@ -43,68 +43,108 @@ public class TransactionSyncExample {
             return;
         }
 
-        String topic1 = "persistent://public/default/topic-1";
-        String topic2 = "persistent://public/default/topic-2";
+        /**
+         * This is an example code that utilizes Pulsar's transaction feature to consume data from an input topic,
+         * process it, and output messages to two different output topics while ensuring transaction atomicity.
+         *
+         * The code initializes Pulsar producers and consumers for the input and output topics.
+         * Two messages are produced to be consumed from the input topic, and for each consumed message,
+         * two messages are produced to each of the output topics within a transaction. The input message is
+         * acknowledged with the transaction before committing it, and in case of a transaction conflict exception,
+         * the message is negatively acknowledged and the transaction is aborted.
+         *
+         * This example demonstrates the importance of atomicity when processing messages from a
+         * data source and outputting them to multiple topics. By using transactions, the entire process is
+         * treated as a single unit of work, and either succeeds or fails together,
+         * ensuring data consistency and reliability.
+         */
+
+        String inputTopic = "persistent://public/default/input-topic";
+        String outputTopicOne = "persistent://public/default/output-topic-1";
+        String outputTopicTwo = "persistent://public/default/output-topic-2";
 
         PulsarClient client = PulsarClient.builder()
+                // Create a Pulsar client and enable Transactions.
                 .enableTransaction(true)
                 .serviceUrl(jct.serviceUrl)
                 .authentication(
                         AuthenticationFactoryOAuth2.clientCredentials(new URL(jct.issuerUrl), new URL(jct.credentialsUrl), jct.audience))
                 .build();
 
-        ProducerBuilder<String> producerBuilder = client.newProducer(Schema.STRING).enableBatching(false);
-        Producer<String> producer1 = producerBuilder.topic(topic1).sendTimeout(0, TimeUnit.SECONDS).create();
-        Producer<String> producer2 = producerBuilder.topic(topic2).sendTimeout(0, TimeUnit.SECONDS).create();
-
-        Consumer<String> consumer1 = client.newConsumer(Schema.STRING).subscriptionName("test").topic(topic1).subscribe();
-        Consumer<String> consumer2 = client.newConsumer(Schema.STRING).subscriptionName("test").topic(topic2).subscribe();
+        // Create three producers to produce messages to input and output topics.
+        ProducerBuilder<String> producerBuilder = client.newProducer(Schema.STRING);
+        Producer<String> inputProducer = producerBuilder.topic(inputTopic)
+                .sendTimeout(0, TimeUnit.SECONDS).create();
+        Producer<String> outputProducerOne = producerBuilder.topic(outputTopicOne)
+                .sendTimeout(0, TimeUnit.SECONDS).create();
+        Producer<String> outputProducerTwo = producerBuilder.topic(outputTopicTwo)
+                .sendTimeout(0, TimeUnit.SECONDS).create();
+        // Create three consumers to consume messages for input and output topics.
+        Consumer<String> inputConsumer = client.newConsumer(Schema.STRING)
+                .subscriptionName("test").topic(inputTopic).subscribe();
+        Consumer<String> outputConsumerOne = client.newConsumer(Schema.STRING)
+                .subscriptionName("test").topic(outputTopicOne).subscribe();
+        Consumer<String> outputConsumerTwo = client.newConsumer(Schema.STRING)
+                .subscriptionName("test").topic(outputTopicTwo).subscribe();
 
         int count = 2;
-        // First prepare two messages that can be consumed
+        // Produce messages to topics.
         for (int i = 0; i < count; i++) {
-            producer1.send("Hello Pulsar! count : " + i);
+            inputProducer.send("Hello Pulsar! count : " + i);
         }
 
+        // consume messages and produce to output topics with transaction
         for (int i = 0; i < count; i++) {
-            // Consume two messages and send two messages to topic-2 with the same transaction
-            // Receive the message first, and then start the transaction after receiving the message.
-            // If the transaction is started first and no message is received for
-            // a long time, it will cause the transaction to time out.
-            Message<String> message = consumer1.receive();
+
+            // The consumer successfully receives messages. Then, create a transaction.
+            Message<String> message = inputConsumer.receive();
             Transaction txn = null;
             try {
                 txn = client.newTransaction()
                         .withTransactionTimeout(10, TimeUnit.SECONDS).build().get();
-                // new transaction success, then you can do you own op
-                producer2.newMessage(txn).value("Hello Pulsar! count : " + i).send();
-                consumer1.acknowledgeAsync(message.getMessageId(), txn).get();
+                // process the message here...
+
+                // The producers produce messages to output topics with the transaction
+                outputProducerOne.newMessage(txn).value("Hello Pulsar! outputTopicOne count : " + i).send();
+                outputProducerTwo.newMessage(txn).value("Hello Pulsar! outputTopicTwo count : " + i).send();
+
+                // The consumers acknowledge the input message with the transaction
+                inputConsumer.acknowledgeAsync(message.getMessageId(), txn).get();
+                // commit the transaction
                 txn.commit();
             } catch (ExecutionException e) {
                 if (!(e.getCause() instanceof PulsarClientException.TransactionConflictException)) {
                     // if not TransactionConflictException,
                     // we should redeliver or negativeAcknowledge this message
                     // if you don't redeliver or negativeAcknowledge, the message will not receive again
-                    // ((ConsumerImpl<String>)consumer1).redeliverUnacknowledgedMessages(Collections.singleton(message.getMessageId()));
-                    // ((MultiTopicsConsumerImpl<String>)consumer1).redeliverUnacknowledgedMessages(Collections.singleton(message.getMessageId()));
-                    consumer1.negativeAcknowledge(message);
+                    inputConsumer.negativeAcknowledge(message);
                 }
+
+                // if transaction has been created, should abort this transaction
                 if (txn != null) {
                     txn.abort();
                 }
             }
         }
 
+        // consume messages from output topics and print them
         for (int i = 0; i < count; i++) {
-            Message<String> message =  consumer2.receive();
+            Message<String> message =  outputConsumerOne.receive();
+            System.out.println("Receive transaction message: " + message.getValue());
+        }
+
+        for (int i = 0; i < count; i++) {
+            Message<String> message =  outputConsumerTwo.receive();
             System.out.println("Receive transaction message: " + message.getValue());
         }
 
         // release the io resource
-        consumer2.close();
-        consumer1.close();
-        producer1.close();
-        producer2.close();
+        inputProducer.close();
+        inputConsumer.close();
+        outputConsumerOne.close();
+        outputConsumerTwo.close();
+        outputProducerOne.close();
+        outputProducerTwo.close();
         client.close();
     }
 }
