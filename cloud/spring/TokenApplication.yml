@@ -1,0 +1,8 @@
+
+spring:
+  pulsar:
+    client:
+      service-url: {{ SERVICE_URL }}
+      auth-plugin-class-name: org.apache.pulsar.client.impl.auth.AuthenticationToken
+      authentication:
+        token: {{ AUTH_PARAMS_TOKEN }}
