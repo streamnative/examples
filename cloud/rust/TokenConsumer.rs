@@ -9,7 +9,7 @@ async fn main() -> Result<(), pulsar::Error> {
 
     let addr = "{{ SERVICE_URL }}".to_string();
     let mut builder = Pulsar::builder(addr, TokioExecutor);
-    let token = "{{ AUTH_PARAMS_TOKE }}".to_string();
+    let token = "{{ AUTH_PARAMS_TOKEN }}".to_string();
     builder = builder.with_auth(Authentication {
         name: "token".to_string(),
         data: token.into_bytes(),
