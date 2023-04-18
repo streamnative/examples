@@ -11,7 +11,7 @@ namespace CsharpExamples
         {
             const string serviceUrl = "{{ SERVICE_URL }}";
             var topicName = "persistent://public/default/test-topic";
-            var token = "{{ AUTH_PARAMS_TOKE }}";
+            var token = "{{ AUTH_PARAMS_TOKEN }}";
 
             var client = await new PulsarClientBuilder()
                 .ServiceUrl(serviceUrl)
