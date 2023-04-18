@@ -5,4 +5,4 @@ spring:
       service-url: {{ SERVICE_URL }}
       auth-plugin-class-name: org.apache.pulsar.client.impl.auth.AuthenticationToken
       authentication:
-        token: {{ AUTH_PARAMS_TOKE }}
+        token: {{ AUTH_PARAMS_TOKEN }}
