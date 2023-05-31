@@ -1,0 +1,9 @@
+spring:
+  pulsar:
+    client:
+      service-url: {{ SERVICE_URL }}
+      auth-plugin-class-name: org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2
+      authentication:
+        issuer-url: "https://auth.streamnative.cloud/"
+        private-key: "{{ file://YOUR-KEY-FILE-PATH }}"  # TODO Absolute file path of your downloaded key file
+        audience: "{{ YOUR-AUDIENCE }}"
