@@ -4,7 +4,7 @@ terraform {
   required_providers {
     streamnative = {
       source = "streamnative/streamnative"
-      version = "0.5.0-rc.7"
+      version = "0.5.0"
     }
   }
 }
