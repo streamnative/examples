@@ -70,7 +70,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	deser, err := avro.NewGenericDeserializer(client, serde.ValueSerde, avro.NewDeserializerConfig())
+	deser, err := avro.NewSpecificDeserializer(client, serde.ValueSerde, avro.NewDeserializerConfig())
 
 	if err != nil {
 		fmt.Printf("Failed to create deserializer: %s\n", err)
@@ -122,11 +122,4 @@ func main() {
 
 	fmt.Printf("Closing consumer\n")
 	c.Close()
-}
-
-// User is a simple record example
-type User struct {
-	Name           string `json:"name"`
-	FavoriteNumber int64  `json:"favorite_number"`
-	FavoriteColor  string `json:"favorite_color"`
 }

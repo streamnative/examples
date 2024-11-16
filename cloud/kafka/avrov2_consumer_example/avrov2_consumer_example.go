@@ -27,7 +27,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry"
 	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde"
-	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde/avro"
+	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde/avrov2"
 )
 
 func main() {
@@ -48,13 +48,14 @@ func main() {
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers":  bootstrapServers,
+		"group.id":           group,
+		"session.timeout.ms": 6000,
+		"auto.offset.reset":  "earliest",
 		"sasl.username":      "unused",
 		"sasl.password":      "token:" + apiKey,
 		"security.protocol":  "SASL_SSL",
 		"sasl.mechanisms":    "PLAIN",
-		"group.id":           group,
-		"session.timeout.ms": 6000,
-		"auto.offset.reset":  "earliest"})
+	})
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create consumer: %s\n", err)
@@ -70,7 +71,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	deser, err := avro.NewGenericDeserializer(client, serde.ValueSerde, avro.NewDeserializerConfig())
+	deser, err := avrov2.NewDeserializer(client, serde.ValueSerde, avrov2.NewDeserializerConfig())
 
 	if err != nil {
 		fmt.Printf("Failed to create deserializer: %s\n", err)
@@ -122,11 +123,4 @@ func main() {
 
 	fmt.Printf("Closing consumer\n")
 	c.Close()
-}
-
-// User is a simple record example
-type User struct {
-	Name           string `json:"name"`
-	FavoriteNumber int64  `json:"favorite_number"`
-	FavoriteColor  string `json:"favorite_color"`
 }
