@@ -35,17 +35,17 @@ func main() {
 
 	bootstrapServers := os.Args[1]
 	url := os.Args[2]
-        apiKey := os.Args[3]
+	apiKey := os.Args[3]
 	topic := os.Args[4]
 
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-            "bootstrap.servers": bootstrapServers,
-            "sasl.username":     "unused",
-            "sasl.password":     "token:" + apiKey,
-            "security.protocol": "SASL_SSL",
-            "sasl.mechanisms":   "PLAIN",
-            "acks":              "all",
-        })
+		"bootstrap.servers": bootstrapServers,
+		"sasl.username":     "unused",
+		"sasl.password":     "token:" + apiKey,
+		"security.protocol": "SASL_SSL",
+		"sasl.mechanisms":   "PLAIN",
+		"acks":              "all",
+	})
 
 	if err != nil {
 		fmt.Printf("Failed to create producer: %s\n", err)
