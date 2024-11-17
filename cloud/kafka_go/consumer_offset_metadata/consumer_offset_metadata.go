@@ -63,14 +63,16 @@ func main() {
 
 	fmt.Printf("Created Consumer %v\n", c)
 
-	if len(os.Args) == 7 {
-		offset, err := strconv.Atoi(os.Args[5])
+	if len(os.Args) == 8 {
+		offset, err := strconv.Atoi(os.Args[6])
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Invalid offset: %s\n", err)
 			os.Exit(1)
 		}
 
-		metadata := os.Args[6]
+		fmt.Printf("Committing offset %d with metadata %s\n", offset, os.Args[7])
+
+		metadata := os.Args[7]
 
 		commitOffset(c, topic, partition, offset, metadata)
 	} else {

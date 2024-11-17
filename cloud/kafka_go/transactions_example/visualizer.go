@@ -331,6 +331,10 @@ func trafficLightVisualizer(wg *sync.WaitGroup, termChan chan bool) {
 	consumerConfig := &kafka.ConfigMap{
 		"client.id":              "visualizer",
 		"bootstrap.servers":      bootstrapServers,
+		"sasl.username":          "unused",
+		"sasl.password":          "token:" + apiKey,
+		"security.protocol":      "SASL_SSL",
+		"sasl.mechanisms":        "PLAIN",
 		"group.id":               processorGroupID + "_visualizer",
 		"auto.offset.reset":      "earliest",
 		"go.logs.channel.enable": true,

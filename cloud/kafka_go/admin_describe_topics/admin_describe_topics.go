@@ -44,7 +44,7 @@ func main() {
 			os.Args[3], errOperations)
 		os.Exit(1)
 	}
-	topics := os.Args[3:]
+	topics := os.Args[4:]
 
 	// Create a new AdminClient.
 	a, err := kafka.NewAdminClient(&kafka.ConfigMap{

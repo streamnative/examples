@@ -32,7 +32,7 @@ import (
 
 func main() {
 
-	if len(os.Args) < 7 {
+	if len(os.Args) < 6 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <bootstrap-servers> <schema-registry> <api-key> <group> <topics..>\n",
 			os.Args[0])
 		os.Exit(1)

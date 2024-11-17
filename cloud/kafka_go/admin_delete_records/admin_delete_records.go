@@ -57,7 +57,7 @@ func main() {
 	var topicPartitionOffsets []kafka.TopicPartition
 
 	argsCnt := len(os.Args)
-	i := 2
+	i := 3
 	index := 0
 
 	for i < argsCnt {

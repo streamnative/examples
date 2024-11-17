@@ -35,10 +35,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	requireStable, err := strconv.ParseBool(args[3])
+	requireStable, err := strconv.ParseBool(args[4])
 	if err != nil {
 		fmt.Printf(
-			"Failed to parse value of require_stable %s: %s\n", args[3], err)
+			"Failed to parse value of require_stable %s: %s\n", args[4], err)
 		os.Exit(1)
 	}
 
