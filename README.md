@@ -4,15 +4,19 @@
 
 # Overview
 
-This is a curated list of demos that showcase Apache Pulsar® messaging and event streaming capabilities.
+This is a curated list of demos that showcase StreamNative messaging and data streaming capabilities.
 
 # Clients
 
 - [PubSub Client Examples](clients/README.md)
 
-# Cloud
+# StreamNative Cloud - Pulsar Clients
 
-- [SteamNative Cloud Examples](cloud/README.md)
+- [SteamNative Cloud - Pulsar Client Examples](cloud/README.md)
+
+# StreamNative Cloud - Kafka Clients
+
+- [SteamNative Cloud - Kafka Client Examples](cloud_kafka/README.md)
 
 # Flink
 
