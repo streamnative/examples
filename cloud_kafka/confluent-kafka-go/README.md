@@ -42,7 +42,7 @@ In the terminal you are running the examples from, export the following environm
 
 ```bash
 export BOOTSTRAP_SERVERS="<your-bootstrap-servers>"
-export SCHEMA_REGISTRY_URL="<your-schema-registry-url>"
+export SCHEMA_REGISTRY="<your-schema-registry-url>"
 export API_KEY="<your-api-key>"
 ```
 
@@ -458,4 +458,22 @@ export API_KEY="<your-api-key>"
 ### Transactions Example
 
 Please refer to [transactions_example](transactions_example/README.md) for more details.
+
+### Verifiable Consumer and Producer
+
+1. Run the verifiable producer.
+
+    ```bash
+    ./go_verifiable_producer/go_verifiable_producer --topic=verifiable_topic --broker-list=$BOOTSTRAP_SERVERS --api-key=$API_KEY --throughput=1000 --max-messages=10000
+    ```
+
+    This example will produce 10000 messages to the topic `verifiable_topic` with a throughput of 1000 messages per second.
+
+2. Run the verifiable consumer.
+
+    ```bash
+    ./go_verifiable_consumer/go_verifiable_consumer --group-id=verifier --topic=verifiable_topic --broker-list=$BOOTSTRAP_SERVERS --api-key=$API_KEY --session-timeout=60000 --report-interval-time=10000 --report-interval-msgs=1000
+    ```
+
+    This example will consume messages from the topic `verifiable_topic` with a consumer group `verifier` and report the consumption progress every 10000 milliseconds and every 1000 messages.
 
