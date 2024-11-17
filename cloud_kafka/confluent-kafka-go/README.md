@@ -2,7 +2,19 @@
 
 This directory includes examples of Kafka client applications connect to [StreamNative Cloud](https://console.streamnative.cloud), showcasing producers, consumers, transactions, and other admin API usage, written using [Confluent Golang Client for Apache Kafka](https://github.com/confluentinc/confluent-kafka-go). 
 
+## Quick Start
+
+You can follow [Kafka Go Client Guide](https://docs.streamnative.io/kafka-clients/kafka-go-introduction) to get started with the Kafka Go client to produce and consume messages to StreamNative Cloud.
+
 ## Cluster Setup
+
+1. [Sign up for a StreamNative Cloud account](https://docs.streamnative.io/kafka-clients/kafka-go-introduction#sign-up-for-stream-native-cloud).
+
+2. [Create a new cluster](https://docs.streamnative.io/kafka-clients/kafka-go-cluster-setup#create-a-stream-native-cloud-cluster).
+
+3. [Get the bootstrap servers and schema registry URL](https://docs.streamnative.io/kafka-clients/kafka-go-cluster-setup#get-the-kafka-service-url). Note down the bootstrap servers and schema registry URL as you'll need them in the next steps.
+
+4. [Create a service account and get the API key](https://docs.streamnative.io/kafka-clients/kafka-go-cluster-setup#create-a-service-account-and-api-key). For simplicity, you can create a super-user service account to run all the examples without worrying about authorization settings.
 
 ## Build the examples
 
