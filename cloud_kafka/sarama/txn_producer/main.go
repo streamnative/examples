@@ -16,19 +16,20 @@ import (
 
 	_ "net/http/pprof"
 
-	"github.com/rcrowley/go-metrics"
-
 	"github.com/IBM/sarama"
+	"github.com/google/uuid"
+	"github.com/rcrowley/go-metrics"
 )
 
 // Sarama configuration options
 var (
-	brokers   = ""
-	apiKey    = ""
-	version   = ""
-	topic     = ""
-	producers = 1
-	verbose   = false
+	brokers       = ""
+	apiKey        = ""
+	version       = ""
+	topic         = ""
+	producers     = 1
+	verbose       = false
+	transactionID = "txn_producer"
 
 	recordsNumber int64 = 1
 
@@ -43,6 +44,7 @@ func init() {
 	flag.IntVar(&producers, "producers", 10, "Number of concurrent producers")
 	flag.Int64Var(&recordsNumber, "records-number", 10000, "Number of records sent per loop")
 	flag.BoolVar(&verbose, "verbose", false, "Sarama logging")
+	flag.StringVar(&transactionID, "transaction-id", "txn_producer", "Transaction ID")
 	flag.Parse()
 
 	if len(brokers) == 0 {
@@ -70,17 +72,18 @@ func main() {
 	producerProvider := newProducerProvider(strings.Split(brokers, ","), func() *sarama.Config {
 		config := sarama.NewConfig()
 		config.Version = version
+		config.ClientID = "txn_producer"
 		config.Producer.Idempotent = true
 		config.Producer.Return.Errors = false
 		config.Producer.RequiredAcks = sarama.WaitForAll
 		config.Producer.Partitioner = sarama.NewRoundRobinPartitioner
 		config.Producer.Transaction.Retry.Backoff = 10
-		config.Producer.Transaction.ID = "txn_producer"
+		config.Producer.Transaction.ID = transactionID
 		config.Net.MaxOpenRequests = 1
 		if apiKey != "" {
 			config.Net.SASL.Enable = true
 			config.Net.SASL.Mechanism = sarama.SASLTypePlaintext
-			config.Net.SASL.User = "user"
+			config.Net.SASL.User = "unused"
 			config.Net.SASL.Password = "token:" + apiKey
 
 			tlsConfig := tls.Config{}
@@ -192,7 +195,7 @@ func newProducerProvider(brokers []string, producerConfigurationProvider func() 
 		// Append transactionIdGenerator to current config.Producer.Transaction.ID to ensure transaction-id uniqueness.
 		if config.Producer.Transaction.ID != "" {
 			provider.transactionIdGenerator++
-			config.Producer.Transaction.ID = config.Producer.Transaction.ID + "-" + fmt.Sprint(suffix)
+			config.Producer.Transaction.ID = config.Producer.Transaction.ID + "-" + fmt.Sprint(suffix) + "-" + uuid.New().String()
 		}
 		producer, err := sarama.NewAsyncProducer(brokers, config)
 		if err != nil {
