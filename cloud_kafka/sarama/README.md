@@ -20,10 +20,10 @@ This folder contains example applications connecting to [StreamNative Cloud](htt
    git clone https://github.com/streamnative/examples.git
    ```
 
-2. Enter the `examples/cloud_kafka/confluent-kafka-go` directory.
+2. Enter the `examples/cloud_kafka/sarama` directory.
 
    ```bash
-   cd examples/cloud_kafka/confluent-kafka-go
+   cd examples/cloud_kafka/sarama
    ```
 
 3. Build the examples.
