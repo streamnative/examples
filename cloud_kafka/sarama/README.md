@@ -72,7 +72,7 @@ Basic example to use a producer interceptor that produces [OpenTelemetry](https:
 [txn_producer](./txn_producer) Basic example to use a transactional producer that produce on some topic within a Kafka transaction. To ensure transactional-id uniqueness it implement some **_ProducerProvider_** that build a producer appending an integer that grow when producer is created.
 
 ```bash
-./txn_producer/txn_producer -brokers=$BOOTSTRAP_SERVERS -apiKey=$API_KEY -topic="sarama-txn"
+./txn_producer/txn_producer -brokers $BOOTSTRAP_SERVERS -apiKey $API_KEY -producers 3 -records-number 10 -topic txn_topic
 ```
 
 ### Exacly-once transactional paradigm
@@ -80,7 +80,37 @@ Basic example to use a producer interceptor that produces [OpenTelemetry](https:
 [exactly_once](./exactly_once) Basic example to use a transactional producer that produce consumed message from some topics within a Kafka transaction. To ensure transactional-id uniqueness it implement some **_ProducerProvider_** that build a producer using current message topic-partition.
 
 ```bash
-./exactly_once/exactly_once -brokers=$BOOTSTRAP_SERVERS -apiKey=$API_KEY -group="sarama-example" -destination-topic="sararma-exactly-once-destination" -topics="sarama-eo" 
+./exactly_once/exactly_once -brokers $BOOTSTRAP_SERVERS -apiKey $API_KEY -topics eo_input_topic -destination-topic eo_output_topic -group eo_sub -verbose
+```
+
+The above command reads messages from `eo_input_topic` and write messages to `eo_output_topic` in a transactional way.
+
+Once this application is running, you can use `txn_producer` to produce messages to the `eo_input_topic`.
+
+```bash
+./txn_producer/txn_producer -brokers $BOOTSTRAP_SERVERS -apiKey $API_KEY -producers 3 -records-number 1ic eo_input_topic
+```
+
+Then the messages will be claimed by `exactly_once` and produced to the output `eo_output_topic`.
+
+Then you can use `consumergroup` example to read the messages from `eo_output_topic`.
+
+```bash
+./consumergroup/consumergroup -brokers $BOOTSTRAP_SERVERS -apiKey $API_KEY -group reader -topics eo_output_topic -verbose
+```
+
+Then you should be able to see similar output below in the terminal where you run `consumergroup` example:
+
+```bash
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:12:52.228 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:03.432 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:09.036 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:15.174 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:21.746 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:28.075 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:33.647 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:39.305 -0800 PST, topic = eo_output_topic
+2024/11/17 14:15:35 Message claimed: value = test, timestamp = 2024-11-17 14:13:45.365 -0800 PST, topic = eo_output_topic
 ```
 
 ### The following examples are additional examples

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/IBM/sarama"
+	"github.com/google/uuid"
 )
 
 // Sarama configuration options
@@ -29,6 +30,7 @@ var (
 	oldest           = true
 	verbose          = false
 	assignor         = ""
+	transactionID    = ""
 )
 
 func init() {
@@ -38,6 +40,7 @@ func init() {
 	flag.StringVar(&version, "version", sarama.DefaultVersion.String(), "Kafka cluster version")
 	flag.StringVar(&topics, "topics", "", "Kafka topics to be consumed, as a comma separated list")
 	flag.StringVar(&destinationTopic, "destination-topic", "", "Kafka topic where records will be copied from topics.")
+	flag.StringVar(&transactionID, "transaction-id", "txn_producer", "Transaction ID")
 	flag.StringVar(&assignor, "assignor", "range", "Consumer group partition assignment strategy (range, roundrobin, sticky)")
 	flag.BoolVar(&oldest, "oldest", true, "Kafka consumer consume initial offset from oldest")
 	flag.BoolVar(&verbose, "verbose", false, "Sarama logging")
@@ -79,6 +82,7 @@ func main() {
 	 */
 	config := sarama.NewConfig()
 	config.Version = version
+	config.ClientID = "eo_consumer"
 
 	switch assignor {
 	case "sticky":
@@ -112,11 +116,12 @@ func main() {
 	producerProvider := newProducerProvider(strings.Split(brokers, ","), func() *sarama.Config {
 		producerConfig := sarama.NewConfig()
 		producerConfig.Version = version
+		producerConfig.ClientID = "eo_producer"
 
 		producerConfig.Net.MaxOpenRequests = 1
 		producerConfig.Producer.RequiredAcks = sarama.WaitForAll
 		producerConfig.Producer.Idempotent = true
-		producerConfig.Producer.Transaction.ID = "sarama"
+		producerConfig.Producer.Transaction.ID = transactionID + "-" + uuid.New().String()
 
 		if apiKey != "" {
 			producerConfig.Net.SASL.Enable = true
