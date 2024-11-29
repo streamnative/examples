@@ -33,6 +33,12 @@ After you have created the service account, download the OAuth2 credentials file
 
 ## 3. Run Terraform Commands
 
+You need to expose the `org_id` variable to the Terraform commands. Please replace `<your-org-id>` with your actual organization id.
+
+```bash
+export TF_VAR_org_id=<your-org-id>
+```
+
 First, initialize the Terraform working directory.
 
 ```bash
@@ -44,6 +50,24 @@ Secondly, validate the Terraform configuration files.
 ```bash
 terraform validate
 ```
+
+Since we use two providers in this example (the **StreamNative Provider** and the **Pulsar Provider**), we need to provision the resources in two steps. The Pulsar Provider resources depend on the StreamNative Provider resources being created first.
+
+### 3.1 Provision the Cloud Resources
+
+Run a targeted plan to see the changes and preview the resources that will be created.
+
+```bash
+terraform plan --target=module.streamnative_cloud.streamnative_apikey.app-apikey
+```
+
+After that, run a targeted apply to create the resources.
+
+```bash
+terraform apply --target=module.streamnative_cloud.streamnative_apikey.app-apikey
+```
+
+### 3.2 Provision all the Resources
 
 Run `terraform plan` to see the changes and preview the resources that will be created.
 

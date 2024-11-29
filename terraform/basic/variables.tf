@@ -1,20 +1,18 @@
 variable "org_id" {
   type = string
-  # get your StreamNative Cloud organization id: https://docs.streamnative.io/docs/organizations#cloud-organization-id
-  default = "o-lgohx"
 }
 
 variable "instance_name" {
   type = string
-  default = "sl-instance"
+  default = "inst-001"
 }
 
 variable "cluster_name" {
   type = string
-  default = "sl-cluster"
+  default = "cluster-001"
 }
 
 variable "app_name" {
   type = string
-  default = "sample-app"
+  default = "app-001"
 }

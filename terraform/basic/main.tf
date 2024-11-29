@@ -1,5 +1,9 @@
 module "streamnative_cloud" {
   source = "./streamnative_cloud"
+  org_id = var.org_id
+  instance_name = var.instance_name
+  cluster_name = var.cluster_name
+  app_name = var.app_name
 }
 
 terraform {
@@ -54,8 +58,16 @@ output "apikey" {
   value = module.streamnative_cloud.apikey_token
 }
 
+output "pulsar_oauth2_audience" {
+  value = module.streamnative_cloud.pulsar_instance_audience
+}
+
 output "service_urls" {
   value = module.streamnative_cloud.service_urls
+}
+
+output "pulsar_cluster_name" {
+  value = module.streamnative_cloud.pulsar_cluster_name
 }
 
 output "pulsarctl_command" {

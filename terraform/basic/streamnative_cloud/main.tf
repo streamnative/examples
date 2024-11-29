@@ -2,6 +2,7 @@ terraform {
   required_providers {
     streamnative = {
       source  = "streamnative/streamnative"
+      version = "0.6.2"
     }
   }
 }
@@ -34,7 +35,7 @@ data "streamnative_pulsar_instance" "serverless-instance" {
 resource "streamnative_pulsar_cluster" "serverless-cluster" {
   depends_on = [streamnative_pulsar_instance.serverless-instance]
   organization    = streamnative_pulsar_instance.serverless-instance.organization
-  name            = var.cluster_name
+  name            = ""
   display_name    = "serverless-cluster"
   instance_name   = streamnative_pulsar_instance.serverless-instance.name
   location        = "us-central1"
@@ -52,15 +53,20 @@ resource "streamnative_pulsar_cluster" "serverless-cluster" {
     custom              = {}
     function_enabled    = true
     lakehouse_storage   = {}
-    transaction_enabled = false
-    websocket_enabled   = false
+    transaction_enabled = true
+    websocket_enabled   = true
+    audit_log {
+      categories = [
+        "Management",
+      ]
+    }
   }
 }
 
 data "streamnative_pulsar_cluster" "serverless-cluster" {
   depends_on   = [streamnative_pulsar_cluster.serverless-cluster]
   organization = streamnative_pulsar_cluster.serverless-cluster.organization
-  name         = streamnative_pulsar_cluster.serverless-cluster.name
+  name         = split("/", streamnative_pulsar_cluster.serverless-cluster.id)[1]
 }
 
 resource "streamnative_service_account" "app-sa" {
@@ -97,7 +103,6 @@ data "streamnative_apikey" "app-apikey" {
 output "apikey_token" {
   value = data.streamnative_apikey.app-apikey.token
 }
-
 
 output "pulsar_web_service_url" {
   value = data.streamnative_pulsar_cluster.serverless-cluster.http_tls_service_url
