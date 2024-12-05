@@ -4,25 +4,29 @@ variable "org_id" {
 
 variable "instance_name" {
   type = string
-  default = "inst-001"
+  default = "sl-instance"
 }
 
 variable "cluster_name" {
   type = string
-  default = "clu-001"
+  default = "sl-clu"
 }
 
 variable "app_name" {
   type = string
-  default = "app001"
+  default = "sample-app"
 }
 
 variable "serverless_pool_name" {
   type = string
-  default = "shared-gcp"
+  # specify the pool name of the serverless cluster
+  # - GCP: "shared-gcp"
+  # - AWS: "shared-aws"
+  default = "shared-aws"
 }
 
 variable "region" {
   type = string
-  default = "us-central1"
+  # specify the region of the serverless cluster
+  default = "us-east-2"
 }

@@ -1,11 +1,11 @@
-## Terraform Basic Example
+## Terraform Serverless Example
 
 This example demonstrates how to use [StreamNative Terraform Provider](https://registry.terraform.io/providers/streamnative/streamnative/latest/docs) to provision a Serverless cluster and use the [Pulsar Terraform Provider](https://registry.terraform.io/providers/streamnative/pulsar/latest/docs) to provision Pulsar resources in the Serverless cluster.
 
 This tutorial basically provisions the following resources:
 
 1. Provisions a Serverless Instance `sl-instance`.
-2. Provisions a Serverless Cluster `sl-cluster`.
+2. Provisions a Serverless Cluster `sl-clu`.
 3. Provisions a Service Account `sample-app-sa`.
 4. Provisions an API Key for the Service Account `sample-app-apikey`.
 5. Provisions a Pulsar Tenant `sample-app-tenant`
@@ -85,7 +85,7 @@ You should see a similar output as follows:
 
 ```bash
 apikey = "<...>"
-pulsarctl_command = "pulsarctl context set -s <pulsar-web-service-url> --token <apikey> sl-cluster && pulsarctl topics get sample-app-tenant/sample-app-ns/sample-app-topic"
+pulsarctl_command = "pulsarctl context set -s <pulsar-web-service-url> --token <apikey> sl-clu && pulsarctl topics get sample-app-tenant/sample-app-ns/sample-app-topic"
 service_urls = {
   "kafka_bootstrap_url" = "..."
   "pulsar_broker_service_url" = "..."
@@ -100,12 +100,12 @@ Use the [pulsarctl](https://docs.streamnative.io/docs/pulsarctl-overview) comman
 Copy the `pulsarctl_command` output and run it in your terminal.
 
 ```bash
-pulsarctl context set -s <pulsar-web-service-url> --token <apikey> sl-cluster && pulsarctl topics get sample-app-tenant/sample-app-ns/sample-app-topic
+pulsarctl context set -s <pulsar-web-service-url> --token <apikey> sl-clu && pulsarctl topics get sample-app-tenant/sample-app-ns/sample-app-topic
 ```
 
 This command will set the context and get the topic details. It will verify the following resources are created:
 
-- A Pulsar cluster named `sl-cluster`
+- A Pulsar cluster named `sl-clu`
 - A Pulsar tenant named `sample-app-tenant`
 - A Pulsar namespace named `sample-app-ns`
 - A Pulsar topic named `sample-app-topic`

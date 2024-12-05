@@ -2,7 +2,7 @@ terraform {
   required_providers {
     streamnative = {
       source  = "streamnative/streamnative"
-      version = "0.7.0-rc.1"
+      version = ">= 0.7.0"
     }
   }
 }
@@ -20,7 +20,6 @@ resource "streamnative_pulsar_instance" "serverless-instance" {
   organization = var.org_id
   name = var.instance_name
   availability_mode = "regional"
-  # currently Serverless is only available in GCP
   pool_name = var.serverless_pool_name
   pool_namespace = "streamnative"
   type = "serverless"
@@ -61,7 +60,7 @@ data "streamnative_service_account" "app-sa" {
 resource "streamnative_apikey" "app-apikey" {
   depends_on = [streamnative_pulsar_cluster.serverless-cluster, streamnative_service_account.app-sa]
   organization = var.org_id
-  name = "${var.app_name}-apikey2"
+  name = "${var.app_name}-apikey"
   instance_name = streamnative_pulsar_instance.serverless-instance.name
   service_account_name = streamnative_service_account.app-sa.name
   description = "This is a test api key for ${var.app_name} in running the terraform tutorial"
