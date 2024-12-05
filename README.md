@@ -4,7 +4,7 @@
 
 # Overview
 
-This is a curated list of demos that showcase Apache Pulsar® messaging and event streaming capabilities.
+This is a curated list of demos showcasing StreamNative Cloud's messaging and event streaming capabilities.
 
 # Clients
 
@@ -17,3 +17,9 @@ This is a curated list of demos that showcase Apache Pulsar® messaging and even
 # Flink
 
 - [Pulsar Flink Connector](pulsar-flink/README.md)
+
+# Infrastructure-as-Code
+
+## Terraform
+
+- [Serverless Cluster](terraform/serverless/README.md)
