@@ -13,3 +13,11 @@ variable "cluster_name" {
 variable "app_name" {
   type = string
 }
+
+variable "serverless_pool_name" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}

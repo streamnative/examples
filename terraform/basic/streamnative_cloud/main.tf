@@ -2,7 +2,7 @@ terraform {
   required_providers {
     streamnative = {
       source  = "streamnative/streamnative"
-      version = "0.6.2"
+      version = "0.7.0-rc.1"
     }
   }
 }
@@ -21,7 +21,7 @@ resource "streamnative_pulsar_instance" "serverless-instance" {
   name = var.instance_name
   availability_mode = "regional"
   # currently Serverless is only available in GCP
-  pool_name = "shared-gcp"
+  pool_name = var.serverless_pool_name
   pool_namespace = "streamnative"
   type = "serverless"
 }
@@ -35,32 +35,9 @@ data "streamnative_pulsar_instance" "serverless-instance" {
 resource "streamnative_pulsar_cluster" "serverless-cluster" {
   depends_on = [streamnative_pulsar_instance.serverless-instance]
   organization    = streamnative_pulsar_instance.serverless-instance.organization
-  name            = ""
   display_name    = "serverless-cluster"
   instance_name   = streamnative_pulsar_instance.serverless-instance.name
-  location        = "us-central1"
-  release_channel = "rapid"
-  // Add entire config block to avoid changing the values each time run `terraform plan` or `terraform apply`
-  config {
-    protocols {
-      kafka = {
-        enabled = true
-      }
-      mqtt = {
-        enabled = true
-      }
-    }
-    custom              = {}
-    function_enabled    = true
-    lakehouse_storage   = {}
-    transaction_enabled = true
-    websocket_enabled   = true
-    audit_log {
-      categories = [
-        "Management",
-      ]
-    }
-  }
+  location        = var.region
 }
 
 data "streamnative_pulsar_cluster" "serverless-cluster" {

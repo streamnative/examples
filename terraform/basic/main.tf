@@ -4,6 +4,8 @@ module "streamnative_cloud" {
   instance_name = var.instance_name
   cluster_name = var.cluster_name
   app_name = var.app_name
+  serverless_pool_name = var.serverless_pool_name
+  region = var.region
 }
 
 terraform {
