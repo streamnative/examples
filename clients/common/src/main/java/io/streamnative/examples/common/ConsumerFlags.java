@@ -65,4 +65,12 @@ public class ConsumerFlags extends TopicFlags {
     )
     public AckType ackType = null;
 
+    @Parameter(
+        names = {
+                "-ppn", "--print-partition-num"
+        },
+        description = "Set is print partition num"
+    )
+    public boolean printPartitionNum = false;
+
 }
