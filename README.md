@@ -4,24 +4,34 @@
 
 # Overview
 
-This is a curated list of demos that showcase StreamNative messaging and data streaming capabilities.
+This is a curated list of demos showcasing StreamNative Cloud's messaging and event streaming capabilities.
 
 # Clients
 
+## OSS Examples
+
 - [PubSub Client Examples](clients/README.md)
 
-# StreamNative Cloud - Pulsar Clients
+## StreamNative Cloud - Pulsar Clients
 
 - [SteamNative Cloud - Pulsar Client Examples](cloud/README.md)
 
-# StreamNative Cloud - Kafka Clients
+## StreamNative Cloud - Kafka Clients
 
 - [SteamNative Cloud - Kafka Client Examples](cloud_kafka/README.md)
 
-# Flink
+## Spring for Apache Pulsar
+
+- [Spring for Apache Pulsar Example](spring-pulsar/README.md)
+
+# Process
+
+## Flink
 
 - [Pulsar Flink Connector](pulsar-flink/README.md)
 
-# Spring for Apache Pulsar
+# Infrastructure-as-Code
 
-- [Spring for Apache Pulsar Example](spring-pulsar/README.md)
+## Terraform
+
+- [Serverless Cluster](terraform/serverless/README.md)
