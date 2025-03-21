@@ -11,3 +11,25 @@ Install the dependencies:
 ```bash
 poetry install
 ```
+
+## Configuration
+
+Please fill the [`sncloud.ini`](./sncloud.ini) before running the examples.
+
+## Examples
+
+### `producer.py`
+
+```bash
+poetry run python producer.py
+```
+
+It will send 10 messages to the topic.
+
+### `consumer.py`
+
+```bash
+poetry run python consumer.py
+```
+
+It will read messages from the topic and exit after receiving an interrupt signal (e.g., press `Ctrl+C`).
