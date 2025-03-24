@@ -42,6 +42,7 @@ if __name__ == '__main__':
             print(f'Consumer error: {msg.error()}')
             continue
 
-        print(f'Received message: {msg.value().decode("utf-8")}')
+        print(f'Received message: {msg.value().decode("utf-8")} from \
+                {msg.topic()}[{msg.partition()}] @ {msg.offset()}')
 
     consumer.close()
