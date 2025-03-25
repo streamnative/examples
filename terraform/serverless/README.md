@@ -22,14 +22,14 @@ This tutorial basically provisions the following resources:
 
 ```bash
 git clone https://github.com/streamnative/examples.git
-cd examples/terraform/basic
+cd examples/terraform/serverless
 ```
 
 ## 2. Create a Super-Admin Service Account
 
 First, you need to create a service account called `tf-runner` with **Super Admin** access. Please refer to [Create a Service Account](https://docs.streamnative.io/docs/service-accounts#create-a-service-account) for details.
 
-After you have created the service account, download the OAuth2 credentials file and save it as `tf-runner.json` in `examples/terraform/basic` folder.
+After you have created the service account, download the OAuth2 credentials file and save it as `tf-runner.json` in `examples/terraform/serverless` folder.
 
 ## 3. Run Terraform Commands
 
