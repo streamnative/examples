@@ -1,0 +1,32 @@
+{
+  "name": "librdkafka-demo",
+  "version": "0.1.0",
+  "description": "Examples of librdkafka usage",
+  "builtin-baseline": "eba67a0ad22f2056f4be769ddeea023ec889de37",
+  "dependencies": [
+    {
+      "name": "avro-c",
+      "version>=": "1.12.0"
+    },
+    {
+      "name": "curl",
+      "default-features": false,
+      "features": [
+        "openssl"
+      ],
+      "version>=": "8.13.0#1"
+    },
+    {
+      "name": "jansson",
+      "version>=": "2.14#1"
+    },
+    {
+      "name": "lz4",
+      "version>=": "1.10.0"
+    },
+    {
+      "name": "openssl",
+      "version>=": "3.4.1"
+    }
+  ]
+}

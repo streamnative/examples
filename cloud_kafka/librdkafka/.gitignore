@@ -1,0 +1,7 @@
+build/
+vcpkg/
+libserdes/
+compile_commands.json
+.cache
+a.out
+dependencies/
