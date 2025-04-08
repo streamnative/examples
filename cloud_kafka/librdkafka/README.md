@@ -24,7 +24,7 @@ export LDFLAGS="-L $ROOT/lib -lssl -lcrypto -llz4"
 cd ..
 git clone https://github.com/confluentinc/libserdes.git
 cd libserdes
-./configure --prefix=$ROOT
+./configure --prefix=../dependencies
 make -j8
 make install
 export CPPFLAGS=
