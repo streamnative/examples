@@ -8,7 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(librdkafka-demo CXX)
 
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/include)
-find_library(SERDES_LIBRARY serdes PATHS ${CMAKE_SOURCE_DIR}/dependencies/lib)
+find_library(SERDES_LIBRARY serdes PATHS ${CMAKE_SOURCE_DIR}/dependencies/lib NO_DEFAULT_PATH)
 if (SERDES_LIBRARY)
     message(STATUS "SERDES_LIBRARY: ${SERDES_LIBRARY}")
 else ()
