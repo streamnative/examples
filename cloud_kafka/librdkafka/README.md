@@ -28,11 +28,6 @@ The `schema.registry` section contains:
 
 ## Examples
 
-### End to end example
-
-- `avro_producer.cc`: It will send 1 message to the topic.
-- `avro_consumer.cc`: It will read 1 message from the topic and exit.
-
 ### Avro schema end to end example
 
 It will use the following schema:
@@ -54,5 +49,5 @@ It will use the following schema:
 }
 ```
 
-- `avro_producer.py`: It will send a message (`User: {"name": "John Doe", "age": 30}`) with Avro schema to the topic.
-- `avro_consumer.py`: It will read a message from the topic and exit. The message will be parsed to the `User` json.
+- `avro_producer.cc`: It will send a message (`User: {"name": "John Doe", "age": 30}`) with Avro schema to the topic.
+- `avro_consumer.cc`: It will read a message from the topic and exit. The message will be parsed to the `User` json.

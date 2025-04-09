@@ -167,21 +167,46 @@ std::string format_schema_registry_url(const std::string& url, const std::string
 }
 
 int main(int argc, char **argv) {
-  if (argc < 2) {
-    fprintf(stderr, "Usage: %s <config.ini>\n", argv[0]);
-    return 1;
-  }
-
   ConfigParser config;
-  if (!config.parse(argv[1])) {
-    fprintf(stderr, "Failed to parse config file: %s\n", argv[1]);
-    return 1;
+  if (argc < 2) {
+    const char* default_config = "sncloud.ini";
+    fprintf(stderr, "No config file specified, using default: %s\n", default_config);
+
+    // Check if default config exists
+    if (access(default_config, F_OK) != 0) {
+      fprintf(stderr, "Default config file not found. Usage: %s <config.ini>\n", argv[0]);
+      return 1;
+    }
+
+    // Use default config file
+    if (!config.parse(default_config)) {
+      fprintf(stderr, "Failed to parse default config file: %s\n", default_config);
+      return 1;
+    }
+  } else {
+    // Use specified config file
+    if (!config.parse(argv[1])) {
+      fprintf(stderr, "Failed to parse config file: %s\n", argv[1]);
+      return 1;
+    }
   }
 
   const std::string topic = config.get("common", "topic", "test");
+  if (topic.empty()) {
+    fprintf(stderr, "Error: 'topic' cannot be empty in configuration\n");
+    return 1;
+  }
   const std::string bootstrap_servers = config.get("common", "bootstrap.servers", "localhost:9092");
+  if (bootstrap_servers.empty()) {
+    fprintf(stderr, "Error: 'bootstrap.servers' cannot be empty in configuration\n");
+    return 1;
+  }
   const std::string token = config.get("common", "token", "");
   const std::string schema_registry_url = config.get("schema.registry", "url", "http://localhost:8081");
+  if (schema_registry_url.empty()) {
+    fprintf(stderr, "Error: 'schema.registry.url' cannot be empty in configuration\n");
+    return 1;
+  }
   int partition = 0;
 
   signal(SIGINT, sig_term);
