@@ -1,0 +1,115 @@
+#!/bin/bash
+# Configure script for building with libserdes and vcpkg dependencies
+
+set -e  # Exit on error
+
+# Constants
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VCPKG_DIR="${SCRIPT_DIR}/vcpkg"
+THIRD_PARTY_DIR="${SCRIPT_DIR}/third_party"
+LIBSERDES_DIR="${SCRIPT_DIR}/libserdes"
+DEPENDENCIES_DIR="${SCRIPT_DIR}/dependencies"
+
+# Parse command line options
+JOBS=8
+PREFIX="${DEPENDENCIES_DIR}"
+
+function show_help {
+    echo "Usage: $0 [OPTIONS]"
+    echo "Options:"
+    echo "  --prefix=DIR        Install dependencies to DIR (default: ${DEPENDENCIES_DIR})"
+    echo "  --jobs=N            Use N parallel jobs for make (default: 8)"
+    echo "  --help              Display this help and exit"
+    exit 0
+}
+
+for arg in "$@"; do
+    case "$arg" in
+        --prefix=*)
+            PREFIX="${arg#*=}"
+            ;;
+        --jobs=*)
+            JOBS="${arg#*=}"
+            ;;
+        --help)
+            show_help
+            ;;
+    esac
+done
+
+# Check for required commands
+for cmd in git cmake make sed; do
+    if ! command -v $cmd &> /dev/null; then
+        echo "Error: Required command '$cmd' not found. Please install it and try again."
+        exit 1
+    fi
+done
+
+echo "==> Installing vcpkg for dependency management..."
+if [ ! -d "$VCPKG_DIR" ]; then
+    git clone https://github.com/microsoft/vcpkg.git "$VCPKG_DIR"
+    "${VCPKG_DIR}/bootstrap-vcpkg.sh"
+else
+    echo "    vcpkg directory already exists, skipping clone"
+    if [ ! -f "${VCPKG_DIR}/vcpkg" ]; then
+        echo "    Running bootstrap-vcpkg.sh"
+        "${VCPKG_DIR}/bootstrap-vcpkg.sh"
+    fi
+fi
+
+echo "==> Configuring third-party dependencies..."
+mkdir -p "$THIRD_PARTY_DIR"
+cd "$THIRD_PARTY_DIR"
+cmake -B build
+
+# Get the VCPKG_TARGET_TRIPLET
+TRIPLET=$(cmake -B build | grep "VCPKG_TARGET_TRIPLET" | sed 's/^.*: //')
+if [ -z "$TRIPLET" ]; then
+    echo "Error: Failed to determine VCPKG_TARGET_TRIPLET"
+    exit 1
+fi
+echo "    Detected target triplet: $TRIPLET"
+
+ROOT="${THIRD_PARTY_DIR}/build/vcpkg_installed/${TRIPLET}"
+CPPFLAGS="-I${ROOT}/include"
+
+# Set LDFLAGS based on the operating system
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo "    Detected macOS, using appropriate LDFLAGS"
+    LDFLAGS="-L ${ROOT}/lib -lssl -lcrypto -llz4 -framework CoreFoundation -framework CoreServices -framework SystemConfiguration"
+else
+    LDFLAGS="-L ${ROOT}/lib -lssl -lcrypto -llz4"
+fi
+
+echo "==> Building libserdes..."
+cd "$SCRIPT_DIR"
+if [ ! -d "$LIBSERDES_DIR" ]; then
+    git clone https://github.com/confluentinc/libserdes.git "$LIBSERDES_DIR"
+fi
+
+cd "$LIBSERDES_DIR"
+export CPPFLAGS="$CPPFLAGS"
+export LDFLAGS="$LDFLAGS"
+
+echo "    Configuring libserdes with:"
+echo "    CPPFLAGS=$CPPFLAGS"
+echo "    LDFLAGS=$LDFLAGS"
+echo "    --prefix=$PREFIX"
+
+./configure --prefix="$PREFIX"
+
+echo "    Building libserdes with $JOBS parallel jobs"
+make -j"$JOBS"
+
+echo "    Installing libserdes to $PREFIX"
+make install
+
+# Clean up environment variables
+export CPPFLAGS=
+export LDFLAGS=
+
+echo ""
+echo "Configuration completed successfully!"
+echo "Dependencies installed to: $PREFIX"
+echo ""
+echo "You can now proceed with building the main project."
