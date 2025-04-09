@@ -24,5 +24,8 @@ endif ()
 
 find_package(RdKafka CONFIG REQUIRED)
 
-add_executable(avro_producer avro_producer.cc)
+add_executable(avro_producer avro_producer.cc config_parser.h)
 target_link_libraries(avro_producer PRIVATE RdKafka::rdkafka ${SERDES_LIBRARY} ${AVRO_LIBRARY})
+
+add_executable(avro_consumer avro_consumer.cc config_parser.h)
+target_link_libraries(avro_consumer PRIVATE RdKafka::rdkafka ${SERDES_LIBRARY} ${AVRO_LIBRARY})
