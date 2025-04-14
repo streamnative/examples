@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
   Config config(argc > 1 ? argv[1] : "sncloud.ini");
   const auto bootstrap_servers = config.bootstrap_servers();
   const auto topic = config.topic();
-  const auto schema_registry_url = config.schema_registry_url();
+  auto schema_registry_url = config.schema_registry_url();
   const auto token = config.token();
 
   // libserdes uses the "<scheme>://<username>:<password>@<path>" as the format
@@ -80,12 +80,13 @@ int main(int argc, char **argv) {
   if (pos == std::string::npos) {
     fail(schema_registry_url + " does not contain \"://\"");
   }
-  const auto url = schema_registry_url.substr(0, pos) + "://user:" + token + "@" +
-                   schema_registry_url.substr(pos + 3);
+  schema_registry_url = schema_registry_url.substr(0, pos) + "://user:" + token + "@" +
+                        schema_registry_url.substr(pos + 3);
 
   // Initialize the serdes object
   char errstr[512];
-  auto *sconf = serdes_conf_new(errstr, sizeof(errstr), "schema.registry.url", url.c_str(), NULL);
+  auto *sconf = serdes_conf_new(errstr, sizeof(errstr), "schema.registry.url",
+                                schema_registry_url.c_str(), nullptr);
   if (sconf == nullptr) {
     fail("Failed to create serdes config: " + std::string(errstr));
   }
