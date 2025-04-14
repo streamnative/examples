@@ -29,8 +29,8 @@ find_package(RdKafka CONFIG REQUIRED)
 find_package(unofficial-inih CONFIG REQUIRED)
 set(DEPS RdKafka::rdkafka ${SERDES_LIBRARY} ${AVRO_LIBRARY} unofficial::inih::inireader)
 
-add_executable(avro_producer avro_producer.cc config_parser.h)
+add_executable(avro_producer avro_producer.cc)
 target_link_libraries(avro_producer PRIVATE ${DEPS})
 
-add_executable(avro_consumer avro_consumer.cc config_parser.h)
+add_executable(avro_consumer avro_consumer.cc)
 target_link_libraries(avro_consumer PRIVATE ${DEPS})
