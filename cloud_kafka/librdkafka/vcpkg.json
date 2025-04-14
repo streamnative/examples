@@ -9,9 +9,15 @@
       "version>=": "1.12.0"
     },
     {
+      "name": "inih",
+      "version>=": "59"
+    },
+    {
       "name": "librdkafka",
-      "version>=": "2.8.0",
-      "features": ["ssl"]
+      "features": [
+        "ssl"
+      ],
+      "version>=": "2.8.0"
     }
   ]
 }

@@ -6,6 +6,9 @@ endif ()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(librdkafka-demo CXX)
+if (NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 11)
+endif ()
 
 include_directories(${CMAKE_SOURCE_DIR}/dependencies/include)
 find_library(SERDES_LIBRARY serdes PATHS ${CMAKE_SOURCE_DIR}/dependencies/lib NO_DEFAULT_PATH)
@@ -23,9 +26,11 @@ else ()
 endif ()
 
 find_package(RdKafka CONFIG REQUIRED)
+find_package(unofficial-inih CONFIG REQUIRED)
+set(DEPS RdKafka::rdkafka ${SERDES_LIBRARY} ${AVRO_LIBRARY} unofficial::inih::inireader)
 
 add_executable(avro_producer avro_producer.cc config_parser.h)
-target_link_libraries(avro_producer PRIVATE RdKafka::rdkafka ${SERDES_LIBRARY} ${AVRO_LIBRARY})
+target_link_libraries(avro_producer PRIVATE ${DEPS})
 
 add_executable(avro_consumer avro_consumer.cc config_parser.h)
-target_link_libraries(avro_consumer PRIVATE RdKafka::rdkafka ${SERDES_LIBRARY} ${AVRO_LIBRARY})
+target_link_libraries(avro_consumer PRIVATE ${DEPS})
