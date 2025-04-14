@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include <memory>
-#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
@@ -11,61 +10,35 @@
 extern "C" {
 #include "libserdes/serdes-avro.h"
 }
+#include "utils.h"
 
-static void fail(const std::string &msg) { throw std::runtime_error(msg); }
+inline std::pair<void *, size_t> serialize(serdes_schema_t *serdes_schema, const User &user) {
+  auto schema = serdes_schema_avro(serdes_schema);
+  auto record_class = avro_generic_class_from_schema(schema);
 
-// Use the User schema definition
-const std::string user_schema_def = R"({
-    "name": "User",
-    "type": "record",
-    "fields": [
-        {
-            "name": "name",
-            "type": "string"
-        },
-        {
-            "name": "age",
-            "type": "int"
-        }
-    ]
-})";
+  avro_value_t record;
+  avro_generic_value_new(record_class, &record);
 
-class User {
- public:
-  User(const std::string &name, int age) : name_(name), age_(age) {}
-
-  std::pair<void *, size_t> serialize(serdes_schema_t *serdes_schema) const {
-    auto schema = serdes_schema_avro(serdes_schema);
-    auto record_class = avro_generic_class_from_schema(schema);
-
-    avro_value_t record;
-    avro_generic_value_new(record_class, &record);
-
-    avro_value_t field;
-    if (avro_value_get_by_name(&record, "name", &field, nullptr) == 0) {
-      avro_value_set_string(&field, name_.c_str());
-    }
-    if (avro_value_get_by_name(&record, "age", &field, nullptr) == 0) {
-      avro_value_set_int(&field, age_);
-    }
-
-    void *ser_buf = nullptr;
-    size_t ser_buf_size;
-    char errstr[512];
-    if (serdes_schema_serialize_avro(serdes_schema, &record, &ser_buf, &ser_buf_size, errstr,
-                                     sizeof(errstr))) {
-      avro_value_decref(&record);
-      fail("serialize_avro() failed: " + std::string(errstr));
-    }
-
-    avro_value_decref(&record);
-    return std::make_pair(ser_buf, ser_buf_size);
+  avro_value_t field;
+  if (avro_value_get_by_name(&record, "name", &field, nullptr) == 0) {
+    avro_value_set_string(&field, user.name().c_str());
+  }
+  if (avro_value_get_by_name(&record, "age", &field, nullptr) == 0) {
+    avro_value_set_int(&field, user.age());
   }
 
- private:
-  const std::string name_;
-  const int age_;
-};
+  void *ser_buf = nullptr;
+  size_t ser_buf_size;
+  char errstr[512];
+  if (serdes_schema_serialize_avro(serdes_schema, &record, &ser_buf, &ser_buf_size, errstr,
+                                   sizeof(errstr))) {
+    avro_value_decref(&record);
+    fail("serialize_avro() failed: " + std::string(errstr));
+  }
+
+  avro_value_decref(&record);
+  return std::make_pair(ser_buf, ser_buf_size);
+}
 
 int main(int argc, char **argv) {
   Config config(argc > 1 ? argv[1] : "sncloud.ini");
@@ -98,8 +71,8 @@ int main(int argc, char **argv) {
 
   // Register the value's schema with topic as the subject name
   auto schema_name = topic + "-value";
-  auto schema = serdes_schema_add(serdes, schema_name.c_str(), -1, user_schema_def.c_str(),
-                                  user_schema_def.length(), errstr, sizeof(errstr));
+  auto schema = serdes_schema_add(serdes, schema_name.c_str(), -1, user_schema_def().c_str(),
+                                  user_schema_def().length(), errstr, sizeof(errstr));
   if (!schema) {
     fail("Failed to register schema: " + std::string(errstr));
   }
@@ -137,14 +110,13 @@ int main(int argc, char **argv) {
   }
   std::unique_ptr<rd_kafka_t, decltype(&rd_kafka_destroy)> rk_guard{rk, &rd_kafka_destroy};
 
-  auto rkt_conf = rd_kafka_topic_conf_new();
-  auto rkt = rd_kafka_topic_new(rk, topic.c_str(), rkt_conf);
+  auto rkt = rd_kafka_topic_new(rk, topic.c_str(), rd_kafka_topic_conf_new());
   std::unique_ptr<rd_kafka_topic_t, decltype(&rd_kafka_topic_destroy)> topic_guard{
       rkt, &rd_kafka_topic_destroy};
 
   std::vector<User> users{{"Alice", 18}, {"Bob", 19}, {"Charlie", 20}};
   for (auto &&user : users) {
-    auto pair = user.serialize(schema);
+    auto pair = serialize(schema, user);
     if (rd_kafka_produce(rkt, 0, RD_KAFKA_MSG_F_FREE, pair.first, pair.second, nullptr, 0,
                          nullptr) != 0) {
       free(pair.first);

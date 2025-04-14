@@ -9,8 +9,32 @@
 extern "C" {
 #include "libserdes/serdes-avro.h"
 }
+#include "utils.h"
 
-static void fail(const std::string &msg) { throw std::runtime_error(msg); }
+inline User deserialize(serdes_t *serdes, void *payload, size_t len) {
+  char errstr[512];
+  avro_value_t avro;
+  serdes_schema_t *schema;
+  auto err = serdes_deserialize_avro(serdes, &avro, &schema, payload, len, errstr, sizeof(errstr));
+  if (err) {
+    fail("serdes_deserialize_avro failed: " + std::string(errstr));
+  }
+  std::unique_ptr<avro_value_t, decltype(&avro_value_decref)> avro_guard{&avro, &avro_value_decref};
+
+  const char *name;
+  size_t name_size;
+  int age;
+  avro_value_t field;
+  if (avro_value_get_by_name(&avro, "name", &field, nullptr) != 0) {
+    fail("no name field");
+  }
+  avro_value_get_string(&field, &name, &name_size);
+  if (avro_value_get_by_name(&avro, "age", &field, nullptr) != 0) {
+    fail("no age field");
+  }
+  avro_value_get_int(&field, &age);
+  return User{std::string{name, name_size}, age};
+}
 
 int main(int argc, char **argv) {
   Config config(argc > 1 ? argv[1] : "sncloud.ini");
@@ -86,46 +110,22 @@ int main(int argc, char **argv) {
     std::unique_ptr<rd_kafka_message_t, decltype(&rd_kafka_message_destroy)> msg_guard{
         msg, &rd_kafka_message_destroy};
     if (msg->err == RD_KAFKA_RESP_ERR__PARTITION_EOF) {
-      fprintf(stderr, "%% Reached end of partition");
+      fprintf(stderr, "%% Reached end of partition\n");
       break;
     }
     if (msg->err) {
       fail("Failed to poll: " + std::string(rd_kafka_message_errstr(msg)));
     }
 
-    fprintf(stderr, "%% Received message from partition %d offset %lld\n", msg->partition,
-            msg->offset);
-    avro_value_t avro;
-    serdes_schema_t *schema;
-    auto err = serdes_deserialize_avro(serdes, &avro, &schema, msg->payload, msg->len, errstr,
-                                       sizeof(errstr));
-    if (err) {
-      fprintf(stderr, "serdes_deserialize_avro failed: %s\n", errstr);
-      continue;
+    fprintf(stderr, "%% Received message (size: %zd) deserialize partition %d offset %lld\n",
+            msg->len, msg->partition, msg->offset);
+    try {
+      auto user = deserialize(serdes, msg->payload, msg->len);
+      fprintf(stderr, "%% Received User message - Name: %s, Age: %d\n", user.name().c_str(),
+              user.age());
+    } catch (const std::runtime_error &e) {
+      fprintf(stderr, "%% Received non-user message: %s\n", e.what());
     }
-    std::unique_ptr<avro_value_t, decltype(&avro_value_decref)> avro_guard{&avro,
-                                                                           &avro_value_decref};
-
-    char *as_json;
-    if (avro_value_to_json(&avro, 1, &as_json)) {
-      fprintf(stderr, "avro_to_json failed: %s\n", avro_strerror());
-      continue;
-    }
-    std::unique_ptr<char, decltype(&free)> as_json_guard{as_json, &free};
-
-    fprintf(stderr, "%% Successfully converted to JSON: %s\n", as_json);
-    const char *name;
-    int age;
-    avro_value_t field;
-    if (avro_value_get_by_name(&avro, "name", &field, nullptr) != 0) {
-      fail("no name field");
-    }
-    avro_value_get_string(&field, &name, nullptr);
-    if (avro_value_get_by_name(&avro, "age", &field, nullptr) != 0) {
-      fail("no age field");
-    }
-    avro_value_get_int(&field, &age);
-    fprintf(stderr, "%% Received User message - Name: %s, Age: %d\n", name, age);
   }
 
   return 0;
