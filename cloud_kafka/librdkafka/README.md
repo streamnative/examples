@@ -1,4 +1,5 @@
 # librdkafka examples
+
 ## Build the examples
 
 You can just build and run examples with the following command:
@@ -30,7 +31,7 @@ The `schema.registry` section contains:
 
 ### Avro schema end to end example
 
-It will use the following schema:
+It will use the schema defined in [utils.h](./utils.h):
 
 ```json
 {
@@ -49,5 +50,5 @@ It will use the following schema:
 }
 ```
 
-- `avro_producer.cc`: It will send a message (`User: {"name": "John Doe", "age": 30}`) with Avro schema to the topic.
-- `avro_consumer.cc`: It will read a message from the topic and exit. The message will be parsed to the `User` json.
+- `avro_producer.cc`: It will send some messages serialized by `User` objects that follow the schema above to the topic.
+- `avro_consumer.cc`: It will receive messages and parse the payload to `User` objects until there are no more messages.
