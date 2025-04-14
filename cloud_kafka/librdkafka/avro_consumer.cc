@@ -1,10 +1,11 @@
+#include <inttypes.h>  // For PRId64
 #include <librdkafka/rdkafka.h>
+#include <unistd.h>
+
 #include <csignal>
 #include <cstdlib>
-#include <unistd.h>
-#include <string>
 #include <iostream>
-#include <inttypes.h> // For PRId64
+#include <string>
 
 /* Typical include path is <libserdes/serdes.h> */
 extern "C" {
@@ -16,7 +17,7 @@ extern "C" {
 static int run = 1;
 static int exit_eof = 0;
 static int verbosity = 2;
-static int message_received = 0; // Flag to track if we've received a message
+static int message_received = 0;  // Flag to track if we've received a message
 
 #define FATAL(reason...)               \
   do {                                 \
@@ -96,7 +97,7 @@ static void run_consumer(rd_kafka_conf_t *rk_conf,
   rd_kafka_topic_t *rkt;
   char errstr[512];
   rd_kafka_message_t *rkmessage;
-  int max_attempts = 10; // Maximum number of attempts to wait for message
+  int max_attempts = 10;  // Maximum number of attempts to wait for message
   int attempts = 0;
 
   rk = rd_kafka_new(RD_KAFKA_CONSUMER, rk_conf, errstr, sizeof(errstr));
@@ -113,10 +114,11 @@ static void run_consumer(rd_kafka_conf_t *rk_conf,
   fprintf(stderr, "%% Waiting for User message...\n");
 
   while (run && !message_received && attempts < max_attempts) {
-    rkmessage = rd_kafka_consume(rkt, partition, 1000); // 1 second timeout
+    rkmessage = rd_kafka_consume(rkt, partition, 1000);  // 1 second timeout
     if (!rkmessage) {
       attempts++;
-      fprintf(stderr, "%% Waiting for message... (%d/%d)\n", attempts, max_attempts);
+      fprintf(stderr, "%% Waiting for message... (%d/%d)\n", attempts,
+              max_attempts);
       continue;
     }
 
@@ -125,10 +127,11 @@ static void run_consumer(rd_kafka_conf_t *rk_conf,
         fprintf(stderr, "%% Reached end of partition\n");
         if (exit_eof) run = 0;
       } else {
-        fprintf(stderr, "%% Consumed message (offset %" PRId64
-               ") "
-               "error: %s\n",
-               rkmessage->offset, rd_kafka_message_errstr(rkmessage));
+        fprintf(stderr,
+                "%% Consumed message (offset %" PRId64
+                ") "
+                "error: %s\n",
+                rkmessage->offset, rd_kafka_message_errstr(rkmessage));
       }
     } else {
       // Process the message and check if it's a User message
@@ -142,7 +145,7 @@ static void run_consumer(rd_kafka_conf_t *rk_conf,
     }
 
     rd_kafka_message_destroy(rkmessage);
-    attempts = 0; // Reset attempts counter when we get any message
+    attempts = 0;  // Reset attempts counter when we get any message
   }
 
   if (!message_received) {
@@ -160,11 +163,10 @@ static void run_consumer(rd_kafka_conf_t *rk_conf,
   rd_kafka_destroy(rk);
 }
 
-static void sig_term(int sig) {
-  run = 0;
-}
+static void sig_term(int sig) { run = 0; }
 
-std::string format_schema_registry_url(const std::string& url, const std::string& token) {
+std::string format_schema_registry_url(const std::string &url,
+                                       const std::string &token) {
   // If no token or URL already has authentication info, return as is
   if (token.empty() || url.find('@') != std::string::npos) {
     return url;
@@ -186,18 +188,21 @@ std::string format_schema_registry_url(const std::string& url, const std::string
 int main(int argc, char **argv) {
   ConfigParser config;
   if (argc < 2) {
-    const char* default_config = "sncloud.ini";
-    fprintf(stderr, "No config file specified, using default: %s\n", default_config);
+    const char *default_config = "sncloud.ini";
+    fprintf(stderr, "No config file specified, using default: %s\n",
+            default_config);
 
     // Check if default config exists
     if (access(default_config, F_OK) != 0) {
-      fprintf(stderr, "Default config file not found. Usage: %s <config.ini>\n", argv[0]);
+      fprintf(stderr, "Default config file not found. Usage: %s <config.ini>\n",
+              argv[0]);
       return 1;
     }
 
     // Use default config file
     if (!config.parse(default_config)) {
-      fprintf(stderr, "Failed to parse default config file: %s\n", default_config);
+      fprintf(stderr, "Failed to parse default config file: %s\n",
+              default_config);
       return 1;
     }
   } else {
@@ -208,24 +213,28 @@ int main(int argc, char **argv) {
     }
   }
 
-
   const std::string topic = config.get("common", "topic", "test");
   if (topic.empty()) {
     fprintf(stderr, "Error: 'topic' cannot be empty in configuration\n");
     return 1;
   }
-  const std::string bootstrap_servers = config.get("common", "bootstrap.servers", "localhost:9092");
+  const std::string bootstrap_servers =
+      config.get("common", "bootstrap.servers", "localhost:9092");
   if (bootstrap_servers.empty()) {
-    fprintf(stderr, "Error: 'bootstrap.servers' cannot be empty in configuration\n");
+    fprintf(stderr,
+            "Error: 'bootstrap.servers' cannot be empty in configuration\n");
     return 1;
   }
   const std::string token = config.get("common", "token", "");
-  const std::string schema_registry_url = config.get("schema.registry", "url", "http://localhost:8081");
+  const std::string schema_registry_url =
+      config.get("schema.registry", "url", "http://localhost:8081");
   if (schema_registry_url.empty()) {
-    fprintf(stderr, "Error: 'schema.registry.url' cannot be empty in configuration\n");
+    fprintf(stderr,
+            "Error: 'schema.registry.url' cannot be empty in configuration\n");
     return 1;
   }
-  const std::string group_id = config.get("consumer", "group.id", "avro-consumer-group");
+  const std::string group_id =
+      config.get("consumer", "group.id", "avro-consumer-group");
   if (group_id.empty()) {
     fprintf(stderr, "Error: 'group.id' cannot be empty in configuration\n");
     return 1;
@@ -247,30 +256,29 @@ int main(int argc, char **argv) {
 
   // Set token if provided
   if (!token.empty()) {
-    if (rd_kafka_conf_set(rk_conf, "sasl.username", "user",
-                          errstr, sizeof(errstr)) != RD_KAFKA_CONF_OK ||
+    if (rd_kafka_conf_set(rk_conf, "sasl.username", "user", errstr,
+                          sizeof(errstr)) != RD_KAFKA_CONF_OK ||
         rd_kafka_conf_set(rk_conf, "sasl.password", ("token:" + token).c_str(),
                           errstr, sizeof(errstr)) != RD_KAFKA_CONF_OK ||
-        rd_kafka_conf_set(rk_conf, "sasl.mechanism", "PLAIN",
-                          errstr, sizeof(errstr)) != RD_KAFKA_CONF_OK ||
-        rd_kafka_conf_set(rk_conf, "security.protocol", "SASL_SSL",
-                          errstr, sizeof(errstr)) != RD_KAFKA_CONF_OK) {
+        rd_kafka_conf_set(rk_conf, "sasl.mechanism", "PLAIN", errstr,
+                          sizeof(errstr)) != RD_KAFKA_CONF_OK ||
+        rd_kafka_conf_set(rk_conf, "security.protocol", "SASL_SSL", errstr,
+                          sizeof(errstr)) != RD_KAFKA_CONF_OK) {
       fprintf(stderr, "Failed to configure SASL authentication: %s\n", errstr);
       return 1;
     }
   }
 
   // For auto.offset.reset
-  if (rd_kafka_topic_conf_set(rkt_conf, "auto.offset.reset", "earliest",
-                          errstr, sizeof(errstr)) != RD_KAFKA_CONF_OK) {
+  if (rd_kafka_topic_conf_set(rkt_conf, "auto.offset.reset", "earliest", errstr,
+                              sizeof(errstr)) != RD_KAFKA_CONF_OK) {
     fprintf(stderr, "%s\n", errstr);
     return 1;
   }
 
-  serdes_conf_t *sconf = serdes_conf_new(nullptr, 0,
-                                        "schema.registry.url",
-                                         format_schema_registry_url(schema_registry_url, token).c_str(),
-                                        NULL);
+  serdes_conf_t *sconf = serdes_conf_new(
+      nullptr, 0, "schema.registry.url",
+      format_schema_registry_url(schema_registry_url, token).c_str(), NULL);
 
   serdes_t *serdes;
   serdes = serdes_new(sconf, errstr, sizeof(errstr));
@@ -281,13 +289,15 @@ int main(int argc, char **argv) {
 
   fprintf(stderr, "%% Starting consumer for topic %s (broker(s) %s)\n",
           topic.c_str(), bootstrap_servers.c_str());
-  fprintf(stderr, "%% Using schema registry at %s\n", schema_registry_url.c_str());
+  fprintf(stderr, "%% Using schema registry at %s\n",
+          schema_registry_url.c_str());
   fprintf(stderr, "%% Will exit after receiving one User message or timeout\n");
 
-  run_consumer(rk_conf, rkt_conf, topic.c_str(), partition, serdes, group_id.c_str());
+  run_consumer(rk_conf, rkt_conf, topic.c_str(), partition, serdes,
+               group_id.c_str());
 
   serdes_destroy(serdes);
   rd_kafka_wait_destroyed(5000);
 
-  return message_received ? 0 : 1; // Return success if we received a message
+  return message_received ? 0 : 1;  // Return success if we received a message
 }
