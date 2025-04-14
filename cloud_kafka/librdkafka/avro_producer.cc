@@ -3,6 +3,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "config.h"
@@ -33,8 +34,7 @@ class User {
  public:
   User(const std::string &name, int age) : name_(name), age_(age) {}
 
-  // You must call free() on the return value after it won't be used
-  void *serialize(serdes_schema_t *serdes_schema) const {
+  std::pair<void *, size_t> serialize(serdes_schema_t *serdes_schema) const {
     auto schema = serdes_schema_avro(serdes_schema);
     auto record_class = avro_generic_class_from_schema(schema);
 
@@ -59,7 +59,7 @@ class User {
     }
 
     avro_value_decref(&record);
-    return ser_buf;
+    return std::make_pair(ser_buf, ser_buf_size);
   }
 
  private:
@@ -144,15 +144,15 @@ int main(int argc, char **argv) {
 
   std::vector<User> users{{"Alice", 18}, {"Bob", 19}, {"Charlie", 20}};
   for (auto &&user : users) {
-    auto buf = user.serialize(schema);
-
-    if (rd_kafka_produce(rkt, 0, RD_KAFKA_MSG_F_FREE, buf, sizeof(buf), nullptr, 0, nullptr) != 0) {
-      free(buf);
+    auto pair = user.serialize(schema);
+    if (rd_kafka_produce(rkt, 0, RD_KAFKA_MSG_F_FREE, pair.first, pair.second, nullptr, 0,
+                         nullptr) != 0) {
+      free(pair.first);
       fail("Failed to produce message: " + std::string(rd_kafka_err2str(rd_kafka_last_error())));
     }
   }
   for (int i = 0; i < 50 && num_messages < users.size(); i++) {
-    rd_kafka_poll(rk, 100);
+    rd_kafka_poll(rk, 1000);
   }
 
   rd_kafka_wait_destroyed(5000);
