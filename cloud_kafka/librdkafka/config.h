@@ -19,7 +19,7 @@ class Config {
 
   std::string topic() const { return get_non_empty_string("common", "topic"); }
 
-  std::string token() const { return ini_.GetValue("common", "token", ""); }
+  std::string token() const { return get_non_empty_string("common", "token"); }
 
   std::string schema_registry_url() const {
     return get_non_empty_string("schema.registry", "url");
