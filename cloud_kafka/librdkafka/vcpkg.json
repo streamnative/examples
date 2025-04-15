@@ -1,0 +1,23 @@
+{
+  "name": "librdkafka-demo",
+  "version": "0.1.0",
+  "description": "Examples of librdkafka usage",
+  "builtin-baseline": "eba67a0ad22f2056f4be769ddeea023ec889de37",
+  "dependencies": [
+    {
+      "name": "avro-c",
+      "version>=": "1.12.0"
+    },
+    {
+      "name": "librdkafka",
+      "features": [
+        "ssl"
+      ],
+      "version>=": "2.8.0"
+    },
+    {
+      "name": "simpleini",
+      "version>=": "4.22"
+    }
+  ]
+}
