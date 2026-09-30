@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "Member",
+  "namespace": "io.streamnative.schemas.external.test.avro",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "address", "type": {
+      "type": "record",
+      "name": "Address",
+      "fields": [
+        {"name": "city", "type": "string"},
+        {"name": "zip", "type": "string"}
+      ]
+    }}
+  ]
+}
